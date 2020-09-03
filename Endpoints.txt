@@ -1,0 +1,7 @@
+﻿POST api/dataModels/${id}/template​
+
+POST api/terminologies/${id}/template​
+
+POST api/dataModels/${id1}/diff/${id2}/template​
+
+​
