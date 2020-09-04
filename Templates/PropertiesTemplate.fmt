@@ -1,0 +1,27 @@
+﻿<#macro propertyTable obj>
+<table frame="all" rowsep="1" colsep="1" id="properties_of_${obj.id}">
+    <title>Metadata properties of ${obj.label}</title>
+    <tgroup cols="2" align="left">
+        <colspec colname="c1" colnum="1"/>
+        <colspec colname="c2" colnum="2"/>
+        <thead>
+            <row>
+                <entry>Property</entry>
+                <entry>Value</entry>
+            </row>
+        </thead>
+        <tbody>
+<#list obj.metadata as meta >
+            <row>
+                <entry>${meta.key}</entry>
+                <entry>${meta.value}</entry>
+            </row>
+</#list>
+        </tbody>
+   </tgroup>
+</table>
+</#macro>
+
+${dataModel.label}
+
+<@propertyTable obj=dataModel />
