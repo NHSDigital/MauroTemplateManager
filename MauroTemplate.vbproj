@@ -11,7 +11,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="MauroClasses\**" />
+    <Compile Remove="MauroManager\**" />
+    <EmbeddedResource Remove="MauroClasses\**" />
+    <EmbeddedResource Remove="MauroManager\**" />
+    <None Remove="MauroClasses\**" />
+    <None Remove="MauroManager\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="ActionConfiguration.vb" />
+    <Compile Remove="Freemarker.vb" />
     <Compile Remove="Generated.vb" />
+    <Compile Remove="MauroAPI.vb" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MauroClasses\MauroClasses.vbproj" />
+    <ProjectReference Include="MauroClasses\MauroClasses.vbproj" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>MauroClasses</RootNamespace>
+    <TargetFrameworks>netcoreapp3.1;net48</TargetFrameworks>
+    <Authors>Nicholas Oughtibridge</Authors>
+    <Company>Oughtibridge</Company>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net48'">
+    <Reference Include="System.Net.Http">
+      <SpecificVersion>true</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+  </ItemGroup>
+</Project>
