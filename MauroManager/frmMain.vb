@@ -1,5 +1,5 @@
 ﻿Imports System.Text.RegularExpressions
-Imports System.Threading
+Imports System.Text.Json
 Imports MauroClasses
 Imports MauroClasses.MauroAPI
 Imports MauroClasses.MauroAPI.FreemarkerProject
@@ -477,23 +477,28 @@ Public Class frmMain
         ProjectLoaded = True
         RefreshStatus()
     End Sub
-
-    Private Sub EntryClicked(sender As Object, e As EventArgs) Handles tvQueue.Click
-
-
-
-    End Sub
-
+    Private Function PrettyJson(ByVal unPrettyJson As String) As String
+        Dim options = New JsonSerializerOptions() With {
+        .WriteIndented = True
+    }
+        Dim jsonElement = JsonSerializer.Deserialize(Of JsonElement)(unPrettyJson)
+        Return JsonSerializer.Serialize(jsonElement, options)
+    End Function
     Private Sub UpdateActionEntryResult(sender As Object, e As TreeNodeMouseClickEventArgs) Handles tvQueue.NodeMouseClick
         Dim n As TreeNode = e.Node
 
 
-        If n.Tag <> "bob" Then
-            Dim ae As ActionEntry = ActionEntries.Entries.Find(Function(x) x.ID = Guid.Parse(n.Name))
-            If Not IsNothing(ae.postResponse) Then
-                txtPostBody.Text = ae.postResponse.Body
-            End If
+
+        Dim ae As ActionEntry = ActionEntries.Entries.Find(Function(x) x.ID = Guid.Parse(n.Name))
+        If Not IsNothing(ae) And Not IsNothing(ae.postResponse) Then
+            Dim ResponseText As String = ae.postResponse.Body
+            Try
+                ResponseText = PrettyJson(ResponseText)
+            Catch
+            End Try
+            txtPostBody.Text = ResponseText
         End If
+
 
     End Sub
 End Class
