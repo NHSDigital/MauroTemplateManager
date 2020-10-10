@@ -34,28 +34,30 @@ Namespace MauroAPI
             End If
             For Each act In Project.Actions
 
-                'If Project.Endpoint.Models.Count = 0 Then ' Process all the models
-                '    Dim ex As New Exception("No models selected")
-                '    'For Each m As Model In EndpointConnection.GetModels.items
-                '    '    Dim ae As New ActionEntry With {
-                '    '        .Action = act,
-                '    '        .Model = m.id,
-                '    '        .OutputDirectory = OutputDirectory,
-                '    '        .Status = ActionOutcomeStatus.NotStarted}
-                '    '    ActionEntries.Entries.Add(ae)
-                '    '    'ProcessActionForModel(m, act, OutputDirectory)
-                '    'Next
-                'Else
-                For Each id As Guid In Project.Models
-                    Dim m As Model = EndpointConnection.GetModel(id)
+                If act.ActionType = ActionTypes.actionAllModels Then
+
                     Dim ae As New ActionEntry With {
-                        .Action = act,
-                        .Model = m.id,
-                        .OutputDirectory = OutputDirectory,
-                        .Status = ActionOutcomeStatus.NotStarted}
+                            .Action = act,
+                            .Model = Project.Models,
+                            .OutputDirectory = OutputDirectory,
+                            .Status = ActionOutcomeStatus.NotStarted}
                     ActionEntries.Entries.Add(ae)
-                    'ProcessActionForModel(m, act, OutputDirectory)
-                Next
+                Else
+
+                    For Each id As Guid In Project.Models
+                        Dim m As Model = EndpointConnection.GetModel(id)
+                        Dim lstModel As New List(Of Guid)
+                        lstModel.add(m.id)
+                        Dim ae As New ActionEntry With {
+                            .Action = act,
+                            .Model = lstmodel,
+                            .OutputDirectory = OutputDirectory,
+                            .Status = ActionOutcomeStatus.NotStarted}
+                        ActionEntries.Entries.Add(ae)
+                        'ProcessActionForModel(m, act, OutputDirectory)
+                    Next
+                End If
+
 
                 'End If
 
@@ -96,7 +98,7 @@ Namespace MauroAPI
 
             Select Case Action.ActionType ' Apply to the model
 
-                Case ActionTypes.actionModel
+                Case ActionTypes.actionSingleModel
                     pr = ProcessModelOnly(MauroModel, Action, OutputDirectory)
                     If IsNothing(pr) Then
                         FailCount += 1
@@ -105,6 +107,8 @@ Namespace MauroAPI
                     Else
                         FailCount += 1
                     End If
+                Case ActionTypes.actionAllModels
+                    Throw New NotImplementedException("ProcessActionForModel: actionAllModels not supported ")
 
                 Case ActionTypes.actionClass ' Apply to a class within the model
                     MauroModel.childDataClasses = EndpointConnection.GetModelClasses(MauroModel.id)
@@ -126,22 +130,32 @@ Namespace MauroAPI
         End Function
 
         Public Sub ProcessActionEntry(ActionEntry As ActionEntry)
-            Dim res As PostResponse = Nothing
+            Dim res As New List(Of PostResponse)
             Try
-                Dim MauroModel As Model = EndpointConnection.GetModel(ActionEntry.Model)
-                ActionEntry.Status = ActionOutcomeStatus.InProgress
-                res = ProcessActionForModel(MauroModel, ActionEntry.Action, ActionEntry.OutputDirectory)
+                If ActionEntry.Action.ActionType = ActionTypes.actionAllModels Then
+                    res = ProcessAllModels(ActionEntry.Model, ActionEntry.Action, ActionEntry.OutputDirectory)
+                Else
+                    For Each m As Guid In ActionEntry.Model
+                        Dim MauroModel As Model = EndpointConnection.GetModel(m)
+                        ActionEntry.Status = ActionOutcomeStatus.InProgress
+
+                        res.Add(ProcessActionForModel(MauroModel, ActionEntry.Action, ActionEntry.OutputDirectory))
+                    Next
+                End If
+
             Catch ex As Exception
             End Try
 
-            ActionEntry.postResponse = res
-
-            If IsNothing(res) Then
+            ActionEntry.postResponses = res
+            ActionEntry.Status = ActionOutcomeStatus.Success
+            If res.Count = 0 Then
                 ActionEntry.Status = ActionOutcomeStatus.Failed
-            ElseIf res.Result.IsSuccessStatusCode Then
-                ActionEntry.Status = ActionOutcomeStatus.Success
             Else
-                ActionEntry.Status = ActionOutcomeStatus.Failed
+                For Each PR As PostResponse In res
+                    If Not PR.Result.IsSuccessStatusCode Then
+                        ActionEntry.Status = ActionOutcomeStatus.Failed
+                    End If
+                Next
             End If
 
         End Sub
@@ -228,6 +242,47 @@ Namespace MauroAPI
                     Console.WriteLine(" - error")
                 End If
 
+            Catch ex As Exception
+                Console.WriteLine()
+                fwriter.Write(ex.Message)
+                Console.WriteLine("Failed to generate " & fname & " - " & ex.Message)
+                fwriter.Close()
+                fstream.Close()
+            End Try
+            Return Res
+        End Function
+        Private Function ProcessAllModels(Models As List(Of Guid), Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String) As List(Of PostResponse)
+            Dim fname As String = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & Action.FileSuffix
+            Console.Write(fname)
+
+            Dim fstream As New FileStream(fname, FileMode.OpenOrCreate)
+            Dim fwriter As New StreamWriter(fstream)
+            Dim Res As New List(Of PostResponse)
+            Try
+                ' Apply the template to each model
+                For Each m As Guid In Models
+                    Dim PR As PostResponse = EndpointConnection.ApplyModelTemplate(m, Action.Template)
+                    ' Handle the output
+                    If PR.Result.IsSuccessStatusCode Then
+                        fwriter.Write(PR.Body)
+                        Console.WriteLine(" - success")
+
+                    Else
+                        fwriter.Close()
+                        fstream.Close()
+                        File.Delete(fname)
+
+                        ' Write out the error
+                        fname = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & "_error.html"
+                        fstream = New FileStream(fname, FileMode.Create)
+                        fwriter = New StreamWriter(fstream)
+                        fwriter.Write(PR.Result.ReasonPhrase)
+                        Console.WriteLine(" - error")
+                        Exit For
+                    End If
+                Next
+                fwriter.Close()
+                fstream.Close()
             Catch ex As Exception
                 Console.WriteLine()
                 fwriter.Write(ex.Message)

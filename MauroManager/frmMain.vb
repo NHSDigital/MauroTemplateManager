@@ -152,6 +152,7 @@ Public Class frmMain
             lstActions.DataSource = project.Actions
             lstActions.DisplayMember = "Name"
             lstActions.ValueMember = "id"
+            RedrawActionList()
         Else
             StatusEndpoint.Text = "Not connected"
             SavedState.Text = "No project loaded"
@@ -181,39 +182,41 @@ Public Class frmMain
             Dim RootNode As New TreeNode
 
             Dim q = From Entries In ActionEntries.Entries
-                    Order By Entries.Model, Entries.Action.Name
+                    Order By Entries.Action.Name ' entries.model
             For Each e As ActionEntry In q
-                Dim n As New TreeNode With {
+                For Each ModelEntry As Guid In e.Model
+                    Dim n As New TreeNode With {
                     .Text = e.Action.Name,
                     .Name = e.ID.ToString,
                     .ImageIndex = e.Status}
-                If e.Model.ToString <> modelID Then
-                    modelID = e.Model.ToString
+                    If e.Model.ToString <> modelID Then
+                        modelID = e.Model.ToString
 
-                    Dim MdlList As List(Of Model) = EndpointConnection.MauroModels.items
-                    Dim mdl = From m In MdlList.Where(Function(x) x.id = e.Model)
+                        Dim MdlList As List(Of Model) = EndpointConnection.MauroModels.items
+                        Dim mdl = From m In MdlList.Where(Function(x) x.id = ModelEntry)
 
 
-                    Dim NewLabel As String = ""
-                    Dim Tooltip As String = ""
-                    If mdl.Count = 1 Then
-                        NewLabel = mdl(0).label
-                        If Not IsNothing(mdl(0).description) Then
-                            Tooltip = mdl(0).description
+                        Dim NewLabel As String = ""
+                        Dim Tooltip As String = ""
+                        If mdl.Count = 1 Then
+                            NewLabel = mdl(0).label
+                            If Not IsNothing(mdl(0).description) Then
+                                Tooltip = mdl(0).description
+                            End If
+                        Else
+                            NewLabel = "Unknown model"
                         End If
-                    Else
-                        NewLabel = "Unknown model"
-                    End If
 
-                    RootNode = New TreeNode With {
+                        RootNode = New TreeNode With {
                         .Text = NewLabel,
                         .Tag = e.ID.ToString,
                         .ImageIndex = 4,
                         .ToolTipText = Tooltip
                                                 }
-                    tvQueue.Nodes.Add(RootNode)
-                End If
-                RootNode.Nodes.Add(n)
+                        tvQueue.Nodes.Add(RootNode)
+                    End If
+                    RootNode.Nodes.Add(n)
+                Next
             Next
 
         End If
@@ -294,7 +297,7 @@ Public Class frmMain
 
     Private Sub cmdAddAction_Click(sender As Object, e As EventArgs) Handles cmdAddAction.Click
         Dim act As New FreemarkerProject.FreemarkerAction With {
-            .ActionType = MauroAPI.FreemarkerProject.ActionTypes.actionModel,
+            .ActionType = MauroAPI.FreemarkerProject.ActionTypes.actionSingleModel,
             .FilePrefix = "Model_",
             .FileSuffix = ".txt",
             .Template = "",
@@ -336,7 +339,7 @@ Public Class frmMain
                 Select Case .ActionType
                     Case MauroAPI.FreemarkerProject.ActionTypes.actionClass
                         rbClass.Checked = True
-                    Case MauroAPI.FreemarkerProject.ActionTypes.actionModel
+                    Case MauroAPI.FreemarkerProject.ActionTypes.actionSingleModel
                         rbModel.Checked = True
 
                     Case MauroAPI.FreemarkerProject.ActionTypes.actionTerminology
@@ -353,9 +356,12 @@ Public Class frmMain
     ''' <param name="e"></param>
     Private Sub ActionTypeChanged(sender As Object, e As EventArgs) Handles rbModel.CheckedChanged, rbClass.CheckedChanged, rbTerminology.CheckedChanged
         If rbModel.Checked Then
-            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = MauroAPI.FreemarkerProject.ActionTypes.actionModel
+            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = MauroAPI.FreemarkerProject.ActionTypes.actionSingleModel
         ElseIf rbClass.Checked Then
             CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = MauroAPI.FreemarkerProject.ActionTypes.actionClass
+        ElseIf rbAllModels.Checked Then
+            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = MauroAPI.FreemarkerProject.ActionTypes.actionAllModels
+
         Else
             CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = MauroAPI.FreemarkerProject.ActionTypes.actionTerminology
         End If
@@ -364,8 +370,12 @@ Public Class frmMain
     End Sub
 
     Private Sub ActionNameChanged(sender As Object, e As EventArgs) Handles textName.Leave
-        CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).Name = textName.Text
-        RedrawActionList()
+        Try
+            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).Name = textName.Text
+            RedrawActionList()
+        Catch ex As Exception
+        End Try
+
         SetDirty()
     End Sub
 
@@ -383,6 +393,12 @@ Public Class frmMain
         lstActions.ValueMember = "id"
         lstActions.SelectedIndex = selIndex
 
+        If lstActions.Items.Count > 0 Then
+            scActions.Panel2.Enabled = True
+        Else
+            scActions.Panel2.Enabled = False
+
+        End If
     End Sub
 
     Private Sub cmdAdd_Click(sender As Object, e As EventArgs) Handles cmdAdd.Click
@@ -406,31 +422,39 @@ Public Class frmMain
         Dim OutputDirectory As String = "C:\git\TemplateOutput"
 
         If project.Models.Count = 0 Then ' Process all the models
-            For Each m As Model In EndpointConnection.GetModels.items
-                Dim newEntry As New ActionEntry With {
-                    .Status = ActionOutcomeStatus.NotStarted,
-                    .Action = act,
-                    .OutputDirectory = OutputDirectory,
-                    .Model = m.id}
-                ActionEntries.Entries.Add(newEntry)
-            Next
+            'For Each m As Model In EndpointConnection.GetModels.items
+            '    Dim mdlList As New List(Of Guid)
+            '    mdlList.Add(m.id)
+            '    Dim newEntry As New ActionEntry With {
+            '        .Status = ActionOutcomeStatus.NotStarted,
+            '        .Action = act,
+            '        .OutputDirectory = OutputDirectory,
+            '        .Model = mdlList}
+            '    ActionEntries.Entries.Add(newEntry)
+
+            'Next
+            Throw New DataException("No models selected")
         Else
+            Dim mdlList As New List(Of Guid)
             For Each id As Guid In project.Models
-                Dim newEntry As New ActionEntry With {
+                mdlList.Add(id)
+            Next
+            Dim newEntry As New ActionEntry With {
                     .Status = ActionOutcomeStatus.NotStarted,
                     .Action = act,
                       .OutputDirectory = OutputDirectory,
-                    .Model = id}
-                ActionEntries.Entries.Add(newEntry)
-            Next
+                    .Model = mdlList}
+            ActionEntries.Entries.Add(newEntry)
+
         End If
         Tabs.SelectedIndex = 3
         Application.DoEvents()
-        StartActionEntryQueueAsync()
-        TimerReset()
+        RunActionEntryQueue()
+        'StartActionEntryQueueAsync()
+        ' TimerReset()
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles cmdDoAll.Click
+    Private Sub cmdDoAll_Click(sender As Object, e As EventArgs) Handles cmdDoAll.Click
         Tabs.SelectedIndex = 3
         Application.DoEvents()
         MauroAPI.Freemarker.QueueProjectActionEntries(project, "c:\git\templateoutput")
@@ -486,19 +510,23 @@ Public Class frmMain
     End Function
     Private Sub UpdateActionEntryResult(sender As Object, e As TreeNodeMouseClickEventArgs) Handles tvQueue.NodeMouseClick
         Dim n As TreeNode = e.Node
+        Dim g As Guid
+        Try
+            g = Guid.Parse(n.Name)
+            Dim ae As ActionEntry = ActionEntries.Entries.Find(Function(x) x.ID = g)
+            For Each pr As PostResponse In ae.postResponses
+                If Not IsNothing(ae) And Not IsNothing(ae.postResponses) Then
+                    Dim ResponseText As String = pr.Body
+                    Try
+                        ResponseText = PrettyJson(ResponseText)
+                    Catch
+                    End Try
+                    txtPostBody.Text &= ResponseText
+                End If
+            Next
+        Catch ex As Exception
 
-
-
-        Dim ae As ActionEntry = ActionEntries.Entries.Find(Function(x) x.ID = Guid.Parse(n.Name))
-        If Not IsNothing(ae) And Not IsNothing(ae.postResponse) Then
-            Dim ResponseText As String = ae.postResponse.Body
-            Try
-                ResponseText = PrettyJson(ResponseText)
-            Catch
-            End Try
-            txtPostBody.Text = ResponseText
-        End If
-
+        End Try
 
     End Sub
 End Class

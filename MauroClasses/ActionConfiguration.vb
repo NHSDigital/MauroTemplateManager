@@ -128,7 +128,8 @@ Namespace MauroAPI.FreemarkerProject
     ''' </summary>
     Public Enum ActionTypes
         actionClass
-        actionModel
+        actionSingleModel
+        actionAllModels
         actionTerminology
     End Enum
 
@@ -199,9 +200,9 @@ Namespace MauroAPI.FreemarkerProject
     End Class
 
     Public Class ActionEntry
-        Property Model As Guid
+        Property Model As List(Of Guid)
         Property Action As FreemarkerAction
-        Property postResponse As PostResponse
+        Property postResponses As List(Of PostResponse)
         Property Status As ActionOutcomeStatus
         Property ID As Guid
         Property OutputDirectory As String
