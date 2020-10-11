@@ -22,7 +22,8 @@ Public Class ApplicationSettings
                 Settings = JsonSerializer.Deserialize(Of List(Of AppSetting))(Reader.ReadToEnd)
             Catch ex As Exception
             End Try
-
+            Reader.Close()
+            JSONFile.Close()
         Catch ex As Exception
             ' unable to open the file!
             Settings = New List(Of AppSetting)
@@ -85,6 +86,7 @@ Public Class ApplicationSettings
             Settings.Add(res)
         Else
             res = Setting
+            res.Value = Value
         End If
         Save()
     End Sub

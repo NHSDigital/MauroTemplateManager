@@ -65,6 +65,16 @@ Public Class frmMain
     ''' <param name="e"></param>
     Private Sub mnuSave_Click(sender As Object, e As EventArgs) Handles mnuSave.Click
         project.SaveProject()
+        Dim s As String
+        s = AppSettings.GetAppSetting("ConnectionEndpoint", "")
+        If s = "" Then
+            AppSettings.SetAppSetting("EndpointConnection", project.Endpoint.EndpointURL.ToString)
+        End If
+        s = AppSettings.GetAppSetting("DefaultUsername", "")
+        If s = "" Then
+            AppSettings.SetAppSetting("DefaultUsername", project.Endpoint.Username)
+        End If
+
         ProjectDirty = False
         RefreshStatus()
     End Sub
@@ -561,5 +571,10 @@ Public Class frmMain
 
         End Try
 
+    End Sub
+
+    Private Sub PreferencesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PreferencesToolStripMenuItem.Click
+        Dim f As New frmPreferences
+        f.ShowDialog()
     End Sub
 End Class

@@ -36,6 +36,7 @@ Partial Class frmMain
         Me.ModelSetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ActionSetToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.mnuOpenRecent = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExitToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.StatusEndpoint = New System.Windows.Forms.ToolStripStatusLabel()
@@ -98,7 +99,7 @@ Partial Class frmMain
         Me.ilStatus = New System.Windows.Forms.ImageList(Me.components)
         Me.txtPostBody = New System.Windows.Forms.TextBox()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
-        Me.mnuOpenRecent = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PreferencesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.ActionsTab.SuspendLayout()
@@ -131,7 +132,7 @@ Partial Class frmMain
         '
         Me.MenuStrip1.GripMargin = New System.Windows.Forms.Padding(2, 2, 0, 2)
         Me.MenuStrip1.ImageScalingSize = New System.Drawing.Size(32, 32)
-        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem})
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.PreferencesToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
         Me.MenuStrip1.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
@@ -198,6 +199,12 @@ Partial Class frmMain
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
         Me.ToolStripSeparator2.Size = New System.Drawing.Size(307, 6)
+        '
+        'mnuOpenRecent
+        '
+        Me.mnuOpenRecent.Name = "mnuOpenRecent"
+        Me.mnuOpenRecent.Size = New System.Drawing.Size(310, 34)
+        Me.mnuOpenRecent.Text = "Open recent"
         '
         'ExitToolStripMenuItem
         '
@@ -545,7 +552,7 @@ Partial Class frmMain
         Me.ModelsTab.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.ModelsTab.Name = "ModelsTab"
         Me.ModelsTab.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.ModelsTab.Size = New System.Drawing.Size(1233, 585)
+        Me.ModelsTab.Size = New System.Drawing.Size(1480, 707)
         Me.ModelsTab.TabIndex = 1
         Me.ModelsTab.Text = "Models"
         Me.ModelsTab.UseVisualStyleBackColor = True
@@ -565,8 +572,8 @@ Partial Class frmMain
         'ModelsContainer.Panel2
         '
         Me.ModelsContainer.Panel2.Controls.Add(Me.lstGUIDs)
-        Me.ModelsContainer.Size = New System.Drawing.Size(1225, 575)
-        Me.ModelsContainer.SplitterDistance = 404
+        Me.ModelsContainer.Size = New System.Drawing.Size(1472, 697)
+        Me.ModelsContainer.SplitterDistance = 485
         Me.ModelsContainer.SplitterWidth = 3
         Me.ModelsContainer.TabIndex = 0
         '
@@ -579,7 +586,7 @@ Partial Class frmMain
         Me.lstModels.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lstModels.Name = "lstModels"
         Me.lstModels.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.lstModels.Size = New System.Drawing.Size(404, 457)
+        Me.lstModels.Size = New System.Drawing.Size(485, 579)
         Me.lstModels.TabIndex = 2
         '
         'Panel5
@@ -588,10 +595,10 @@ Partial Class frmMain
         Me.Panel5.Controls.Add(Me.txtModelGUID)
         Me.Panel5.Controls.Add(Me.Label10)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel5.Location = New System.Drawing.Point(0, 457)
+        Me.Panel5.Location = New System.Drawing.Point(0, 579)
         Me.Panel5.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(404, 118)
+        Me.Panel5.Size = New System.Drawing.Size(485, 118)
         Me.Panel5.TabIndex = 1
         '
         'cmdAdd
@@ -600,7 +607,7 @@ Partial Class frmMain
         Me.cmdAdd.Location = New System.Drawing.Point(0, 46)
         Me.cmdAdd.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(404, 72)
+        Me.cmdAdd.Size = New System.Drawing.Size(485, 72)
         Me.cmdAdd.TabIndex = 2
         Me.cmdAdd.Text = "Add"
         Me.cmdAdd.UseVisualStyleBackColor = True
@@ -611,7 +618,7 @@ Partial Class frmMain
         Me.txtModelGUID.Location = New System.Drawing.Point(0, 20)
         Me.txtModelGUID.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtModelGUID.Name = "txtModelGUID"
-        Me.txtModelGUID.Size = New System.Drawing.Size(404, 26)
+        Me.txtModelGUID.Size = New System.Drawing.Size(485, 26)
         Me.txtModelGUID.TabIndex = 1
         '
         'Label10
@@ -632,7 +639,7 @@ Partial Class frmMain
         Me.lstGUIDs.Location = New System.Drawing.Point(0, 0)
         Me.lstGUIDs.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lstGUIDs.Name = "lstGUIDs"
-        Me.lstGUIDs.Size = New System.Drawing.Size(818, 575)
+        Me.lstGUIDs.Size = New System.Drawing.Size(984, 697)
         Me.lstGUIDs.TabIndex = 3
         '
         'ProjectTab
@@ -831,7 +838,7 @@ Partial Class frmMain
         '
         Me.scModels.Panel2.Controls.Add(Me.txtPostBody)
         Me.scModels.Size = New System.Drawing.Size(1480, 707)
-        Me.scModels.SplitterDistance = 487
+        Me.scModels.SplitterDistance = 486
         Me.scModels.SplitterWidth = 3
         Me.scModels.TabIndex = 1
         '
@@ -847,7 +854,7 @@ Partial Class frmMain
         TreeNode1.Text = "Models"
         Me.tvQueue.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode1})
         Me.tvQueue.SelectedImageIndex = 0
-        Me.tvQueue.Size = New System.Drawing.Size(487, 707)
+        Me.tvQueue.Size = New System.Drawing.Size(486, 707)
         Me.tvQueue.TabIndex = 1
         '
         'ilStatus
@@ -867,18 +874,18 @@ Partial Class frmMain
         Me.txtPostBody.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtPostBody.Multiline = True
         Me.txtPostBody.Name = "txtPostBody"
-        Me.txtPostBody.Size = New System.Drawing.Size(990, 707)
+        Me.txtPostBody.Size = New System.Drawing.Size(991, 707)
         Me.txtPostBody.TabIndex = 0
         '
         'Timer1
         '
         Me.Timer1.Interval = 500
         '
-        'mnuOpenRecent
+        'PreferencesToolStripMenuItem
         '
-        Me.mnuOpenRecent.Name = "mnuOpenRecent"
-        Me.mnuOpenRecent.Size = New System.Drawing.Size(310, 34)
-        Me.mnuOpenRecent.Text = "Open recent"
+        Me.PreferencesToolStripMenuItem.Name = "PreferencesToolStripMenuItem"
+        Me.PreferencesToolStripMenuItem.Size = New System.Drawing.Size(118, 29)
+        Me.PreferencesToolStripMenuItem.Text = "Preferences"
         '
         'frmMain
         '
@@ -1006,4 +1013,5 @@ Partial Class frmMain
     Friend WithEvents txtPostBody As TextBox
     Friend WithEvents rbAllModels As RadioButton
     Friend WithEvents mnuOpenRecent As ToolStripMenuItem
+    Friend WithEvents PreferencesToolStripMenuItem As ToolStripMenuItem
 End Class

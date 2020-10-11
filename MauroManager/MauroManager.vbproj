@@ -85,6 +85,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
@@ -137,6 +138,12 @@
       <DependentUpon>frmMain.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmPreferences.Designer.vb">
+      <DependentUpon>frmPreferences.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmPreferences.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ImportExportDialogue.Designer.vb">
       <DependentUpon>ImportExportDialogue.vb</DependentUpon>
     </Compile>
@@ -163,6 +170,9 @@
   <ItemGroup>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPreferences.resx">
+      <DependentUpon>frmPreferences.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImportExportDialogue.resx">
       <DependentUpon>ImportExportDialogue.vb</DependentUpon>
