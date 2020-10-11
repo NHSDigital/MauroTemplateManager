@@ -28,7 +28,7 @@ Namespace MauroAPI.FreemarkerProject
                     .Username = ser.Username,
                     .Password = ser.Password
                }
-                Filename = ser.Filename
+                ' Filename = ser.Filename Use the supplied filename instead
                 FileType = ser.FileType
                 Actions = ser.Actions
                 Models = ser.Models
@@ -94,7 +94,9 @@ Namespace MauroAPI.FreemarkerProject
             Writer.Write(jsontext)
             Writer.Close()
         End Sub
-        Public Sub New(Filename As String)
+        Public Sub New(OpenFilename As String)
+            Me.Filename = OpenFilename
+
             LoadProject(Filename)
         End Sub
         Public Sub New()

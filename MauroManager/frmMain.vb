@@ -10,8 +10,12 @@ Public Class frmMain
 
     Dim ProjectLoaded As Boolean = False
     Dim ProjectDirty As Boolean = False
+    Dim AppSettings As New ApplicationSettings("Mauro")
+    Dim RecentFiles As List(Of ApplicationSettings.AppSetting)
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         RefreshStatus()
+        RefreshRecentFileList()
+
     End Sub
     ''' <summary>
     ''' Opens a file and loads the project if valid, updating the form as appropriate
@@ -24,9 +28,14 @@ Public Class frmMain
         OpenDialogue.Title = "Mauro Project"
         OpenDialogue.DefaultExt = ".json"
         OpenDialogue.ShowDialog()
+        OpenFile(OpenDialogue.FileName)
+
+    End Sub
+
+    Public Sub OpenFile(Filename)
         project = Nothing
         Try
-            project = New FreemarkerProject.Project(OpenDialogue.FileName)
+            project = New FreemarkerProject.Project(Filename)
 
             ' Set up the Project tab
 
@@ -35,6 +44,7 @@ Public Class frmMain
 
             ProjectLoaded = True
             ProjectDirty = False
+            AppSettings.AddOrMoveToStart("RecentFileList", project.Filename)
         Catch ex As Exception
             If IsNothing(project) Then
                 ProjectLoaded = False
@@ -46,6 +56,7 @@ Public Class frmMain
 
         End Try
         RefreshStatus()
+        RefreshRecentFileList()
     End Sub
     ''' <summary>
     ''' Saves the project to JSON to the existing filename
@@ -75,6 +86,27 @@ Public Class frmMain
             ProjectDirty = False
         End If
         RefreshStatus()
+    End Sub
+
+    Public Sub RefreshRecentFileList()
+        RecentFiles = AppSettings.GetAppSettingAll("RecentFileList")
+        mnuOpenRecent.DropDownItems.Clear()
+
+        For Each setting As ApplicationSettings.AppSetting In RecentFiles
+            Dim m As New ToolStripMenuItem
+            m.Text = setting.Value
+            m.Name = "Recent" & setting.Sequence.ToString
+            AddHandler m.Click, AddressOf OpenRecentFileHandler
+            mnuOpenRecent.DropDownItems.Add(m)
+        Next
+    End Sub
+
+    Public Sub OpenRecentFileHandler(ByVal sender As Object, ByVal e As EventArgs)
+        If CType(sender, ToolStripMenuItem).Name.StartsWith("Recent") Then
+            Dim Filename As String = CType(sender, ToolStripMenuItem).Text
+            OpenFile(Filename)
+        End If
+
     End Sub
 
     ''' <summary>
@@ -520,6 +552,7 @@ Public Class frmMain
                     Try
                         ResponseText = PrettyJson(ResponseText)
                     Catch
+                        ' if there is an error, just show the text
                     End Try
                     txtPostBody.Text &= ResponseText
                 End If
