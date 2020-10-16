@@ -5,6 +5,13 @@
         txtUsername.Text = settings.GetAppSetting("DefaultUsername")
         txtRecentFileCount.Text = settings.GetAppSetting("RecentFileCount", "12")
         txtOutputDirectory.Text = settings.GetAppSetting("DefaultOutputDirectory", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
+        txtPassword.Text = settings.GetAppSetting("DefaultPassword", "")
+        Select Case settings.GetAppSetting("SavePassword")
+            Case "True"
+                cbSavePassword.Checked = True
+            Case Else
+                cbSavePassword.Checked = False
+        End Select
     End Sub
 
     Private Sub cmdSave_Click(sender As Object, e As EventArgs) Handles cmdSave.Click
@@ -12,6 +19,8 @@
         settings.SetAppSetting("EndpointConnection", txtConnection.Text)
         settings.SetAppSetting("DefaultUsername", txtUsername.Text)
         settings.SetAppSetting("RecentFileCount", txtRecentFileCount.Text)
+        settings.SetAppSetting("DefaultPassword", txtPassword.Text)
+        settings.SetAppSetting("SavePassword", cbSavePassword.Checked.ToString)
         Me.Close()
     End Sub
 
@@ -24,4 +33,5 @@
         End If
 
     End Sub
+
 End Class

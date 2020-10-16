@@ -6,7 +6,7 @@ Imports MauroClasses.MauroAPI.FreemarkerProject
 
 Public Class frmMain
 
-    Public project As FreemarkerProject.Project
+    Public project As Project
 
     Dim ProjectLoaded As Boolean = False
     Dim ProjectDirty As Boolean = False
@@ -32,15 +32,22 @@ Public Class frmMain
 
     End Sub
 
-    Public Sub OpenFile(Filename)
+    Public Sub OpenFile(Filename As String)
         project = Nothing
         Try
-            project = New FreemarkerProject.Project(Filename)
+            project = New Project(Filename)
 
             ' Set up the Project tab
 
             EndpointConnection.Login()
             EndpointConnection.GetModels()
+
+            If AppSettings.GetAppSetting("SavePassword") = "True" Then
+                If AppSettings.GetAppSetting("DefaultUsername", "") = "" Then
+                    AppSettings.SetAppSetting("DefaultUsername", EndpointConnection.Username)
+                    AppSettings.SetAppSetting("DefaultPassword", EndpointConnection.Password)
+                End If
+            End If
 
             ProjectLoaded = True
             ProjectDirty = False
@@ -220,26 +227,33 @@ Public Class frmMain
 
             Queue.Visible = True
             tvQueue.Nodes.Clear()
-            Dim modelID As String = ""
-            Dim RootNode As New TreeNode
+            Dim RootNode, ModelNode As TreeNode
+            RootNode = New TreeNode With {
+                .ImageIndex = 4,
+                .Text = "Result status"}
 
             Dim q = From Entries In ActionEntries.Entries
                     Order By Entries.Action.Name ' entries.model
+
+            ' Update the tree
             For Each e As ActionEntry In q
-                For Each ModelEntry As Guid In e.Model
-                    Dim n As New TreeNode With {
+
+                Dim ActionNode As New TreeNode With {
                     .Text = e.Action.Name,
-                    .Name = e.ID.ToString,
-                    .ImageIndex = e.Status}
+                    .ToolTipText = e.Action.Description,
+                    .ImageIndex = 4}
+
+                Dim modelID As String = "" ' Reset the model list
+                For Each ModelEntry As Guid In e.Model
+                    Dim NewLabel As String = ""
+                    Dim Tooltip As String = ""
+
                     If e.Model.ToString <> modelID Then
                         modelID = e.Model.ToString
 
                         Dim MdlList As List(Of Model) = EndpointConnection.MauroModels.items
                         Dim mdl = From m In MdlList.Where(Function(x) x.id = ModelEntry)
 
-
-                        Dim NewLabel As String = ""
-                        Dim Tooltip As String = ""
                         If mdl.Count = 1 Then
                             NewLabel = mdl(0).label
                             If Not IsNothing(mdl(0).description) Then
@@ -248,22 +262,60 @@ Public Class frmMain
                         Else
                             NewLabel = "Unknown model"
                         End If
+                        ModelNode = New TreeNode With {
+                                    .Text = NewLabel,
+                                    .Tag = e.ID.ToString,
+                                    .ImageIndex = 4,
+                                    .ToolTipText = Tooltip}
 
-                        RootNode = New TreeNode With {
-                        .Text = NewLabel,
-                        .Tag = e.ID.ToString,
-                        .ImageIndex = 4,
-                        .ToolTipText = Tooltip
-                                                }
-                        tvQueue.Nodes.Add(RootNode)
                     End If
-                    RootNode.Nodes.Add(n)
+
+                    ' Need to create a new folder here if there are more than one responses 
+
+
+                    For Each r As PostResponse In e.postResponses
+
+
+                        ' Store the post response
+                        Dim n As New TreeNode With {
+                            .Text = e.Action.Name,
+                            .Name = r.Result.RequestMessage.RequestUri.ToString,
+                            .ImageIndex = e.Status}
+
+                        ModelNode.Nodes.Add(n)
+                    Next
+                    ActionNode.Nodes.Add(ModelNode)
                 Next
+                RootNode.Nodes.Add(ActionNode)
             Next
+            tvQueue.Nodes.Add(RootNode)
 
         End If
         tvQueue.ExpandAll()
         Application.DoEvents()
+    End Sub
+
+    Private Sub UpdateActionEntryResult(sender As Object, e As TreeNodeMouseClickEventArgs) Handles tvQueue.NodeMouseClick
+        Dim n As TreeNode = e.Node
+        Dim g As Guid
+        Try
+            g = Guid.Parse(n.Name)
+            Dim ae As ActionEntry = ActionEntries.Entries.Find(Function(x) x.ID = g)
+            For Each pr As PostResponse In ae.postResponses.Find(Function(x) x.Result.RequestMessage.RequestUri = New Uri(n.Name))
+                If Not IsNothing(ae) And Not IsNothing(ae.postResponses) Then
+                    Dim ResponseText As String = pr.Body
+                    Try
+                        ResponseText = PrettyJson(ResponseText)
+                    Catch
+                        ' if there is an error, just show the text
+                    End Try
+                    txtPostBody.Text = ResponseText
+                End If
+            Next
+        Catch ex As Exception
+
+        End Try
+
     End Sub
     ''' <summary>
     ''' Checks the validity of the proposed URL and, if valid,
@@ -499,7 +551,8 @@ Public Class frmMain
     Private Sub cmdDoAll_Click(sender As Object, e As EventArgs) Handles cmdDoAll.Click
         Tabs.SelectedIndex = 3
         Application.DoEvents()
-        MauroAPI.Freemarker.QueueProjectActionEntries(project, "c:\git\templateoutput")
+        Dim OutputDirectory As String = AppSettings.GetAppSetting("DefaultOutputDirectory", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
+        MauroAPI.Freemarker.QueueProjectActionEntries(project, OutputDirectory)
         Application.DoEvents()
         StartActionEntryQueueAsync()
         TimerReset()
@@ -539,42 +592,33 @@ Public Class frmMain
     End Sub
 
     Private Sub mnuNew_Click(sender As Object, e As EventArgs) Handles mnuNew.Click
-        project = New FreemarkerProject.Project
+
+        Dim DefaultURI As Uri
+        Dim EndpointURL As String = AppSettings.GetAppSetting("EndpointConnection", "https://localhost")
+        Dim Username As String = AppSettings.GetAppSetting("DefaultUsername")
+        Dim Password As String = AppSettings.GetAppSetting("DefaultPassword")
+
+        Try
+            DefaultURI = New Uri(EndpointURL)
+        Catch ex As Exception
+            DefaultURI = New Uri("https://localhost")
+        End Try
+        project = New Project(DefaultURI, Username, Password)
+        EndpointConnection.Login()
+        EndpointConnection.GetModels()
+
+        txtEndpointURL.Text = project.Endpoint.EndpointURL.ToString
+        txtUsername.Text = project.Endpoint.Username
+        txtPassword.Text = ""
         ProjectLoaded = True
         RefreshStatus()
     End Sub
-    Private Function PrettyJson(ByVal unPrettyJson As String) As String
-        Dim options = New JsonSerializerOptions() With {
-        .WriteIndented = True
-    }
-        Dim jsonElement = JsonSerializer.Deserialize(Of JsonElement)(unPrettyJson)
-        Return JsonSerializer.Serialize(jsonElement, options)
-    End Function
-    Private Sub UpdateActionEntryResult(sender As Object, e As TreeNodeMouseClickEventArgs) Handles tvQueue.NodeMouseClick
-        Dim n As TreeNode = e.Node
-        Dim g As Guid
-        Try
-            g = Guid.Parse(n.Name)
-            Dim ae As ActionEntry = ActionEntries.Entries.Find(Function(x) x.ID = g)
-            For Each pr As PostResponse In ae.postResponses
-                If Not IsNothing(ae) And Not IsNothing(ae.postResponses) Then
-                    Dim ResponseText As String = pr.Body
-                    Try
-                        ResponseText = PrettyJson(ResponseText)
-                    Catch
-                        ' if there is an error, just show the text
-                    End Try
-                    txtPostBody.Text &= ResponseText
-                End If
-            Next
-        Catch ex As Exception
 
-        End Try
 
-    End Sub
 
     Private Sub PreferencesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PreferencesToolStripMenuItem.Click
         Dim f As New frmPreferences
         f.ShowDialog()
     End Sub
+
 End Class

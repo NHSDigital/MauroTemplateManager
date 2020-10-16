@@ -38,6 +38,7 @@ Partial Class frmMain
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.mnuOpenRecent = New System.Windows.Forms.ToolStripMenuItem()
         Me.ExitToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PreferencesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.StatusEndpoint = New System.Windows.Forms.ToolStripStatusLabel()
         Me.LoginStatus = New System.Windows.Forms.ToolStripStatusLabel()
@@ -99,7 +100,6 @@ Partial Class frmMain
         Me.ilStatus = New System.Windows.Forms.ImageList(Me.components)
         Me.txtPostBody = New System.Windows.Forms.TextBox()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
-        Me.PreferencesToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.ActionsTab.SuspendLayout()
@@ -212,6 +212,12 @@ Partial Class frmMain
         Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(310, 34)
         Me.ExitToolStripMenuItem.Text = "E&xit"
         '
+        'PreferencesToolStripMenuItem
+        '
+        Me.PreferencesToolStripMenuItem.Name = "PreferencesToolStripMenuItem"
+        Me.PreferencesToolStripMenuItem.Size = New System.Drawing.Size(118, 29)
+        Me.PreferencesToolStripMenuItem.Text = "Preferences"
+        '
         'StatusStrip1
         '
         Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(32, 32)
@@ -267,7 +273,7 @@ Partial Class frmMain
         Me.ActionsTab.Location = New System.Drawing.Point(4, 29)
         Me.ActionsTab.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.ActionsTab.Name = "ActionsTab"
-        Me.ActionsTab.Size = New System.Drawing.Size(1480, 707)
+        Me.ActionsTab.Size = New System.Drawing.Size(1480, 704)
         Me.ActionsTab.TabIndex = 2
         Me.ActionsTab.Text = "Actions"
         Me.ActionsTab.UseVisualStyleBackColor = True
@@ -294,7 +300,7 @@ Partial Class frmMain
         Me.scActions.Panel2.Controls.Add(Me.txtTemplate)
         Me.scActions.Panel2.Controls.Add(Me.pnlActionProperties)
         Me.scActions.Panel2MinSize = 270
-        Me.scActions.Size = New System.Drawing.Size(1480, 707)
+        Me.scActions.Size = New System.Drawing.Size(1480, 704)
         Me.scActions.SplitterDistance = 270
         Me.scActions.SplitterWidth = 6
         Me.scActions.TabIndex = 1
@@ -307,7 +313,7 @@ Partial Class frmMain
         Me.lstActions.Location = New System.Drawing.Point(0, 20)
         Me.lstActions.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lstActions.Name = "lstActions"
-        Me.lstActions.Size = New System.Drawing.Size(266, 541)
+        Me.lstActions.Size = New System.Drawing.Size(266, 538)
         Me.lstActions.TabIndex = 4
         '
         'pnlActionsTabButtons
@@ -316,7 +322,7 @@ Partial Class frmMain
         Me.pnlActionsTabButtons.Controls.Add(Me.cmdSingleAction)
         Me.pnlActionsTabButtons.Controls.Add(Me.cmdAddAction)
         Me.pnlActionsTabButtons.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.pnlActionsTabButtons.Location = New System.Drawing.Point(0, 561)
+        Me.pnlActionsTabButtons.Location = New System.Drawing.Point(0, 558)
         Me.pnlActionsTabButtons.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.pnlActionsTabButtons.Name = "pnlActionsTabButtons"
         Me.pnlActionsTabButtons.Size = New System.Drawing.Size(266, 142)
@@ -372,7 +378,7 @@ Partial Class frmMain
         Me.txtTemplate.Multiline = True
         Me.txtTemplate.Name = "txtTemplate"
         Me.txtTemplate.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtTemplate.Size = New System.Drawing.Size(1200, 398)
+        Me.txtTemplate.Size = New System.Drawing.Size(1200, 395)
         Me.txtTemplate.TabIndex = 1
         '
         'pnlActionProperties
@@ -552,7 +558,7 @@ Partial Class frmMain
         Me.ModelsTab.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.ModelsTab.Name = "ModelsTab"
         Me.ModelsTab.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.ModelsTab.Size = New System.Drawing.Size(1480, 707)
+        Me.ModelsTab.Size = New System.Drawing.Size(1480, 704)
         Me.ModelsTab.TabIndex = 1
         Me.ModelsTab.Text = "Models"
         Me.ModelsTab.UseVisualStyleBackColor = True
@@ -572,8 +578,8 @@ Partial Class frmMain
         'ModelsContainer.Panel2
         '
         Me.ModelsContainer.Panel2.Controls.Add(Me.lstGUIDs)
-        Me.ModelsContainer.Size = New System.Drawing.Size(1472, 697)
-        Me.ModelsContainer.SplitterDistance = 485
+        Me.ModelsContainer.Size = New System.Drawing.Size(1472, 694)
+        Me.ModelsContainer.SplitterDistance = 484
         Me.ModelsContainer.SplitterWidth = 3
         Me.ModelsContainer.TabIndex = 0
         '
@@ -586,7 +592,7 @@ Partial Class frmMain
         Me.lstModels.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lstModels.Name = "lstModels"
         Me.lstModels.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.lstModels.Size = New System.Drawing.Size(485, 579)
+        Me.lstModels.Size = New System.Drawing.Size(484, 576)
         Me.lstModels.TabIndex = 2
         '
         'Panel5
@@ -595,10 +601,10 @@ Partial Class frmMain
         Me.Panel5.Controls.Add(Me.txtModelGUID)
         Me.Panel5.Controls.Add(Me.Label10)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel5.Location = New System.Drawing.Point(0, 579)
+        Me.Panel5.Location = New System.Drawing.Point(0, 576)
         Me.Panel5.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(485, 118)
+        Me.Panel5.Size = New System.Drawing.Size(484, 118)
         Me.Panel5.TabIndex = 1
         '
         'cmdAdd
@@ -607,7 +613,7 @@ Partial Class frmMain
         Me.cmdAdd.Location = New System.Drawing.Point(0, 46)
         Me.cmdAdd.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(485, 72)
+        Me.cmdAdd.Size = New System.Drawing.Size(484, 72)
         Me.cmdAdd.TabIndex = 2
         Me.cmdAdd.Text = "Add"
         Me.cmdAdd.UseVisualStyleBackColor = True
@@ -618,7 +624,7 @@ Partial Class frmMain
         Me.txtModelGUID.Location = New System.Drawing.Point(0, 20)
         Me.txtModelGUID.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtModelGUID.Name = "txtModelGUID"
-        Me.txtModelGUID.Size = New System.Drawing.Size(485, 26)
+        Me.txtModelGUID.Size = New System.Drawing.Size(484, 26)
         Me.txtModelGUID.TabIndex = 1
         '
         'Label10
@@ -639,7 +645,7 @@ Partial Class frmMain
         Me.lstGUIDs.Location = New System.Drawing.Point(0, 0)
         Me.lstGUIDs.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lstGUIDs.Name = "lstGUIDs"
-        Me.lstGUIDs.Size = New System.Drawing.Size(984, 697)
+        Me.lstGUIDs.Size = New System.Drawing.Size(985, 694)
         Me.lstGUIDs.TabIndex = 3
         '
         'ProjectTab
@@ -818,7 +824,7 @@ Partial Class frmMain
         Me.Queue.Location = New System.Drawing.Point(4, 29)
         Me.Queue.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Queue.Name = "Queue"
-        Me.Queue.Size = New System.Drawing.Size(1480, 707)
+        Me.Queue.Size = New System.Drawing.Size(1480, 704)
         Me.Queue.TabIndex = 3
         Me.Queue.Text = "Process Queue"
         Me.Queue.UseVisualStyleBackColor = True
@@ -837,8 +843,8 @@ Partial Class frmMain
         'scModels.Panel2
         '
         Me.scModels.Panel2.Controls.Add(Me.txtPostBody)
-        Me.scModels.Size = New System.Drawing.Size(1480, 707)
-        Me.scModels.SplitterDistance = 486
+        Me.scModels.Size = New System.Drawing.Size(1480, 704)
+        Me.scModels.SplitterDistance = 485
         Me.scModels.SplitterWidth = 3
         Me.scModels.TabIndex = 1
         '
@@ -854,7 +860,7 @@ Partial Class frmMain
         TreeNode1.Text = "Models"
         Me.tvQueue.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode1})
         Me.tvQueue.SelectedImageIndex = 0
-        Me.tvQueue.Size = New System.Drawing.Size(486, 707)
+        Me.tvQueue.Size = New System.Drawing.Size(485, 704)
         Me.tvQueue.TabIndex = 1
         '
         'ilStatus
@@ -874,18 +880,12 @@ Partial Class frmMain
         Me.txtPostBody.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtPostBody.Multiline = True
         Me.txtPostBody.Name = "txtPostBody"
-        Me.txtPostBody.Size = New System.Drawing.Size(991, 707)
+        Me.txtPostBody.Size = New System.Drawing.Size(992, 704)
         Me.txtPostBody.TabIndex = 0
         '
         'Timer1
         '
         Me.Timer1.Interval = 500
-        '
-        'PreferencesToolStripMenuItem
-        '
-        Me.PreferencesToolStripMenuItem.Name = "PreferencesToolStripMenuItem"
-        Me.PreferencesToolStripMenuItem.Size = New System.Drawing.Size(118, 29)
-        Me.PreferencesToolStripMenuItem.Text = "Preferences"
         '
         'frmMain
         '

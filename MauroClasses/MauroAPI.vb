@@ -35,6 +35,7 @@ Namespace MauroAPI
         Const LoginAPI = "/api/authentication/login"
         Const LogoutAPI = "/api/authentication/logout"
         Const ModelAPI = "/api/dataModels"
+        Const ModelAllClassesAPI = "/api/api/dataModels/$MODEL$/allDataClasses"
 
         Const ModelTemplateAPI = "/api/dataModels/$MODEL$/template"
         Const ModelClassTemplateAPI = "/api/dataModels/$MODEL$/dataClasses/$CLASS$/template"
@@ -77,6 +78,7 @@ Namespace MauroAPI
             End Try
         End Function
 
+
         Public Shared Property MauroModels As Models
         Public Shared Async Function LoginAsync() As Task(Of LoginResponse)
 
@@ -115,22 +117,29 @@ Namespace MauroAPI
         Public Shared Async Function GetModelAsync(ModelID As Guid) As Task(Of Model)
             Dim JSONString = Await GetMauroJSON(ModelAPI & "/" & ModelID.ToString).ConfigureAwait(False)
             Dim MauroModel = JsonSerializer.Deserialize(Of Model)(JSONString)
-            Dim cls As dataClassesType = Await GetModelClassesAsync(ModelID)
-
+            Dim cls As dataClassesType = Await GetModelChildClassesAsync(ModelID)
+            Dim desc As dataClassesType = Await GetModelAllClassesAsync(ModelID)
             MauroModel.childDataClasses = cls
+            MauroModel.descendantDataClasses = desc
+
             Return MauroModel
         End Function
         Public Shared Function GetModel(modelID As Guid) As Model
             Dim res As Model = GetModelAsync(modelID).Result
             Return res
         End Function
-        Public Shared Async Function GetModelClassesAsync(ModelID As Guid) As Task(Of dataClassesType)
+        Public Shared Async Function GetModelChildClassesAsync(ModelID As Guid) As Task(Of dataClassesType)
             Dim JSONString = Await GetMauroJSON(ModelAPI & "/" & ModelID.ToString & "/dataClasses").ConfigureAwait(False)
             Dim RetMauroClasses = JsonSerializer.Deserialize(Of dataClassesType)(JSONString)
             Return RetMauroClasses
         End Function
+        Public Shared Async Function GetModelAllClassesAsync(ModelID As Guid) As Task(Of dataClassesType)
+            Dim JSONString = Await GetMauroJSON(ModelAPI & "/" & ModelID.ToString & "/allDataClasses").ConfigureAwait(False)
+            Dim RetMauroClasses = JsonSerializer.Deserialize(Of dataClassesType)(JSONString)
+            Return RetMauroClasses
+        End Function
         Public Shared Function GetModelClasses(ModelID As Guid) As dataClassesType
-            Return GetModelClassesAsync(ModelID).Result
+            Return GetModelChildClassesAsync(ModelID).Result
         End Function
         Public Shared Sub SaveModels(Filename As String)
             Dim JSONFile As New FileStream(Filename, FileMode.Create, FileAccess.Write)
@@ -293,6 +302,8 @@ Namespace MauroAPI
         ''' <returns>dataClassesType</returns>
         <JsonPropertyName("childDataClasses")>
         Public Property childDataClasses As dataClassesType
+
+        Public Property descendantDataClasses As dataClassesType
 
     End Class
     ''' <summary>

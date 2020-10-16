@@ -49,12 +49,15 @@ Namespace MauroAPI.FreemarkerProject
             Catch ex As Exception
 
             End Try
-            EndpointConnection.Username = Endpoint.Username
-            EndpointConnection.Password = Endpoint.Password
-            EndpointConnection.Endpoint = Endpoint.EndpointURL.ToString
+            UpdateEndpointConnection(Endpoint)
             Reader.Close()
         End Sub
 
+        Public Sub UpdateEndpointConnection(Endpoint As MauroEndpoint)
+            EndpointConnection.Username = Endpoint.Username
+            EndpointConnection.Password = Endpoint.Password
+            EndpointConnection.Endpoint = Endpoint.EndpointURL.ToString
+        End Sub
 
         ''' <summary>
         ''' Private class for project serialisation to disk
@@ -100,16 +103,21 @@ Namespace MauroAPI.FreemarkerProject
             LoadProject(Filename)
         End Sub
         Public Sub New()
+
+        End Sub
+        Public Sub New(EndpointURL As Uri, Optional Username As String = "", Optional Password As String = "")
             Filename = ""
             FileType = "MauroProject"
             Models = New List(Of Guid)
             Actions = New List(Of FreemarkerAction)
 
             Endpoint = New MauroEndpoint With {
-            .EndpointURL = New Uri("https://localhost"),
-            .Username = "",
-            .Password = ""
+            .EndpointURL = EndpointURL,
+            .Username = Username,
+            .Password = Password
             }
+
+            UpdateEndpointConnection(Endpoint)
         End Sub
 
     End Class

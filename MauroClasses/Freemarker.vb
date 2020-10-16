@@ -1,6 +1,8 @@
 ﻿Imports System.IO
+Imports System.Text.Json
 Imports System.Text.RegularExpressions
 Imports System.Threading
+Imports System.Web
 Imports MauroClasses.MauroAPI.FreemarkerProject
 
 Namespace MauroAPI
@@ -47,10 +49,10 @@ Namespace MauroAPI
                     For Each id As Guid In Project.Models
                         Dim m As Model = EndpointConnection.GetModel(id)
                         Dim lstModel As New List(Of Guid)
-                        lstModel.add(m.id)
+                        lstModel.Add(m.id)
                         Dim ae As New ActionEntry With {
                             .Action = act,
-                            .Model = lstmodel,
+                            .Model = lstModel,
                             .OutputDirectory = OutputDirectory,
                             .Status = ActionOutcomeStatus.NotStarted}
                         ActionEntries.Entries.Add(ae)
@@ -89,44 +91,42 @@ Namespace MauroAPI
         ''' <param name="MauroModel">Model metadata to execute against</param>
         ''' <param name="Action">Action to execute</param>
         ''' <param name="OutputDirectory">Filepath as a string for the output directory</param>
-        Public Function ProcessActionForModel(MauroModel As Model, Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String) As PostResponse
+        Public Function ProcessActionForModel(MauroModel As Model, Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String) As List(Of PostResponse)
             Debug.WriteLine("ProcessActionForModel with {0}, {1}", MauroModel.label, Action.Name)
 
             Dim SuccessCount As Integer = 0
             Dim FailCount As Integer = 0
+            Dim res As New List(Of PostResponse)
+
             Dim pr As PostResponse = Nothing
 
             Select Case Action.ActionType ' Apply to the model
 
                 Case ActionTypes.actionSingleModel
-                    pr = ProcessModelOnly(MauroModel, Action, OutputDirectory)
-                    If IsNothing(pr) Then
-                        FailCount += 1
-                    ElseIf pr.Result.IsSuccessStatusCode Then
-                        SuccessCount += 1
-                    Else
-                        FailCount += 1
-                    End If
+                    res.Add(ProcessModelOnly(MauroModel, Action, OutputDirectory))
+
                 Case ActionTypes.actionAllModels
                     Throw New NotImplementedException("ProcessActionForModel: actionAllModels not supported ")
 
                 Case ActionTypes.actionClass ' Apply to a class within the model
                     MauroModel.childDataClasses = EndpointConnection.GetModelClasses(MauroModel.id)
-                    For Each dataClass In MauroModel.childDataClasses.dataClass
-                        pr = ProcessModelClass(MauroModel, dataClass, Action, OutputDirectory)
-                        If IsNothing(pr) Then
-                            FailCount += 1
-                        ElseIf pr.Result.IsSuccessStatusCode Then
-                            SuccessCount += 1
-                        Else
-                            FailCount += 1
-                        End If
+                    For Each dataClass In MauroModel.descendantDataClasses.dataClass
+                        res.AddRange(ProcessModelClass(MauroModel, dataClass, Action, OutputDirectory))
+
                     Next
                 Case ActionTypes.actionTerminology ' Apply to a teminology within a model
                     Throw New NotImplementedException
             End Select
-
-            Return pr
+            For Each pr In res
+                If IsNothing(pr) Then
+                    FailCount += 1
+                ElseIf pr.Result.IsSuccessStatusCode Then
+                    SuccessCount += 1
+                Else
+                    FailCount += 1
+                End If
+            Next
+            Return res
         End Function
 
         Public Sub ProcessActionEntry(ActionEntry As ActionEntry)
@@ -139,7 +139,7 @@ Namespace MauroAPI
                         Dim MauroModel As Model = EndpointConnection.GetModel(m)
                         ActionEntry.Status = ActionOutcomeStatus.InProgress
 
-                        res.Add(ProcessActionForModel(MauroModel, ActionEntry.Action, ActionEntry.OutputDirectory))
+                        res.AddRange(ProcessActionForModel(MauroModel, ActionEntry.Action, ActionEntry.OutputDirectory))
                     Next
                 End If
 
@@ -159,28 +159,25 @@ Namespace MauroAPI
             End If
 
         End Sub
+        Public Function PrettyJson(ByVal unPrettyJson As String) As String
+            Dim options = New JsonSerializerOptions() With {
+        .WriteIndented = True
+    }
+            Dim jsonElement = JsonSerializer.Deserialize(Of JsonElement)(unPrettyJson)
+            Return JsonSerializer.Serialize(jsonElement, options)
+        End Function
 
-
-        'Public Sub ProcessActionForModelID(MauroModelID As Guid, Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String)
-        '    Dim MauroModel As Model = EndpointConnection.GetModel(MauroModelID)
-
-        '    Console.WriteLine(MauroModel.label)
-        '    ProcessActionForModel(MauroModel, Action, OutputDirectory)
-
-        'End Sub
-
-
-        Private Function ProcessModelClass(MauroModel As Model, MauroClass As dataClassType, Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String) As PostResponse
+        Private Function ProcessModelClass(MauroModel As Model, MauroClass As dataClassType, Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String) As List(Of PostResponse)
             Dim fname As String = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & RemoveIllegalFileNameChars(MauroModel.label & " - " & MauroClass.label) & Action.FileSuffix
             Console.Write(fname)
 
             Dim fstream As New FileStream(fname, FileMode.Create)
             Dim fwriter As New StreamWriter(fstream)
-            Dim Res As PostResponse = Nothing
-
+            Dim ResList As New List(Of PostResponse)
+            Dim res As PostResponse
             Try
                 ' Apply the template
-                res = EndpointConnection.ApplyModelClassTemplate(MauroModel.id, MauroClass.id, Action.Template)
+                Res = EndpointConnection.ApplyModelClassTemplate(MauroModel.id, MauroClass.id, Action.Template)
                 ' Handle the output
                 If Res.Result.IsSuccessStatusCode Then
                     fwriter.Write(Res.Body)
@@ -192,16 +189,16 @@ Namespace MauroAPI
                     fstream.Close()
                     File.Delete(fname)
 
-                    ' Write out the error
                     fname = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & RemoveIllegalFileNameChars(MauroClass.label) & "_error.html"
+
                     fstream = New FileStream(fname, FileMode.Create)
                     fwriter = New StreamWriter(fstream)
-                    fwriter.Write(Res.Result.ReasonPhrase)
+                    WriteErrorFile(fwriter, Action, Res)
                     fwriter.Close()
                     fstream.Close()
                     Console.WriteLine(" - error")
                 End If
-
+                ResList.Add(res)
             Catch ex As Exception
                 Console.WriteLine()
                 fwriter.Write(ex.Message)
@@ -209,8 +206,48 @@ Namespace MauroAPI
                 fwriter.Close()
                 fstream.Close()
             End Try
-            Return Res
+            Return ResList
         End Function
+
+        Public Sub WriteErrorFile(FileStream As StreamWriter, Action As FreemarkerAction, Response As PostResponse)
+            ' Write out the error
+
+            FileStream.WriteLine("<html><head><title>Error</title></head>")
+            FileStream.WriteLine("<body>")
+            FileStream.Write("<h1>Error - " & Response.Result.ReasonPhrase)
+
+            FileStream.WriteLine("</h1>")
+            FileStream.WriteLine("<p>")
+            Dim s As String = Response.Body
+            Try
+                s = PrettyJson(s)
+                s = Replace(s, vbCrLf, "</br>")
+                s = Replace(s, "\u0022", """")
+                s = Replace(s, "\t", "    ")
+                s = Replace(s, "\n", "</br>")
+                s = Replace(s, " ", "&nbsp;")
+            Catch ex As Exception
+                ' leave alone if not pretty
+            End Try
+            FileStream.Write(s)
+            FileStream.WriteLine("</p>")
+            FileStream.WriteLine("<h2>Original template</h2>")
+            FileStream.WriteLine("<p>")
+            FileStream.WriteLine("<table>")
+            FileStream.WriteLine("<thead><th>Line</th><th></th></thead>")
+            Dim i As Integer = 1
+            For Each l As String In Action.Template.Split(vbCrLf)
+                FileStream.WriteLine("<tr>")
+                FileStream.WriteLine("<td>" & i.ToString & "</td>")
+                FileStream.WriteLine("<td>" & System.Net.WebUtility.HtmlEncode(l) & "</td>")
+                FileStream.WriteLine("</tr>")
+                i += 1
+            Next
+            FileStream.WriteLine("</table>")
+            FileStream.WriteLine("</p>")
+            FileStream.WriteLine("</body>")
+            FileStream.WriteLine("</html>")
+        End Sub
         Private Function ProcessModelOnly(MauroModel As Model, Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String) As PostResponse
             Dim fname As String = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & RemoveIllegalFileNameChars(MauroModel.label) & Action.FileSuffix
             Console.Write(fname)
@@ -236,7 +273,7 @@ Namespace MauroAPI
                     fname = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & RemoveIllegalFileNameChars(MauroModel.label) & "_error.html"
                     fstream = New FileStream(fname, FileMode.Create)
                     fwriter = New StreamWriter(fstream)
-                    fwriter.Write(Res.Result.ReasonPhrase)
+                    WriteErrorFile(fwriter, Action, Res)
                     fwriter.Close()
                     fstream.Close()
                     Console.WriteLine(" - error")
