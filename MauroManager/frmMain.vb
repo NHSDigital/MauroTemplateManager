@@ -301,17 +301,21 @@ Public Class frmMain
         Try
             g = Guid.Parse(n.Name)
             Dim ae As ActionEntry = ActionEntries.Entries.Find(Function(x) x.ID = g)
-            For Each pr As PostResponse In ae.postResponses.Find(Function(x) x.Result.RequestMessage.RequestUri = New Uri(n.Name))
-                If Not IsNothing(ae) And Not IsNothing(ae.postResponses) Then
-                    Dim ResponseText As String = pr.Body
-                    Try
-                        ResponseText = PrettyJson(ResponseText)
-                    Catch
-                        ' if there is an error, just show the text
-                    End Try
-                    txtPostBody.Text = ResponseText
-                End If
-            Next
+            If Not IsNothing(ae) And Not IsNothing(ae.postResponses) Then
+                For Each pr As PostResponse In ae.postResponses
+                    If pr.Result.RequestMessage.RequestUri.ToString = n.Name Then
+
+                        Dim ResponseText As String = pr.Body
+                        Try
+                            ResponseText = PrettyJson(ResponseText)
+                        Catch
+                            ' if there is an error, just show the text
+                        End Try
+                        txtPostBody.Text = ResponseText
+                    End If
+                Next
+            End If
+
         Catch ex As Exception
 
         End Try
