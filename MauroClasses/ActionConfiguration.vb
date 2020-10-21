@@ -160,7 +160,7 @@ Namespace MauroAPI.FreemarkerProject
         End Property
 
         Public Function FindByID(ID As Guid) As ActionEntry
-            Dim r = Entries.Where(Function(x) x.ID = ID).FirstOrDefault
+            Dim r = Entries.Where(Function(x) x.ActionEntryID = ID).FirstOrDefault
             Return r
         End Function
 
@@ -210,19 +210,32 @@ Namespace MauroAPI.FreemarkerProject
     End Class
 
     Public Class ActionEntry
-        Property Model As List(Of Guid)
+        Property ModelIDs As List(Of Guid)
         Property Action As FreemarkerAction
-        Property postResponses As List(Of PostResponse)
+        Property ActionResponses As List(Of ActionResponse)
         Property Status As ActionOutcomeStatus
-        Property ID As Guid
+        Property ActionEntryID As Guid
         Property OutputDirectory As String
         Sub New()
-            ID = Guid.NewGuid
+            ActionEntryID = Guid.NewGuid
             If OutputDirectory = "" Then OutputDirectory = Environment.CurrentDirectory
         End Sub
 
     End Class
 
+
+    Public Class ActionResponse
+        Property ResponseID As Guid
+        Property ResponseDescription As String
+
+        Property responseOutcome As ActionOutcomeStatus
+
+        Property OutputFilename As String
+
+        Property ErrorFileName As String
+
+        Property Response As PostResponse
+    End Class
     Public Enum ActionOutcomeStatus
         NotStarted
         InProgress

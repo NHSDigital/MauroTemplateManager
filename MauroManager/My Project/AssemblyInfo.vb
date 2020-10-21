@@ -9,10 +9,10 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("Mauro Template Manager")>
-<Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("")>
+<Assembly: AssemblyDescription("A program to author and execute templates against a Mauro Data Manager endpoint")>
+<Assembly: AssemblyCompany("NHS Digital")>
 <Assembly: AssemblyProduct("Mauro Manager")>
-<Assembly: AssemblyCopyright("Copyright ©  2020")>
+<Assembly: AssemblyCopyright("Copyright © NHS Digital, 2020")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")>
 
-<Assembly: AssemblyVersion("1.0.0.0")>
+<Assembly: AssemblyVersion("1.0.*")>
 <Assembly: AssemblyFileVersion("1.0.0.0")>

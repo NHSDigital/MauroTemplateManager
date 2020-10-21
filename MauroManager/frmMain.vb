@@ -244,12 +244,12 @@ Public Class frmMain
                     .ImageIndex = 4}
 
                 Dim modelID As String = "" ' Reset the model list
-                For Each ModelEntry As Guid In e.Model
+                For Each ModelEntry As Guid In e.ModelIDs
                     Dim NewLabel As String = ""
                     Dim Tooltip As String = ""
 
-                    If e.Model.ToString <> modelID Then
-                        modelID = e.Model.ToString
+                    If e.ModelIDs.ToString <> modelID Then
+                        modelID = e.ModelIDs.ToString
 
                         Dim MdlList As List(Of Model) = EndpointConnection.MauroModels.items
                         Dim mdl = From m In MdlList.Where(Function(x) x.id = ModelEntry)
@@ -264,7 +264,7 @@ Public Class frmMain
                         End If
                         ModelNode = New TreeNode With {
                                     .Text = NewLabel,
-                                    .Tag = e.ID.ToString,
+                                    .Tag = e.ActionEntryID.ToString,
                                     .ImageIndex = 4,
                                     .ToolTipText = Tooltip}
 
@@ -273,49 +273,58 @@ Public Class frmMain
                     ' Need to create a new folder here if there are more than one responses 
 
 
-                    For Each r As PostResponse In e.postResponses
+                    If e.Status = ActionOutcomeStatus.Success Or e.Status = ActionOutcomeStatus.Failed Then
+                        For Each r As ActionResponse In e.ActionResponses
+                            ' Store the post response
+                            Dim n As New TreeNode With {
+                            .Text = r.ResponseDescription,
+                            .Name = r.ResponseID.ToString,
+                            .Tag = r.Response.Result.RequestMessage.RequestUri.ToString,
+                            .ImageIndex = e.Status
+                            }
 
-
-                        ' Store the post response
-                        Dim n As New TreeNode With {
-                            .Text = e.Action.Name,
-                            .Name = r.Result.RequestMessage.RequestUri.ToString,
-                            .ImageIndex = e.Status}
-
-                        ModelNode.Nodes.Add(n)
-                    Next
-                    ActionNode.Nodes.Add(ModelNode)
+                            ModelNode.Nodes.Add(n)
+                        Next
+                        ActionNode.Nodes.Add(ModelNode)
+                    End If
                 Next
                 RootNode.Nodes.Add(ActionNode)
             Next
-            tvQueue.Nodes.Add(RootNode)
 
+            tvQueue.Nodes.Add(RootNode)
         End If
+
         tvQueue.ExpandAll()
         Application.DoEvents()
     End Sub
 
     Private Sub UpdateActionEntryResult(sender As Object, e As TreeNodeMouseClickEventArgs) Handles tvQueue.NodeMouseClick
         Dim n As TreeNode = e.Node
+        If n.GetNodeCount(False) > 0 Then
+            n.Expand()
+        End If
         Dim g As Guid
         Try
-            g = Guid.Parse(n.Name)
-            Dim ae As ActionEntry = ActionEntries.Entries.Find(Function(x) x.ID = g)
-            If Not IsNothing(ae) And Not IsNothing(ae.postResponses) Then
-                For Each pr As PostResponse In ae.postResponses
-                    If pr.Result.RequestMessage.RequestUri.ToString = n.Name Then
 
-                        Dim ResponseText As String = pr.Body
-                        Try
-                            ResponseText = PrettyJson(ResponseText)
-                        Catch
-                            ' if there is an error, just show the text
-                        End Try
-                        txtPostBody.Text = ResponseText
-                    End If
-                Next
-            End If
+            For Each ae As ActionEntry In ActionEntries.Entries
 
+
+
+                For Each pr As ActionResponse In ae.ActionResponses
+                            If pr.Response.Result.RequestMessage.RequestUri.ToString = n.Tag Then
+
+                                Dim ResponseText As String = pr.Response.Body
+                                Try
+                                    ResponseText = PrettyJson(ResponseText)
+                                Catch
+                                    ' if there is an error, just show the text
+                                End Try
+                                txtPostBody.Text = ResponseText
+                            End If
+                        Next
+
+
+            Next
         Catch ex As Exception
 
         End Try
@@ -541,7 +550,7 @@ Public Class frmMain
                     .Status = ActionOutcomeStatus.NotStarted,
                     .Action = act,
                       .OutputDirectory = OutputDirectory,
-                    .Model = mdlList}
+                    .ModelIDs = mdlList}
             ActionEntries.Entries.Add(newEntry)
 
         End If
@@ -558,7 +567,7 @@ Public Class frmMain
         Dim OutputDirectory As String = AppSettings.GetAppSetting("DefaultOutputDirectory", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
         MauroAPI.Freemarker.QueueProjectActionEntries(project, OutputDirectory)
         Application.DoEvents()
-        StartActionEntryQueueAsync()
+        'StartActionEntryQueueAsync() ' TimerReset kicks off the queue
         TimerReset()
 
     End Sub
@@ -587,6 +596,7 @@ Public Class frmMain
         Else
             Timer1.Enabled = True
             Timer1.Start()
+            RefreshStatus()
         End If
         Application.DoEvents()
         If q > 0 And i = 0 Then
@@ -625,4 +635,7 @@ Public Class frmMain
         f.ShowDialog()
     End Sub
 
+    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
+        AboutBox1.ShowDialog()
+    End Sub
 End Class
