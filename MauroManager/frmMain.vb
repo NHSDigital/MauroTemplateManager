@@ -3,6 +3,7 @@ Imports System.Text.Json
 Imports MauroClasses
 Imports MauroClasses.MauroAPI
 Imports MauroClasses.MauroAPI.FreemarkerProject
+Imports ScintillaNET
 
 Public Class frmMain
 
@@ -15,7 +16,9 @@ Public Class frmMain
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         RefreshStatus()
         RefreshRecentFileList()
-
+        InitColors()
+        InitSyntaxColoring()
+        InitNumberMargin()
     End Sub
     ''' <summary>
     ''' Opens a file and loads the project if valid, updating the form as appropriate
@@ -31,7 +34,15 @@ Public Class frmMain
         OpenFile(OpenDialogue.FileName)
 
     End Sub
-
+    Private Sub mnuOpenRecent_Click(sender As Object, e As EventArgs) Handles mnuOpenRecent.Click
+        Dim s As List(Of ApplicationSettings.AppSetting) = AppSettings.GetAppSettingAll("RecentFileList")
+        If s.Count > 0 Then
+            Dim Filename As String = s(0).Value
+            OpenFile(Filename)
+        Else
+            MsgBox("There have not been any recent files", vbCritical)
+        End If
+    End Sub
     Public Sub OpenFile(Filename As String)
         project = Nothing
         Try
@@ -404,7 +415,7 @@ Public Class frmMain
 
     Private Sub cmdAddAction_Click(sender As Object, e As EventArgs) Handles cmdAddAction.Click
         Dim act As New FreemarkerProject.FreemarkerAction With {
-            .ActionType = MauroAPI.FreemarkerProject.ActionTypes.actionSingleModel,
+            .ActionType = ActionTypes.actionSingleModel,
             .FilePrefix = "Model_",
             .FileSuffix = ".txt",
             .Template = "",
@@ -444,12 +455,12 @@ Public Class frmMain
 
                 txtTemplate.Text = .Template
                 Select Case .ActionType
-                    Case MauroAPI.FreemarkerProject.ActionTypes.actionClass
+                    Case ActionTypes.actionClass
                         rbClass.Checked = True
-                    Case MauroAPI.FreemarkerProject.ActionTypes.actionSingleModel
+                    Case ActionTypes.actionSingleModel
                         rbModel.Checked = True
 
-                    Case MauroAPI.FreemarkerProject.ActionTypes.actionTerminology
+                    Case ActionTypes.actionTerminology
                         rbTerminology.Checked = True
                 End Select
             End With
@@ -463,14 +474,14 @@ Public Class frmMain
     ''' <param name="e"></param>
     Private Sub ActionTypeChanged(sender As Object, e As EventArgs) Handles rbModel.CheckedChanged, rbClass.CheckedChanged, rbTerminology.CheckedChanged
         If rbModel.Checked Then
-            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = MauroAPI.FreemarkerProject.ActionTypes.actionSingleModel
+            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = ActionTypes.actionSingleModel
         ElseIf rbClass.Checked Then
-            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = MauroAPI.FreemarkerProject.ActionTypes.actionClass
+            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = ActionTypes.actionClass
         ElseIf rbAllModels.Checked Then
-            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = MauroAPI.FreemarkerProject.ActionTypes.actionAllModels
+            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = ActionTypes.actionAllModels
 
         Else
-            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = MauroAPI.FreemarkerProject.ActionTypes.actionTerminology
+            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = ActionTypes.actionTerminology
         End If
 
         SetDirty()
@@ -565,7 +576,7 @@ Public Class frmMain
         Tabs.SelectedIndex = 3
         Application.DoEvents()
         Dim OutputDirectory As String = AppSettings.GetAppSetting("DefaultOutputDirectory", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
-        MauroAPI.Freemarker.QueueProjectActionEntries(project, OutputDirectory)
+        QueueProjectActionEntries(project, OutputDirectory)
         Application.DoEvents()
         'StartActionEntryQueueAsync() ' TimerReset kicks off the queue
         TimerReset()
@@ -628,8 +639,6 @@ Public Class frmMain
         RefreshStatus()
     End Sub
 
-
-
     Private Sub PreferencesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PreferencesToolStripMenuItem.Click
         Dim f As New frmPreferences
         f.ShowDialog()
@@ -638,4 +647,76 @@ Public Class frmMain
     Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
         AboutBox1.ShowDialog()
     End Sub
+
+
+
+
+    Private Sub InitSyntaxColoring()
+
+        ' Configure the default style
+        txtTemplate.StyleResetDefault()
+        txtTemplate.Styles(Style.Default).Font = "Consolas"
+        txtTemplate.Styles(Style.Default).Size = 10
+        txtTemplate.Styles(Style.Default).BackColor = Color.Black
+        txtTemplate.Styles(Style.Default).ForeColor = Color.LightGray
+        txtTemplate.CaretForeColor = Color.White
+        txtTemplate.StyleClearAll() ' Reset all properties to the defaults
+
+        txtTemplate.Styles(Style.Xml.Tag).ForeColor = Color.Red
+        txtTemplate.Styles(Style.Xml.TagUnknown).ForeColor = Color.Lime
+        txtTemplate.Styles(Style.Xml.Attribute).ForeColor = Color.Blue
+        txtTemplate.Styles(Style.Xml.AttributeUnknown).ForeColor = Color.Yellow
+        txtTemplate.Styles(Style.Xml.Number).ForeColor = Color.Fuchsia
+        txtTemplate.Styles(Style.Xml.DoubleString).ForeColor = Color.Maroon
+        txtTemplate.Styles(Style.Xml.SingleString).ForeColor = Color.Maroon
+        txtTemplate.Styles(Style.Xml.Other).ForeColor = Color.Green
+        txtTemplate.Styles(Style.Xml.Comment).BackColor = Color.Beige
+        txtTemplate.Styles(Style.Xml.Comment).ForeColor = Color.Navy
+        txtTemplate.Styles(Style.Xml.Entity).ForeColor = Color.Olive
+        txtTemplate.Styles(Style.Xml.TagEnd).ForeColor = Color.Purple
+        txtTemplate.Styles(Style.Xml.XmlStart).ForeColor = Color.Teal
+        txtTemplate.Styles(Style.Xml.XmlEnd).ForeColor = Color.Gray
+        txtTemplate.Styles(Style.Xml.Script).ForeColor = Color.FromArgb(-4194304)
+        txtTemplate.Styles(Style.Xml.Asp).ForeColor = Color.FromArgb(-16728064)
+        txtTemplate.Styles(Style.Xml.AspAt).ForeColor = Color.FromArgb(-16777024)
+        txtTemplate.Styles(Style.Xml.CData).ForeColor = Color.FromArgb(-4145152)
+        txtTemplate.Styles(Style.Xml.Question).ForeColor = Color.FromArgb(-4194112)
+        txtTemplate.Styles(Style.Xml.Value).ForeColor = Color.SaddleBrown
+        txtTemplate.Styles(Style.Xml.XcComment).ForeColor = Color.Silver
+
+        txtTemplate.Lexer = Lexer.Xml
+        txtTemplate.AllowDrop = True
+        txtTemplate.SetKeywords(0, "#function #include #import")
+        txtTemplate.SetKeywords(1, "#assign #return #default #break #noparse #compress #escape #noescape #global #local #setting #macro #nested #flush #stop #ftl #t #lt #rt #nt #visit #recurse #fallback #if #else #elseif #list #switch #case #attempt #recover")
+
+    End Sub
+    Private Sub InitColors()
+        txtTemplate.SetSelectionBackColor(True, IntToColor(&H114D9C))
+    End Sub
+    Public Shared Function IntToColor(ByVal rgb As Integer) As Color
+        'Return Color.FromArgb(255, CByte(rgb >> 16), CByte(rgb >> 8), CByte(rgb))
+        Return Color.FromArgb(255, Color.FromArgb(rgb))
+    End Function
+    Private Sub InitNumberMargin()
+        Const BACK_COLOR As Integer = &H2A211C
+        Const FORE_COLOR As Integer = &HB7B7B7
+        Const NUMBER_MARGIN As Integer = 1
+        Const BOOKMARK_MARGIN As Integer = 2
+        Const BOOKMARK_MARKER As Integer = 2
+        Const FOLDING_MARGIN As Integer = 3
+        Const CODEFOLDING_CIRCULAR As Boolean = True
+
+        txtTemplate.Styles(Style.LineNumber).BackColor = IntToColor(BACK_COLOR)
+        txtTemplate.Styles(Style.LineNumber).ForeColor = IntToColor(FORE_COLOR)
+        txtTemplate.Styles(Style.IndentGuide).ForeColor = IntToColor(FORE_COLOR)
+        txtTemplate.Styles(Style.IndentGuide).BackColor = IntToColor(BACK_COLOR)
+        Dim nums = txtTemplate.Margins(NUMBER_MARGIN)
+        nums.Width = 30
+        nums.Type = MarginType.Number
+        nums.Sensitive = True
+        nums.Mask = 0
+        ' txtTemplate.MarginClick += TextArea_MarginClick
+    End Sub
+
+
 End Class
