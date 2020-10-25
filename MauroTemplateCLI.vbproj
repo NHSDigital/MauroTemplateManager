@@ -6,7 +6,7 @@
     <TargetFrameworks>netcoreapp3.1;net48</TargetFrameworks> 
   <!--  <TargetFramework>net48</TargetFramework> -->
     <StartupObject>MauroTemplate.Program</StartupObject>
-    <AssemblyName>Mauro Template</AssemblyName>
+    <AssemblyName>Mauro Template CLI</AssemblyName>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
     <OptionStrict>On</OptionStrict>
   </PropertyGroup>
