@@ -118,18 +118,8 @@ Public Class frmMain
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub mnuSave_Click(sender As Object, e As EventArgs) Handles mnuSave.Click
-        project.SaveProject()
-        Dim s As String
-        s = AppSettings.GetAppSetting("ConnectionEndpoint", "")
-        If s = "" Then
-            AppSettings.SetAppSetting("EndpointConnection", project.Endpoint.EndpointURL.ToString)
-        End If
-        s = AppSettings.GetAppSetting("DefaultUsername", "")
-        If s = "" Then
-            AppSettings.SetAppSetting("DefaultUsername", project.Endpoint.Username)
-        End If
+        DoSave() ' Saves without changing the filename
 
-        ProjectDirty = False
         RefreshStatus()
     End Sub
 
@@ -146,11 +136,46 @@ Public Class frmMain
         SaveDialogue.FileName = project.Filename
 
         If SaveDialogue.ShowDialog() = DialogResult.OK Then
-            project.SaveProject(SaveDialogue.FileName)
-            ProjectDirty = False
+            DoSave(SaveDialogue.FileName)
+            AppSettings.AddOrMoveToStart("RecentFileList", project.Filename)
+            RefreshRecentFileList()
         End If
         RefreshStatus()
     End Sub
+
+    Public Sub DoSave(Optional Filename As String = "")
+        Dim SavePass As MsgBoxResult = MsgBox("Do you want to save your password in this file?", vbYesNo Or MsgBoxStyle.DefaultButton2 Or vbQuestion, "Save project " & project.Filename)
+        Dim s As String
+        Select Case SavePass
+            Case MsgBoxResult.Yes
+                project.SaveProject(False, Filename)
+                s = AppSettings.GetAppSetting("ConnectionEndpoint", "")
+                If s = "" Then
+                    AppSettings.SetAppSetting("EndpointConnection", project.Endpoint.EndpointURL.ToString)
+                End If
+                s = AppSettings.GetAppSetting("DefaultUsername", "")
+                If s = "" Then
+                    AppSettings.SetAppSetting("DefaultUsername", project.Endpoint.Username)
+                End If
+                project.Filename = Filename
+                ProjectDirty = False
+            Case MsgBoxResult.No
+                project.SaveProject(True, Filename)
+                s = AppSettings.GetAppSetting("ConnectionEndpoint", "")
+                If s = "" Then
+                    AppSettings.SetAppSetting("EndpointConnection", project.Endpoint.EndpointURL.ToString)
+                End If
+                s = AppSettings.GetAppSetting("DefaultUsername", "")
+                If s = "" Then
+                    AppSettings.SetAppSetting("DefaultUsername", project.Endpoint.Username)
+                End If
+                project.Filename = Filename
+                ProjectDirty = False
+            Case Else
+
+        End Select
+    End Sub
+
 
     Public Sub RefreshRecentFileList()
         RecentFiles = AppSettings.GetAppSettingAll("RecentFileList")
@@ -251,6 +276,12 @@ Public Class frmMain
             lstActions.DataSource = project.Actions
             lstActions.DisplayMember = "Name"
             lstActions.ValueMember = "id"
+
+            If lstActions.Items.Count > 0 Then
+                If lstActions.SelectedIndex = -1 Then
+                    lstActions.SelectedIndex = 0
+                End If
+            End If
             'tvQueue.ExpandAll()
         Else
             StatusEndpoint.Text = "Not connected"
@@ -351,6 +382,9 @@ Public Class frmMain
             Next
 
             tvQueue.Nodes.Add(RootNode)
+            For Each n As TreeNode In tvQueue.Nodes
+                n.Expand()
+            Next
         End If
     End Sub
     Private Sub RefreshModelList()

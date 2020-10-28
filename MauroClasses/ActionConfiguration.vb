@@ -73,20 +73,25 @@ Namespace MauroAPI.FreemarkerProject
             Property Password As String
             Property Timeout As TimeSpan
         End Class
-        Public Sub SaveProject(Optional SaveAsFilename As String = "")
+        Public Sub SaveProject(ClobberPassword As Boolean, Optional SaveAsFilename As String = "")
             If SaveAsFilename = "" Then
                 SaveAsFilename = Filename
             End If
 
             Dim ser As New ProjectSerialisation With {
                 .EndpointURL = Endpoint.EndpointURL,
-                .Username = Endpoint.Username,
-                .Password = Endpoint.Password,
+                .Username = "",
+                .Password = "",
                 .Timeout = Endpoint.Timeout,
                 .Filename = SaveAsFilename,
                 .FileType = FileType,
                 .Actions = Actions,
                 .Models = Models}
+
+            If Not ClobberPassword Then
+                ser.Password = Endpoint.Password
+                ser.Username = Endpoint.Username
+            End If
 
             Dim JSONFile As New FileStream(SaveAsFilename, FileMode.Create, FileAccess.Write)
             Dim Writer As New StreamWriter(JSONFile)
