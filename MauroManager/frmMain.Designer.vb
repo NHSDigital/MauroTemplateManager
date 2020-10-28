@@ -23,7 +23,7 @@ Partial Class frmMain
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim TreeNode2 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("Models")
+        Dim TreeNode1 As System.Windows.Forms.TreeNode = New System.Windows.Forms.TreeNode("Models")
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmMain))
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.FileToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -58,7 +58,7 @@ Partial Class frmMain
         Me.cmdSingleAction = New System.Windows.Forms.Button()
         Me.cmdAddAction = New System.Windows.Forms.Button()
         Me.Label7 = New System.Windows.Forms.Label()
-        Me.txtTemplate = New System.Windows.Forms.TextBox()
+        Me.txtTemplate = New ScintillaNET.Scintilla()
         Me.pnlActionProperties = New System.Windows.Forms.Panel()
         Me.PnlActionsTabActionProperties = New System.Windows.Forms.Panel()
         Me.textFileSuffix = New System.Windows.Forms.TextBox()
@@ -101,7 +101,9 @@ Partial Class frmMain
         Me.tvQueue = New System.Windows.Forms.TreeView()
         Me.ilStatus = New System.Windows.Forms.ImageList(Me.components)
         Me.txtPostBody = New System.Windows.Forms.TextBox()
+        Me.ilTabs = New System.Windows.Forms.ImageList(Me.components)
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
+        Me.BGPicture = New System.Windows.Forms.PictureBox()
         Me.MenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.ActionsTab.SuspendLayout()
@@ -128,16 +130,17 @@ Partial Class frmMain
         Me.scModels.Panel1.SuspendLayout()
         Me.scModels.Panel2.SuspendLayout()
         Me.scModels.SuspendLayout()
+        CType(Me.BGPicture, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'MenuStrip1
         '
-        Me.MenuStrip1.ImageScalingSize = New System.Drawing.Size(32, 32)
+        Me.MenuStrip1.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.FileToolStripMenuItem, Me.PreferencesToolStripMenuItem, Me.HelpToolStripMenuItem})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
         Me.MenuStrip1.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
-        Me.MenuStrip1.Size = New System.Drawing.Size(1488, 30)
+        Me.MenuStrip1.Size = New System.Drawing.Size(2088, 28)
         Me.MenuStrip1.TabIndex = 0
         Me.MenuStrip1.Text = "MenuStrip1"
         '
@@ -145,50 +148,62 @@ Partial Class frmMain
         '
         Me.FileToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuNew, Me.OpenToolStripMenuItem, Me.mnuOpenRecent, Me.mnuSave, Me.mnuSaveAs, Me.ToolStripSeparator1, Me.ImportToolStripMenuItem, Me.ToolStripSeparator2, Me.ExitToolStripMenuItem})
         Me.FileToolStripMenuItem.Name = "FileToolStripMenuItem"
-        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(46, 26)
+        Me.FileToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Alt Or System.Windows.Forms.Keys.F), System.Windows.Forms.Keys)
+        Me.FileToolStripMenuItem.Size = New System.Drawing.Size(46, 24)
         Me.FileToolStripMenuItem.Text = "&File"
         '
         'mnuNew
         '
+        Me.mnuNew.Image = Global.MauroManager.My.Resources.MauroTemplateManager.NewFile_16x
         Me.mnuNew.Name = "mnuNew"
-        Me.mnuNew.Size = New System.Drawing.Size(255, 26)
+        Me.mnuNew.ShortcutKeys = CType((System.Windows.Forms.Keys.Alt Or System.Windows.Forms.Keys.N), System.Windows.Forms.Keys)
+        Me.mnuNew.Size = New System.Drawing.Size(303, 26)
         Me.mnuNew.Text = "New"
         '
         'OpenToolStripMenuItem
         '
+        Me.OpenToolStripMenuItem.Image = Global.MauroManager.My.Resources.MauroTemplateManager.OpenProject_16x
         Me.OpenToolStripMenuItem.Name = "OpenToolStripMenuItem"
-        Me.OpenToolStripMenuItem.Size = New System.Drawing.Size(255, 26)
+        Me.OpenToolStripMenuItem.ShortcutKeys = CType((System.Windows.Forms.Keys.Alt Or System.Windows.Forms.Keys.O), System.Windows.Forms.Keys)
+        Me.OpenToolStripMenuItem.Size = New System.Drawing.Size(303, 26)
         Me.OpenToolStripMenuItem.Text = "&Open project"
         '
         'mnuOpenRecent
         '
+        Me.mnuOpenRecent.Image = Global.MauroManager.My.Resources.MauroTemplateManager.OpenFile_16x
         Me.mnuOpenRecent.Name = "mnuOpenRecent"
-        Me.mnuOpenRecent.Size = New System.Drawing.Size(255, 26)
+        Me.mnuOpenRecent.ShortcutKeys = CType((System.Windows.Forms.Keys.Alt Or System.Windows.Forms.Keys.R), System.Windows.Forms.Keys)
+        Me.mnuOpenRecent.Size = New System.Drawing.Size(303, 26)
         Me.mnuOpenRecent.Text = "Open recent"
         '
         'mnuSave
         '
+        Me.mnuSave.Image = Global.MauroManager.My.Resources.MauroTemplateManager.Save_16x
         Me.mnuSave.Name = "mnuSave"
-        Me.mnuSave.Size = New System.Drawing.Size(255, 26)
+        Me.mnuSave.ShortcutKeys = CType((System.Windows.Forms.Keys.Alt Or System.Windows.Forms.Keys.S), System.Windows.Forms.Keys)
+        Me.mnuSave.Size = New System.Drawing.Size(303, 26)
         Me.mnuSave.Text = "Save current project"
         '
         'mnuSaveAs
         '
+        Me.mnuSaveAs.Image = Global.MauroManager.My.Resources.MauroTemplateManager.SaveAs_16x
         Me.mnuSaveAs.Name = "mnuSaveAs"
-        Me.mnuSaveAs.Size = New System.Drawing.Size(255, 26)
+        Me.mnuSaveAs.ShortcutKeys = CType((System.Windows.Forms.Keys.Alt Or System.Windows.Forms.Keys.A), System.Windows.Forms.Keys)
+        Me.mnuSaveAs.Size = New System.Drawing.Size(303, 26)
         Me.mnuSaveAs.Text = "&Save current project as ..."
         '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(252, 6)
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(300, 6)
         '
         'ImportToolStripMenuItem
         '
         Me.ImportToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ModelSetToolStripMenuItem, Me.ActionSetToolStripMenuItem})
         Me.ImportToolStripMenuItem.Name = "ImportToolStripMenuItem"
-        Me.ImportToolStripMenuItem.Size = New System.Drawing.Size(255, 26)
+        Me.ImportToolStripMenuItem.Size = New System.Drawing.Size(303, 26)
         Me.ImportToolStripMenuItem.Text = "Import"
+        Me.ImportToolStripMenuItem.Visible = False
         '
         'ModelSetToolStripMenuItem
         '
@@ -205,41 +220,46 @@ Partial Class frmMain
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(252, 6)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(300, 6)
+        Me.ToolStripSeparator2.Visible = False
         '
         'ExitToolStripMenuItem
         '
+        Me.ExitToolStripMenuItem.Image = Global.MauroManager.My.Resources.MauroTemplateManager.Exit_16x
         Me.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem"
-        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(255, 26)
+        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(303, 26)
         Me.ExitToolStripMenuItem.Text = "E&xit"
         '
         'PreferencesToolStripMenuItem
         '
+        Me.PreferencesToolStripMenuItem.Image = Global.MauroManager.My.Resources.MauroTemplateManager.Settings_16x
+        Me.PreferencesToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.PreferencesToolStripMenuItem.Name = "PreferencesToolStripMenuItem"
-        Me.PreferencesToolStripMenuItem.Size = New System.Drawing.Size(99, 26)
+        Me.PreferencesToolStripMenuItem.Size = New System.Drawing.Size(115, 24)
         Me.PreferencesToolStripMenuItem.Text = "Preferences"
         '
         'HelpToolStripMenuItem
         '
         Me.HelpToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.AboutToolStripMenuItem})
         Me.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem"
-        Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(55, 26)
+        Me.HelpToolStripMenuItem.Size = New System.Drawing.Size(55, 24)
         Me.HelpToolStripMenuItem.Text = "Help"
         '
         'AboutToolStripMenuItem
         '
+        Me.AboutToolStripMenuItem.Image = Global.MauroManager.My.Resources.MauroTemplateManager.F1Help_16x
         Me.AboutToolStripMenuItem.Name = "AboutToolStripMenuItem"
-        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(224, 26)
+        Me.AboutToolStripMenuItem.Size = New System.Drawing.Size(133, 26)
         Me.AboutToolStripMenuItem.Text = "About"
         '
         'StatusStrip1
         '
         Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(32, 32)
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StatusEndpoint, Me.LoginStatus, Me.StatusFilename, Me.SavedState, Me.Counters, Me.QueueProgress})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 779)
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 1112)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Padding = New System.Windows.Forms.Padding(0, 0, 10, 0)
-        Me.StatusStrip1.Size = New System.Drawing.Size(1488, 26)
+        Me.StatusStrip1.Size = New System.Drawing.Size(2088, 26)
         Me.StatusStrip1.TabIndex = 1
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -284,12 +304,13 @@ Partial Class frmMain
         'ActionsTab
         '
         Me.ActionsTab.Controls.Add(Me.scActions)
+        Me.ActionsTab.ImageIndex = 2
         Me.ActionsTab.Location = New System.Drawing.Point(4, 29)
         Me.ActionsTab.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.ActionsTab.Name = "ActionsTab"
-        Me.ActionsTab.Size = New System.Drawing.Size(1480, 718)
+        Me.ActionsTab.Size = New System.Drawing.Size(2080, 1051)
         Me.ActionsTab.TabIndex = 2
-        Me.ActionsTab.Text = "Actions"
+        Me.ActionsTab.Text = "Templates"
         Me.ActionsTab.UseVisualStyleBackColor = True
         '
         'scActions
@@ -314,8 +335,8 @@ Partial Class frmMain
         Me.scActions.Panel2.Controls.Add(Me.txtTemplate)
         Me.scActions.Panel2.Controls.Add(Me.pnlActionProperties)
         Me.scActions.Panel2MinSize = 270
-        Me.scActions.Size = New System.Drawing.Size(1480, 718)
-        Me.scActions.SplitterDistance = 270
+        Me.scActions.Size = New System.Drawing.Size(2080, 1051)
+        Me.scActions.SplitterDistance = 428
         Me.scActions.SplitterWidth = 6
         Me.scActions.TabIndex = 1
         '
@@ -327,7 +348,7 @@ Partial Class frmMain
         Me.lstActions.Location = New System.Drawing.Point(0, 17)
         Me.lstActions.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lstActions.Name = "lstActions"
-        Me.lstActions.Size = New System.Drawing.Size(266, 555)
+        Me.lstActions.Size = New System.Drawing.Size(424, 970)
         Me.lstActions.TabIndex = 4
         '
         'pnlActionsTabButtons
@@ -336,40 +357,50 @@ Partial Class frmMain
         Me.pnlActionsTabButtons.Controls.Add(Me.cmdSingleAction)
         Me.pnlActionsTabButtons.Controls.Add(Me.cmdAddAction)
         Me.pnlActionsTabButtons.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.pnlActionsTabButtons.Location = New System.Drawing.Point(0, 572)
+        Me.pnlActionsTabButtons.Location = New System.Drawing.Point(0, 987)
         Me.pnlActionsTabButtons.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.pnlActionsTabButtons.Name = "pnlActionsTabButtons"
-        Me.pnlActionsTabButtons.Size = New System.Drawing.Size(266, 142)
+        Me.pnlActionsTabButtons.Size = New System.Drawing.Size(424, 60)
         Me.pnlActionsTabButtons.TabIndex = 1
         '
         'cmdDoAll
         '
-        Me.cmdDoAll.Location = New System.Drawing.Point(279, 5)
+        Me.cmdDoAll.Image = Global.MauroManager.My.Resources.MauroTemplateManager.Run_16x
+        Me.cmdDoAll.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.cmdDoAll.Location = New System.Drawing.Point(282, 9)
         Me.cmdDoAll.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.cmdDoAll.Name = "cmdDoAll"
-        Me.cmdDoAll.Size = New System.Drawing.Size(114, 48)
+        Me.cmdDoAll.Size = New System.Drawing.Size(131, 56)
         Me.cmdDoAll.TabIndex = 2
         Me.cmdDoAll.Text = "Do &all"
+        Me.cmdDoAll.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.cmdDoAll.UseVisualStyleBackColor = True
         '
         'cmdSingleAction
         '
-        Me.cmdSingleAction.Location = New System.Drawing.Point(142, 5)
+        Me.cmdSingleAction.Image = Global.MauroManager.My.Resources.MauroTemplateManager.RunChecked_16x
+        Me.cmdSingleAction.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.cmdSingleAction.Location = New System.Drawing.Point(145, 9)
         Me.cmdSingleAction.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.cmdSingleAction.Name = "cmdSingleAction"
-        Me.cmdSingleAction.Size = New System.Drawing.Size(114, 48)
+        Me.cmdSingleAction.Size = New System.Drawing.Size(131, 55)
         Me.cmdSingleAction.TabIndex = 1
         Me.cmdSingleAction.Text = "Do &selected"
+        Me.cmdSingleAction.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.cmdSingleAction.UseVisualStyleBackColor = True
         '
         'cmdAddAction
         '
-        Me.cmdAddAction.Location = New System.Drawing.Point(4, 5)
+        Me.cmdAddAction.Image = Global.MauroManager.My.Resources.MauroTemplateManager.XMLTransformation_16x
+        Me.cmdAddAction.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.cmdAddAction.Location = New System.Drawing.Point(7, 9)
         Me.cmdAddAction.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.cmdAddAction.Name = "cmdAddAction"
-        Me.cmdAddAction.Size = New System.Drawing.Size(117, 48)
+        Me.cmdAddAction.Size = New System.Drawing.Size(131, 56)
         Me.cmdAddAction.TabIndex = 0
         Me.cmdAddAction.Text = "Add &new action"
+        Me.cmdAddAction.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.cmdAddAction.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.cmdAddAction.UseVisualStyleBackColor = True
         '
         'Label7
@@ -388,11 +419,8 @@ Partial Class frmMain
         '
         Me.txtTemplate.Dock = System.Windows.Forms.DockStyle.Fill
         Me.txtTemplate.Location = New System.Drawing.Point(0, 305)
-        Me.txtTemplate.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.txtTemplate.Multiline = True
         Me.txtTemplate.Name = "txtTemplate"
-        Me.txtTemplate.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtTemplate.Size = New System.Drawing.Size(1200, 409)
+        Me.txtTemplate.Size = New System.Drawing.Size(1642, 742)
         Me.txtTemplate.TabIndex = 1
         '
         'pnlActionProperties
@@ -404,7 +432,7 @@ Partial Class frmMain
         Me.pnlActionProperties.Location = New System.Drawing.Point(0, 0)
         Me.pnlActionProperties.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.pnlActionProperties.Name = "pnlActionProperties"
-        Me.pnlActionProperties.Size = New System.Drawing.Size(1200, 305)
+        Me.pnlActionProperties.Size = New System.Drawing.Size(1642, 305)
         Me.pnlActionProperties.TabIndex = 0
         '
         'PnlActionsTabActionProperties
@@ -421,23 +449,23 @@ Partial Class frmMain
         Me.PnlActionsTabActionProperties.Location = New System.Drawing.Point(0, 0)
         Me.PnlActionsTabActionProperties.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.PnlActionsTabActionProperties.Name = "PnlActionsTabActionProperties"
-        Me.PnlActionsTabActionProperties.Size = New System.Drawing.Size(948, 282)
+        Me.PnlActionsTabActionProperties.Size = New System.Drawing.Size(1340, 282)
         Me.PnlActionsTabActionProperties.TabIndex = 1
         '
         'textFileSuffix
         '
         Me.textFileSuffix.Dock = System.Windows.Forms.DockStyle.Top
-        Me.textFileSuffix.Location = New System.Drawing.Point(0, 224)
+        Me.textFileSuffix.Location = New System.Drawing.Point(0, 135)
         Me.textFileSuffix.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.textFileSuffix.Name = "textFileSuffix"
-        Me.textFileSuffix.Size = New System.Drawing.Size(948, 26)
+        Me.textFileSuffix.Size = New System.Drawing.Size(1340, 26)
         Me.textFileSuffix.TabIndex = 3
         '
         'Label6
         '
         Me.Label6.AutoSize = True
         Me.Label6.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Label6.Location = New System.Drawing.Point(0, 204)
+        Me.Label6.Location = New System.Drawing.Point(0, 115)
         Me.Label6.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(81, 20)
@@ -447,17 +475,17 @@ Partial Class frmMain
         'TextFilePrefix
         '
         Me.TextFilePrefix.Dock = System.Windows.Forms.DockStyle.Top
-        Me.TextFilePrefix.Location = New System.Drawing.Point(0, 178)
+        Me.TextFilePrefix.Location = New System.Drawing.Point(0, 89)
         Me.TextFilePrefix.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.TextFilePrefix.Name = "TextFilePrefix"
-        Me.TextFilePrefix.Size = New System.Drawing.Size(948, 26)
+        Me.TextFilePrefix.Size = New System.Drawing.Size(1340, 26)
         Me.TextFilePrefix.TabIndex = 2
         '
         'Label5
         '
         Me.Label5.AutoSize = True
         Me.Label5.Dock = System.Windows.Forms.DockStyle.Top
-        Me.Label5.Location = New System.Drawing.Point(0, 158)
+        Me.Label5.Location = New System.Drawing.Point(0, 69)
         Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(82, 20)
@@ -471,7 +499,7 @@ Partial Class frmMain
         Me.textDesription.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.textDesription.Multiline = True
         Me.textDesription.Name = "textDesription"
-        Me.textDesription.Size = New System.Drawing.Size(948, 92)
+        Me.textDesription.Size = New System.Drawing.Size(1340, 3)
         Me.textDesription.TabIndex = 8
         '
         'Label9
@@ -491,7 +519,7 @@ Partial Class frmMain
         Me.textName.Location = New System.Drawing.Point(0, 20)
         Me.textName.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.textName.Name = "textName"
-        Me.textName.Size = New System.Drawing.Size(948, 26)
+        Me.textName.Size = New System.Drawing.Size(1340, 26)
         Me.textName.TabIndex = 6
         '
         'Label8
@@ -512,11 +540,11 @@ Partial Class frmMain
         Me.grpActionType.Controls.Add(Me.rbClass)
         Me.grpActionType.Controls.Add(Me.rbModel)
         Me.grpActionType.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpActionType.Location = New System.Drawing.Point(948, 0)
+        Me.grpActionType.Location = New System.Drawing.Point(1340, 0)
         Me.grpActionType.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.grpActionType.Name = "grpActionType"
         Me.grpActionType.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.grpActionType.Size = New System.Drawing.Size(252, 305)
+        Me.grpActionType.Size = New System.Drawing.Size(302, 305)
         Me.grpActionType.TabIndex = 0
         Me.grpActionType.TabStop = False
         Me.grpActionType.Text = "Create files for ..."
@@ -568,11 +596,12 @@ Partial Class frmMain
         'ModelsTab
         '
         Me.ModelsTab.Controls.Add(Me.ModelsContainer)
+        Me.ModelsTab.ImageIndex = 1
         Me.ModelsTab.Location = New System.Drawing.Point(4, 29)
         Me.ModelsTab.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.ModelsTab.Name = "ModelsTab"
         Me.ModelsTab.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.ModelsTab.Size = New System.Drawing.Size(1480, 718)
+        Me.ModelsTab.Size = New System.Drawing.Size(2080, 1051)
         Me.ModelsTab.TabIndex = 1
         Me.ModelsTab.Text = "Models"
         Me.ModelsTab.UseVisualStyleBackColor = True
@@ -592,8 +621,8 @@ Partial Class frmMain
         'ModelsContainer.Panel2
         '
         Me.ModelsContainer.Panel2.Controls.Add(Me.lstGUIDs)
-        Me.ModelsContainer.Size = New System.Drawing.Size(1472, 708)
-        Me.ModelsContainer.SplitterDistance = 484
+        Me.ModelsContainer.Size = New System.Drawing.Size(2072, 1041)
+        Me.ModelsContainer.SplitterDistance = 681
         Me.ModelsContainer.SplitterWidth = 3
         Me.ModelsContainer.TabIndex = 0
         '
@@ -606,7 +635,7 @@ Partial Class frmMain
         Me.lstModels.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lstModels.Name = "lstModels"
         Me.lstModels.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.lstModels.Size = New System.Drawing.Size(484, 590)
+        Me.lstModels.Size = New System.Drawing.Size(681, 923)
         Me.lstModels.TabIndex = 2
         '
         'Panel5
@@ -615,10 +644,10 @@ Partial Class frmMain
         Me.Panel5.Controls.Add(Me.txtModelGUID)
         Me.Panel5.Controls.Add(Me.Label10)
         Me.Panel5.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel5.Location = New System.Drawing.Point(0, 590)
+        Me.Panel5.Location = New System.Drawing.Point(0, 923)
         Me.Panel5.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(484, 118)
+        Me.Panel5.Size = New System.Drawing.Size(681, 118)
         Me.Panel5.TabIndex = 1
         '
         'cmdAdd
@@ -627,7 +656,7 @@ Partial Class frmMain
         Me.cmdAdd.Location = New System.Drawing.Point(0, 46)
         Me.cmdAdd.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.cmdAdd.Name = "cmdAdd"
-        Me.cmdAdd.Size = New System.Drawing.Size(484, 72)
+        Me.cmdAdd.Size = New System.Drawing.Size(681, 72)
         Me.cmdAdd.TabIndex = 2
         Me.cmdAdd.Text = "Add"
         Me.cmdAdd.UseVisualStyleBackColor = True
@@ -638,7 +667,7 @@ Partial Class frmMain
         Me.txtModelGUID.Location = New System.Drawing.Point(0, 20)
         Me.txtModelGUID.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtModelGUID.Name = "txtModelGUID"
-        Me.txtModelGUID.Size = New System.Drawing.Size(484, 26)
+        Me.txtModelGUID.Size = New System.Drawing.Size(681, 26)
         Me.txtModelGUID.TabIndex = 1
         '
         'Label10
@@ -659,20 +688,21 @@ Partial Class frmMain
         Me.lstGUIDs.Location = New System.Drawing.Point(0, 0)
         Me.lstGUIDs.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lstGUIDs.Name = "lstGUIDs"
-        Me.lstGUIDs.Size = New System.Drawing.Size(985, 708)
+        Me.lstGUIDs.Size = New System.Drawing.Size(1388, 1041)
         Me.lstGUIDs.TabIndex = 3
         '
         'ProjectTab
         '
         Me.ProjectTab.Controls.Add(Me.PnlProjectSettingsRight)
         Me.ProjectTab.Controls.Add(Me.pnlProjectSettings)
+        Me.ProjectTab.ImageIndex = 0
         Me.ProjectTab.Location = New System.Drawing.Point(4, 29)
         Me.ProjectTab.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.ProjectTab.Name = "ProjectTab"
         Me.ProjectTab.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.ProjectTab.Size = New System.Drawing.Size(1480, 716)
+        Me.ProjectTab.Size = New System.Drawing.Size(2080, 1051)
         Me.ProjectTab.TabIndex = 0
-        Me.ProjectTab.Text = "Project settings"
+        Me.ProjectTab.Text = "Connection"
         Me.ProjectTab.UseVisualStyleBackColor = True
         '
         'PnlProjectSettingsRight
@@ -687,7 +717,7 @@ Partial Class frmMain
         Me.PnlProjectSettingsRight.Location = New System.Drawing.Point(304, 5)
         Me.PnlProjectSettingsRight.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.PnlProjectSettingsRight.Name = "PnlProjectSettingsRight"
-        Me.PnlProjectSettingsRight.Size = New System.Drawing.Size(1172, 706)
+        Me.PnlProjectSettingsRight.Size = New System.Drawing.Size(1772, 1041)
         Me.PnlProjectSettingsRight.TabIndex = 1
         '
         'cmdLogInOut
@@ -720,7 +750,7 @@ Partial Class frmMain
         Me.txtPassword.Location = New System.Drawing.Point(0, 112)
         Me.txtPassword.Margin = New System.Windows.Forms.Padding(0)
         Me.txtPassword.Name = "txtPassword"
-        Me.txtPassword.Size = New System.Drawing.Size(1172, 26)
+        Me.txtPassword.Size = New System.Drawing.Size(1772, 26)
         Me.txtPassword.TabIndex = 3
         Me.txtPassword.UseSystemPasswordChar = True
         '
@@ -731,7 +761,7 @@ Partial Class frmMain
         Me.txtUsername.Margin = New System.Windows.Forms.Padding(0)
         Me.txtUsername.Multiline = True
         Me.txtUsername.Name = "txtUsername"
-        Me.txtUsername.Size = New System.Drawing.Size(1172, 36)
+        Me.txtUsername.Size = New System.Drawing.Size(1772, 36)
         Me.txtUsername.TabIndex = 2
         '
         'txtEndpointURL
@@ -742,7 +772,7 @@ Partial Class frmMain
         Me.txtEndpointURL.MinimumSize = New System.Drawing.Size(4, 29)
         Me.txtEndpointURL.Multiline = True
         Me.txtEndpointURL.Name = "txtEndpointURL"
-        Me.txtEndpointURL.Size = New System.Drawing.Size(1172, 42)
+        Me.txtEndpointURL.Size = New System.Drawing.Size(1772, 42)
         Me.txtEndpointURL.TabIndex = 1
         '
         'lblFilename
@@ -767,7 +797,7 @@ Partial Class frmMain
         Me.pnlProjectSettings.Location = New System.Drawing.Point(4, 5)
         Me.pnlProjectSettings.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.pnlProjectSettings.Name = "pnlProjectSettings"
-        Me.pnlProjectSettings.Size = New System.Drawing.Size(300, 706)
+        Me.pnlProjectSettings.Size = New System.Drawing.Size(300, 1041)
         Me.pnlProjectSettings.TabIndex = 0
         '
         'Label4
@@ -825,20 +855,22 @@ Partial Class frmMain
         Me.Tabs.Controls.Add(Me.ActionsTab)
         Me.Tabs.Controls.Add(Me.Queue)
         Me.Tabs.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Tabs.Location = New System.Drawing.Point(0, 30)
+        Me.Tabs.ImageList = Me.ilTabs
+        Me.Tabs.Location = New System.Drawing.Point(0, 28)
         Me.Tabs.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.Tabs.Name = "Tabs"
         Me.Tabs.SelectedIndex = 0
-        Me.Tabs.Size = New System.Drawing.Size(1488, 749)
+        Me.Tabs.Size = New System.Drawing.Size(2088, 1084)
         Me.Tabs.TabIndex = 2
         '
         'Queue
         '
         Me.Queue.Controls.Add(Me.scModels)
+        Me.Queue.ImageIndex = 3
         Me.Queue.Location = New System.Drawing.Point(4, 29)
         Me.Queue.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Queue.Name = "Queue"
-        Me.Queue.Size = New System.Drawing.Size(1480, 718)
+        Me.Queue.Size = New System.Drawing.Size(2080, 1051)
         Me.Queue.TabIndex = 3
         Me.Queue.Text = "Process Queue"
         Me.Queue.UseVisualStyleBackColor = True
@@ -857,8 +889,8 @@ Partial Class frmMain
         'scModels.Panel2
         '
         Me.scModels.Panel2.Controls.Add(Me.txtPostBody)
-        Me.scModels.Size = New System.Drawing.Size(1480, 718)
-        Me.scModels.SplitterDistance = 485
+        Me.scModels.Size = New System.Drawing.Size(2080, 1051)
+        Me.scModels.SplitterDistance = 681
         Me.scModels.SplitterWidth = 3
         Me.scModels.TabIndex = 1
         '
@@ -870,48 +902,74 @@ Partial Class frmMain
         Me.tvQueue.Location = New System.Drawing.Point(0, 0)
         Me.tvQueue.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.tvQueue.Name = "tvQueue"
-        TreeNode2.Name = "Node0"
-        TreeNode2.Text = "Models"
-        Me.tvQueue.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode2})
+        TreeNode1.Name = "Node0"
+        TreeNode1.Text = "Models"
+        Me.tvQueue.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode1})
         Me.tvQueue.SelectedImageIndex = 0
-        Me.tvQueue.Size = New System.Drawing.Size(485, 718)
+        Me.tvQueue.Size = New System.Drawing.Size(681, 1051)
         Me.tvQueue.TabIndex = 1
         '
         'ilStatus
         '
         Me.ilStatus.ImageStream = CType(resources.GetObject("ilStatus.ImageStream"), System.Windows.Forms.ImageListStreamer)
         Me.ilStatus.TransparentColor = System.Drawing.Color.Transparent
-        Me.ilStatus.Images.SetKeyName(0, "Graphicloads-Colorful-Long-Shadow-Button-2-pause.ico")
-        Me.ilStatus.Images.SetKeyName(1, "Graphicloads-Colorful-Long-Shadow-Button-1-play.ico")
-        Me.ilStatus.Images.SetKeyName(2, "Graphicloads-Colorful-Long-Shadow-Check-3.ico")
-        Me.ilStatus.Images.SetKeyName(3, "Graphicloads-Colorful-Long-Shadow-Close.ico")
-        Me.ilStatus.Images.SetKeyName(4, "Mahm0udwally-All-Flat-Folder.ico")
+        Me.ilStatus.Images.SetKeyName(0, "StatusNotStarted_16x.png")
+        Me.ilStatus.Images.SetKeyName(1, "StatusRun_16x.png")
+        Me.ilStatus.Images.SetKeyName(2, "StatusOK_16x.png")
+        Me.ilStatus.Images.SetKeyName(3, "StatusCriticalError_12x_16x.png")
+        Me.ilStatus.Images.SetKeyName(4, "FolderOpened_16x.png")
         '
         'txtPostBody
         '
         Me.txtPostBody.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtPostBody.Font = New System.Drawing.Font("Consolas", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtPostBody.Location = New System.Drawing.Point(0, 0)
         Me.txtPostBody.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtPostBody.Multiline = True
         Me.txtPostBody.Name = "txtPostBody"
-        Me.txtPostBody.Size = New System.Drawing.Size(992, 718)
+        Me.txtPostBody.ScrollBars = System.Windows.Forms.ScrollBars.Both
+        Me.txtPostBody.Size = New System.Drawing.Size(1396, 1051)
         Me.txtPostBody.TabIndex = 0
+        '
+        'ilTabs
+        '
+        Me.ilTabs.ImageStream = CType(resources.GetObject("ilTabs.ImageStream"), System.Windows.Forms.ImageListStreamer)
+        Me.ilTabs.TransparentColor = System.Drawing.Color.Transparent
+        Me.ilTabs.Images.SetKeyName(0, "Connect_16x.png")
+        Me.ilTabs.Images.SetKeyName(1, "Class_16x.png")
+        Me.ilTabs.Images.SetKeyName(2, "XMLTransformation_16x.png")
+        Me.ilTabs.Images.SetKeyName(3, "StatusRunOutline_16x.png")
         '
         'Timer1
         '
         Me.Timer1.Interval = 1000
         '
+        'BGPicture
+        '
+        Me.BGPicture.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.BGPicture.Image = Global.MauroManager.My.Resources.MauroTemplateManager.Fra_Mauro_World_Mapjpg
+        Me.BGPicture.Location = New System.Drawing.Point(0, 28)
+        Me.BGPicture.Name = "BGPicture"
+        Me.BGPicture.Size = New System.Drawing.Size(2088, 1084)
+        Me.BGPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
+        Me.BGPicture.TabIndex = 4
+        Me.BGPicture.TabStop = False
+        '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1488, 805)
+        Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center
+        Me.ClientSize = New System.Drawing.Size(2088, 1138)
         Me.Controls.Add(Me.Tabs)
+        Me.Controls.Add(Me.BGPicture)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.MenuStrip1)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
+        Me.MainMenuStrip = Me.MenuStrip1
         Me.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Name = "frmMain"
-        Me.Text = "Mauro Template editor"
+        Me.Text = "Mauro Template Manager"
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
         Me.StatusStrip1.ResumeLayout(False)
@@ -920,7 +978,6 @@ Partial Class frmMain
         Me.scActions.Panel1.ResumeLayout(False)
         Me.scActions.Panel1.PerformLayout()
         Me.scActions.Panel2.ResumeLayout(False)
-        Me.scActions.Panel2.PerformLayout()
         CType(Me.scActions, System.ComponentModel.ISupportInitialize).EndInit()
         Me.scActions.ResumeLayout(False)
         Me.pnlActionsTabButtons.ResumeLayout(False)
@@ -948,6 +1005,7 @@ Partial Class frmMain
         Me.scModels.Panel2.PerformLayout()
         CType(Me.scModels, System.ComponentModel.ISupportInitialize).EndInit()
         Me.scModels.ResumeLayout(False)
+        CType(Me.BGPicture, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -974,7 +1032,6 @@ Partial Class frmMain
     Friend WithEvents scActions As SplitContainer
     Friend WithEvents pnlActionsTabButtons As Panel
     Friend WithEvents cmdAddAction As Button
-    Friend WithEvents txtTemplate As TextBox
     Friend WithEvents pnlActionProperties As Panel
     Friend WithEvents grpActionType As GroupBox
     Friend WithEvents rbTerminology As RadioButton
@@ -1030,4 +1087,7 @@ Partial Class frmMain
     Friend WithEvents PreferencesToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents HelpToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AboutToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ilTabs As ImageList
+    Friend WithEvents txtTemplate As ScintillaNET.Scintilla
+    Friend WithEvents BGPicture As PictureBox
 End Class

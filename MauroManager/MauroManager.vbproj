@@ -18,14 +18,14 @@
     <PublishUrl>C:\GIT\MauroTemplate\MauroManager\Release\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateEnabled>false</UpdateEnabled>
     <UpdateMode>Background</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationRevision>8</ApplicationRevision>
     <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -78,6 +78,9 @@
   <ItemGroup>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.1\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -156,6 +159,11 @@
     <Compile Include="ImportExportDialogue.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="MauroTemplateManager.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MauroTemplateManager.resx</DependentUpon>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -185,6 +193,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ImportExportDialogue.resx">
       <DependentUpon>ImportExportDialogue.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MauroTemplateManager.resx">
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MauroTemplateManager.Designer.vb</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -224,6 +237,45 @@
       <Project>{acb631ea-01ac-41df-ba2c-390008810cbd}</Project>
       <Name>MauroClasses</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Run All.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\Run\Run_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\RunChecked\RunChecked_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\XMLTransformation\XMLTransformation_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\OpenFile\OpenFile_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\OpenProject\OpenProject_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\NewFile\NewFile_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\Save\Save_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\SaveAs\SaveAs_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\Exit\Exit_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\Settings\Settings_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icons\F1Help\F1Help_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Fra_Mauro_World_Mapjpg.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
