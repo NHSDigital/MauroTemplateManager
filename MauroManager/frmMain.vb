@@ -515,7 +515,9 @@ Public Class frmMain
     End Sub
 
     Private Sub TemplateChanged(sender As Object, e As EventArgs) Handles txtTemplate.TextChanged
-        CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).Template = txtTemplate.Text
+        If lstActions.SelectedIndex >= 0 Then
+            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).Template = txtTemplate.Text
+        End If
         SetDirty()
 
     End Sub
