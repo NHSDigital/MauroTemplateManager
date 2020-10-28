@@ -104,6 +104,8 @@ Partial Class frmMain
         Me.ilTabs = New System.Windows.Forms.ImageList(Me.components)
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.BGPicture = New System.Windows.Forms.PictureBox()
+        Me.pnlTVQueueButtons = New System.Windows.Forms.Panel()
+        Me.cmdClear = New System.Windows.Forms.Button()
         Me.MenuStrip1.SuspendLayout()
         Me.StatusStrip1.SuspendLayout()
         Me.ActionsTab.SuspendLayout()
@@ -131,6 +133,7 @@ Partial Class frmMain
         Me.scModels.Panel2.SuspendLayout()
         Me.scModels.SuspendLayout()
         CType(Me.BGPicture, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.pnlTVQueueButtons.SuspendLayout()
         Me.SuspendLayout()
         '
         'MenuStrip1
@@ -140,7 +143,7 @@ Partial Class frmMain
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
         Me.MenuStrip1.Padding = New System.Windows.Forms.Padding(4, 2, 0, 2)
-        Me.MenuStrip1.Size = New System.Drawing.Size(1714, 28)
+        Me.MenuStrip1.Size = New System.Drawing.Size(1709, 28)
         Me.MenuStrip1.TabIndex = 0
         Me.MenuStrip1.Text = "MenuStrip1"
         '
@@ -256,10 +259,10 @@ Partial Class frmMain
         '
         Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(32, 32)
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.StatusEndpoint, Me.LoginStatus, Me.StatusFilename, Me.SavedState, Me.Counters, Me.QueueProgress})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 1089)
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 1094)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Padding = New System.Windows.Forms.Padding(0, 0, 10, 0)
-        Me.StatusStrip1.Size = New System.Drawing.Size(1714, 26)
+        Me.StatusStrip1.Size = New System.Drawing.Size(1709, 26)
         Me.StatusStrip1.TabIndex = 1
         Me.StatusStrip1.Text = "StatusStrip1"
         '
@@ -308,7 +311,7 @@ Partial Class frmMain
         Me.ActionsTab.Location = New System.Drawing.Point(4, 29)
         Me.ActionsTab.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.ActionsTab.Name = "ActionsTab"
-        Me.ActionsTab.Size = New System.Drawing.Size(1706, 1028)
+        Me.ActionsTab.Size = New System.Drawing.Size(1701, 1033)
         Me.ActionsTab.TabIndex = 2
         Me.ActionsTab.Text = "Templates"
         Me.ActionsTab.UseVisualStyleBackColor = True
@@ -335,7 +338,7 @@ Partial Class frmMain
         Me.scActions.Panel2.Controls.Add(Me.txtTemplate)
         Me.scActions.Panel2.Controls.Add(Me.pnlActionProperties)
         Me.scActions.Panel2MinSize = 270
-        Me.scActions.Size = New System.Drawing.Size(1706, 1028)
+        Me.scActions.Size = New System.Drawing.Size(1701, 1033)
         Me.scActions.SplitterDistance = 428
         Me.scActions.SplitterWidth = 6
         Me.scActions.TabIndex = 1
@@ -348,7 +351,7 @@ Partial Class frmMain
         Me.lstActions.Location = New System.Drawing.Point(0, 17)
         Me.lstActions.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lstActions.Name = "lstActions"
-        Me.lstActions.Size = New System.Drawing.Size(424, 947)
+        Me.lstActions.Size = New System.Drawing.Size(424, 952)
         Me.lstActions.TabIndex = 4
         '
         'pnlActionsTabButtons
@@ -357,7 +360,7 @@ Partial Class frmMain
         Me.pnlActionsTabButtons.Controls.Add(Me.cmdSingleAction)
         Me.pnlActionsTabButtons.Controls.Add(Me.cmdAddAction)
         Me.pnlActionsTabButtons.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.pnlActionsTabButtons.Location = New System.Drawing.Point(0, 964)
+        Me.pnlActionsTabButtons.Location = New System.Drawing.Point(0, 969)
         Me.pnlActionsTabButtons.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.pnlActionsTabButtons.Name = "pnlActionsTabButtons"
         Me.pnlActionsTabButtons.Size = New System.Drawing.Size(424, 60)
@@ -420,7 +423,7 @@ Partial Class frmMain
         Me.txtTemplate.Dock = System.Windows.Forms.DockStyle.Fill
         Me.txtTemplate.Location = New System.Drawing.Point(0, 305)
         Me.txtTemplate.Name = "txtTemplate"
-        Me.txtTemplate.Size = New System.Drawing.Size(1268, 719)
+        Me.txtTemplate.Size = New System.Drawing.Size(1263, 724)
         Me.txtTemplate.TabIndex = 1
         '
         'pnlActionProperties
@@ -432,7 +435,7 @@ Partial Class frmMain
         Me.pnlActionProperties.Location = New System.Drawing.Point(0, 0)
         Me.pnlActionProperties.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.pnlActionProperties.Name = "pnlActionProperties"
-        Me.pnlActionProperties.Size = New System.Drawing.Size(1268, 305)
+        Me.pnlActionProperties.Size = New System.Drawing.Size(1263, 305)
         Me.pnlActionProperties.TabIndex = 0
         '
         'PnlActionsTabActionProperties
@@ -449,7 +452,7 @@ Partial Class frmMain
         Me.PnlActionsTabActionProperties.Location = New System.Drawing.Point(0, 0)
         Me.PnlActionsTabActionProperties.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.PnlActionsTabActionProperties.Name = "PnlActionsTabActionProperties"
-        Me.PnlActionsTabActionProperties.Size = New System.Drawing.Size(966, 282)
+        Me.PnlActionsTabActionProperties.Size = New System.Drawing.Size(961, 282)
         Me.PnlActionsTabActionProperties.TabIndex = 1
         '
         'textFileSuffix
@@ -458,7 +461,7 @@ Partial Class frmMain
         Me.textFileSuffix.Location = New System.Drawing.Point(0, 115)
         Me.textFileSuffix.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.textFileSuffix.Name = "textFileSuffix"
-        Me.textFileSuffix.Size = New System.Drawing.Size(966, 22)
+        Me.textFileSuffix.Size = New System.Drawing.Size(961, 22)
         Me.textFileSuffix.TabIndex = 3
         '
         'Label6
@@ -478,7 +481,7 @@ Partial Class frmMain
         Me.TextFilePrefix.Location = New System.Drawing.Point(0, 76)
         Me.TextFilePrefix.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.TextFilePrefix.Name = "TextFilePrefix"
-        Me.TextFilePrefix.Size = New System.Drawing.Size(966, 22)
+        Me.TextFilePrefix.Size = New System.Drawing.Size(961, 22)
         Me.TextFilePrefix.TabIndex = 2
         '
         'Label5
@@ -499,7 +502,7 @@ Partial Class frmMain
         Me.textDesription.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.textDesription.Multiline = True
         Me.textDesription.Name = "textDesription"
-        Me.textDesription.Size = New System.Drawing.Size(966, 3)
+        Me.textDesription.Size = New System.Drawing.Size(961, 3)
         Me.textDesription.TabIndex = 8
         '
         'Label9
@@ -519,7 +522,7 @@ Partial Class frmMain
         Me.textName.Location = New System.Drawing.Point(0, 17)
         Me.textName.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.textName.Name = "textName"
-        Me.textName.Size = New System.Drawing.Size(966, 22)
+        Me.textName.Size = New System.Drawing.Size(961, 22)
         Me.textName.TabIndex = 6
         '
         'Label8
@@ -540,7 +543,7 @@ Partial Class frmMain
         Me.grpActionType.Controls.Add(Me.rbClass)
         Me.grpActionType.Controls.Add(Me.rbModel)
         Me.grpActionType.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpActionType.Location = New System.Drawing.Point(966, 0)
+        Me.grpActionType.Location = New System.Drawing.Point(961, 0)
         Me.grpActionType.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.grpActionType.Name = "grpActionType"
         Me.grpActionType.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
@@ -860,7 +863,7 @@ Partial Class frmMain
         Me.Tabs.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.Tabs.Name = "Tabs"
         Me.Tabs.SelectedIndex = 0
-        Me.Tabs.Size = New System.Drawing.Size(1714, 1061)
+        Me.Tabs.Size = New System.Drawing.Size(1709, 1066)
         Me.Tabs.TabIndex = 2
         '
         'Queue
@@ -870,7 +873,7 @@ Partial Class frmMain
         Me.Queue.Location = New System.Drawing.Point(4, 29)
         Me.Queue.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Queue.Name = "Queue"
-        Me.Queue.Size = New System.Drawing.Size(1706, 1028)
+        Me.Queue.Size = New System.Drawing.Size(1701, 1033)
         Me.Queue.TabIndex = 3
         Me.Queue.Text = "Process Queue"
         Me.Queue.UseVisualStyleBackColor = True
@@ -884,13 +887,14 @@ Partial Class frmMain
         '
         'scModels.Panel1
         '
+        Me.scModels.Panel1.Controls.Add(Me.pnlTVQueueButtons)
         Me.scModels.Panel1.Controls.Add(Me.tvQueue)
         '
         'scModels.Panel2
         '
         Me.scModels.Panel2.Controls.Add(Me.txtPostBody)
-        Me.scModels.Size = New System.Drawing.Size(1706, 1028)
-        Me.scModels.SplitterDistance = 558
+        Me.scModels.Size = New System.Drawing.Size(1701, 1033)
+        Me.scModels.SplitterDistance = 556
         Me.scModels.SplitterWidth = 3
         Me.scModels.TabIndex = 1
         '
@@ -906,7 +910,8 @@ Partial Class frmMain
         TreeNode1.Text = "Models"
         Me.tvQueue.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode1})
         Me.tvQueue.SelectedImageIndex = 0
-        Me.tvQueue.Size = New System.Drawing.Size(558, 1028)
+        Me.tvQueue.ShowNodeToolTips = True
+        Me.tvQueue.Size = New System.Drawing.Size(556, 1033)
         Me.tvQueue.TabIndex = 1
         '
         'ilStatus
@@ -928,7 +933,7 @@ Partial Class frmMain
         Me.txtPostBody.Multiline = True
         Me.txtPostBody.Name = "txtPostBody"
         Me.txtPostBody.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtPostBody.Size = New System.Drawing.Size(1145, 1028)
+        Me.txtPostBody.Size = New System.Drawing.Size(1142, 1033)
         Me.txtPostBody.TabIndex = 0
         '
         'ilTabs
@@ -950,17 +955,35 @@ Partial Class frmMain
         Me.BGPicture.Image = Global.MauroManager.My.Resources.MauroTemplateManager.Fra_Mauro_World_Mapjpg
         Me.BGPicture.Location = New System.Drawing.Point(0, 28)
         Me.BGPicture.Name = "BGPicture"
-        Me.BGPicture.Size = New System.Drawing.Size(1714, 1061)
+        Me.BGPicture.Size = New System.Drawing.Size(1709, 1066)
         Me.BGPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
         Me.BGPicture.TabIndex = 4
         Me.BGPicture.TabStop = False
+        '
+        'pnlTVQueueButtons
+        '
+        Me.pnlTVQueueButtons.Controls.Add(Me.cmdClear)
+        Me.pnlTVQueueButtons.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.pnlTVQueueButtons.Location = New System.Drawing.Point(0, 950)
+        Me.pnlTVQueueButtons.Name = "pnlTVQueueButtons"
+        Me.pnlTVQueueButtons.Size = New System.Drawing.Size(556, 83)
+        Me.pnlTVQueueButtons.TabIndex = 2
+        '
+        'cmdClear
+        '
+        Me.cmdClear.Location = New System.Drawing.Point(8, 32)
+        Me.cmdClear.Name = "cmdClear"
+        Me.cmdClear.Size = New System.Drawing.Size(113, 35)
+        Me.cmdClear.TabIndex = 0
+        Me.cmdClear.Text = "Clear results"
+        Me.cmdClear.UseVisualStyleBackColor = True
         '
         'frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(9.0!, 20.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center
-        Me.ClientSize = New System.Drawing.Size(1714, 1115)
+        Me.ClientSize = New System.Drawing.Size(1709, 1120)
         Me.Controls.Add(Me.Tabs)
         Me.Controls.Add(Me.BGPicture)
         Me.Controls.Add(Me.StatusStrip1)
@@ -1006,6 +1029,7 @@ Partial Class frmMain
         CType(Me.scModels, System.ComponentModel.ISupportInitialize).EndInit()
         Me.scModels.ResumeLayout(False)
         CType(Me.BGPicture, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.pnlTVQueueButtons.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1090,4 +1114,6 @@ Partial Class frmMain
     Friend WithEvents ilTabs As ImageList
     Friend WithEvents txtTemplate As ScintillaNET.Scintilla
     Friend WithEvents BGPicture As PictureBox
+    Friend WithEvents pnlTVQueueButtons As Panel
+    Friend WithEvents cmdClear As Button
 End Class

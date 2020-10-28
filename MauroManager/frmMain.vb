@@ -85,16 +85,22 @@ Public Class frmMain
             project = New Project(Filename)
 
             ' Set up the Project tab
+            If project.Endpoint.Username = "" Then
+                If AppSettings.GetAppSetting("DefaultUsername", "") <> "" Then
+                    EndpointConnection.Username = AppSettings.GetAppSetting("DefaultUsername")
+                    EndpointConnection.Password = AppSettings.GetAppSetting("DefaultPassword")
+                End If
+            Else
+                If AppSettings.GetAppSetting("SavePassword") = "True" Then
+                    If AppSettings.GetAppSetting("DefaultUsername", "") = "" Then
+                        AppSettings.SetAppSetting("DefaultUsername", EndpointConnection.Username)
+                        AppSettings.SetAppSetting("DefaultPassword", EndpointConnection.Password)
+                    End If
+                End If
+            End If
 
             EndpointConnection.Login()
             EndpointConnection.GetModels()
-
-            If AppSettings.GetAppSetting("SavePassword") = "True" Then
-                If AppSettings.GetAppSetting("DefaultUsername", "") = "" Then
-                    AppSettings.SetAppSetting("DefaultUsername", EndpointConnection.Username)
-                    AppSettings.SetAppSetting("DefaultPassword", EndpointConnection.Password)
-                End If
-            End If
 
             ProjectLoaded = True
             ProjectDirty = False
@@ -250,7 +256,7 @@ Public Class frmMain
                 SavedState.Text = "No changes"
             End If
 
-            If EndpointConnection.LoginStatus Then
+            If EndpointConnection.LoginStatus And (EndpointConnection.Username <> "") Then
                 cmdLogInOut.Text = "Log out"
                 If EndpointConnection.LoginDetails.disabled Then
                     LoginStatus.Text = "Account disabled"
@@ -669,14 +675,22 @@ Public Class frmMain
     End Sub
 
     Private Sub cmdDoAll_Click(sender As Object, e As EventArgs) Handles cmdDoAll.Click
-        Tabs.SelectedIndex = 3
-        Application.DoEvents()
-        Dim OutputDirectory As String = AppSettings.GetAppSetting("DefaultOutputDirectory", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
-        QueueProjectActionEntries(project, OutputDirectory)
-        Application.DoEvents()
-        'StartActionEntryQueueAsync() ' TimerReset kicks off the queue
-        TimerReset()
+        If EndpointConnection.LoginStatus = False Then
+            MsgBox("You need to log in to a Mauro endpoint.", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkOnly, "Not logged in")
+            Tabs.SelectedIndex = 0
+        ElseIf EndpointConnection.Username = "" Then
+            MsgBox("You have not logged in to a Mauro endpoint", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkOnly, "Not logged in")
+            Tabs.SelectedIndex = 0
 
+        Else
+            Tabs.SelectedIndex = 3
+            Application.DoEvents()
+            Dim OutputDirectory As String = AppSettings.GetAppSetting("DefaultOutputDirectory", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
+            QueueProjectActionEntries(project, OutputDirectory)
+            Application.DoEvents()
+            'StartActionEntryQueueAsync() ' TimerReset kicks off the queue
+            TimerReset()
+        End If
     End Sub
 
     Private Sub ToolStripDropDownButton1_Click(sender As Object, e As EventArgs)
@@ -743,6 +757,8 @@ Public Class frmMain
     End Function
 
 #End Region
+
+#Region "Scintilla"
     Private Sub InitSyntaxColoring()
 
         ' Configure the default style
@@ -810,4 +826,9 @@ Public Class frmMain
         ' txtTemplate.MarginClick += TextArea_MarginClick
     End Sub
 
+    Private Sub cmdClear_Click(sender As Object, e As EventArgs) Handles cmdClear.Click
+        ActionEntries.Clear()
+        RefreshQueue()
+    End Sub
+#End Region
 End Class

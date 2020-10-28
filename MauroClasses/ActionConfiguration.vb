@@ -200,7 +200,9 @@ Namespace MauroAPI.FreemarkerProject
                 e.Status = ActionOutcomeStatus.InProgress
             Next
         End Sub
-
+        Public Shared Sub Clear()
+            Entries.Clear()
+        End Sub
     End Class
 
     Public Class FreemarkerAction
