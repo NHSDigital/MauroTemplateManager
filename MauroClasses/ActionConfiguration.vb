@@ -212,7 +212,7 @@ Namespace MauroAPI.FreemarkerProject
     Public Class ActionEntry
         Property ModelIDs As List(Of Guid)
         Property Action As FreemarkerAction
-        Property ActionResponses As List(Of ActionResponse)
+        Property ActionResponses As List(Of ActionResponse) = New List(Of ActionResponse)
         Property Status As ActionOutcomeStatus
         Property ActionEntryID As Guid
         Property OutputDirectory As String

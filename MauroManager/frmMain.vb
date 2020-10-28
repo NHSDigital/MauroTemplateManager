@@ -20,6 +20,36 @@ Public Class frmMain
         InitSyntaxColoring()
         InitNumberMargin()
     End Sub
+
+#Region "File open, save, close"
+    ''' <summary>
+    ''' Creates a new project
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub mnuNew_Click(sender As Object, e As EventArgs) Handles mnuNew.Click
+
+        Dim DefaultURI As Uri
+        Dim EndpointURL As String = AppSettings.GetAppSetting("EndpointConnection", "https://localhost")
+        Dim Username As String = AppSettings.GetAppSetting("DefaultUsername")
+        Dim Password As String = AppSettings.GetAppSetting("DefaultPassword")
+
+        Try
+            DefaultURI = New Uri(EndpointURL)
+        Catch ex As Exception
+            DefaultURI = New Uri("https://localhost")
+        End Try
+        project = New Project(DefaultURI, Username, Password)
+        EndpointConnection.Login()
+        EndpointConnection.GetModels()
+
+        txtEndpointURL.Text = project.Endpoint.EndpointURL.ToString
+        txtUsername.Text = project.Endpoint.Username
+        txtPassword.Text = ""
+        ProjectLoaded = True
+        RefreshStatus()
+    End Sub
+
     ''' <summary>
     ''' Opens a file and loads the project if valid, updating the form as appropriate
     ''' </summary>
@@ -30,9 +60,13 @@ Public Class frmMain
         OpenDialogue.Filter = "Mauro Project JSON|*.json"
         OpenDialogue.Title = "Mauro Project"
         OpenDialogue.DefaultExt = ".json"
-        OpenDialogue.ShowDialog()
-        OpenFile(OpenDialogue.FileName)
+        Dim DiagRes As DialogResult = OpenDialogue.ShowDialog()
 
+        If Not (DiagRes = DialogResult.Cancel) Then
+            OpenFile(OpenDialogue.FileName)
+        End If
+
+        Tabs.SelectedIndex = 1
     End Sub
     Private Sub mnuOpenRecent_Click(sender As Object, e As EventArgs) Handles mnuOpenRecent.Click
         Dim s As List(Of ApplicationSettings.AppSetting) = AppSettings.GetAppSettingAll("RecentFileList")
@@ -42,6 +76,8 @@ Public Class frmMain
         Else
             MsgBox("There have not been any recent files", vbCritical)
         End If
+
+        Tabs.SelectedIndex = 2
     End Sub
     Public Sub OpenFile(Filename As String)
         project = Nothing
@@ -124,8 +160,10 @@ Public Class frmMain
             Dim m As New ToolStripMenuItem
             m.Text = setting.Value
             m.Name = "Recent" & setting.Sequence.ToString
+
             AddHandler m.Click, AddressOf OpenRecentFileHandler
-            mnuOpenRecent.DropDownItems.Add(m)
+                mnuOpenRecent.DropDownItems.Add(m)
+
         Next
     End Sub
 
@@ -138,6 +176,20 @@ Public Class frmMain
     End Sub
 
     ''' <summary>
+    ''' Exit the program
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
+        If EndpointConnection.LoginStatus Then
+            EndpointConnection.Logout()
+        End If
+        Application.Exit()
+    End Sub
+#End Region
+
+#Region "Display management"
+    ''' <summary>
     ''' Updates the display for the main panel and status bar
     ''' </summary>
     Public Sub RefreshStatus()
@@ -148,6 +200,8 @@ Public Class frmMain
 
             ' Set up the tabbed dialogue 
             Tabs.Visible = True
+            Me.BackgroundImageLayout = ImageLayout.None
+
 
             ' Populate endpoint details
             lblFilename.Text = project.Filename
@@ -186,44 +240,31 @@ Public Class frmMain
             ' Update the tabs before repopulating the listboxes
             Application.DoEvents()
 
-            ' Update the model list boxes
-            If EndpointConnection.LoginStatus = True Then
-                Dim AvailableModels = From m In EndpointConnection.MauroModels.items
 
-                AvailableModels = AvailableModels.Where(Function(x) project.Models.Contains(x.id) = False).OrderBy(Function(x) x.label).ToList
+            ' Update the screen
+            Application.DoEvents()
 
-                lstModels.DataSource = AvailableModels.ToList
-
-                lstModels.DisplayMember = "label"
-                lstModels.ValueMember = "id"
-
-                Dim AllModels As List(Of Model) = EndpointConnection.MauroModels.items
-
-                Dim SelectedModels = From p In project.Models
-                                     Join m In AllModels
-                       On p Equals m.id
-                                     Select p, m.label
-
-                lstGUIDs.DataSource = SelectedModels.ToList
-                lstGUIDs.DisplayMember = "Label"
-                lstGUIDs.ValueMember = "p"
-            End If
+            RefreshQueue()
+            RefreshModelList()
+            RedrawActionList()
             ' Populate the actions
             lstActions.DataSource = project.Actions
             lstActions.DisplayMember = "Name"
             lstActions.ValueMember = "id"
-            RedrawActionList()
+            'tvQueue.ExpandAll()
         Else
             StatusEndpoint.Text = "Not connected"
             SavedState.Text = "No project loaded"
             StatusFilename.Text = ""
 
             Tabs.Visible = False
+            Me.BackgroundImageLayout = ImageLayout.Center
         End If
 
-        ' Update the screen
         Application.DoEvents()
+    End Sub
 
+    Private Sub RefreshQueue()
 
         ' Update the queue
         If ActionEntries.Entries.Count = 0 Then
@@ -282,39 +323,80 @@ Public Class frmMain
                     End If
 
                     ' Need to create a new folder here if there are more than one responses 
+                    Select Case e.Status
 
+                        Case ActionOutcomeStatus.Success, e.Status = ActionOutcomeStatus.Failed, ActionOutcomeStatus.InProgress
 
-                    If e.Status = ActionOutcomeStatus.Success Or e.Status = ActionOutcomeStatus.Failed Then
-                        For Each r As ActionResponse In e.ActionResponses
-                            ' Store the post response
-                            Dim n As New TreeNode With {
-                            .Text = r.ResponseDescription,
-                            .Name = r.ResponseID.ToString,
-                            .Tag = r.Response.Result.RequestMessage.RequestUri.ToString,
-                            .ImageIndex = e.Status
-                            }
+                            For Each r As ActionResponse In e.ActionResponses
+                                ' Store the post response
+                                Dim n As New TreeNode With {
+                                .Text = r.ResponseDescription,
+                                .Name = r.ResponseID.ToString,
+                                .Tag = r.Response.Result.RequestMessage.RequestUri.ToString,
+                                .ImageIndex = e.Status
+                                }
 
-                            ModelNode.Nodes.Add(n)
-                        Next
-                        ActionNode.Nodes.Add(ModelNode)
-                    End If
+                                ModelNode.Nodes.Add(n)
+                            Next
+                            ActionNode.Nodes.Add(ModelNode)
+
+                            ModelNode.ImageIndex = e.Status
+
+                        Case Else
+
+                    End Select
+
                 Next
                 RootNode.Nodes.Add(ActionNode)
             Next
 
             tvQueue.Nodes.Add(RootNode)
         End If
-
-        tvQueue.ExpandAll()
-        Application.DoEvents()
     End Sub
+    Private Sub RefreshModelList()
 
+        ' Update the model list boxes
+        If EndpointConnection.LoginStatus = True Then
+            Dim AvailableModels = From m In EndpointConnection.MauroModels.items
+
+            AvailableModels = AvailableModels.Where(Function(x) project.Models.Contains(x.id) = False).OrderBy(Function(x) x.label).ToList
+
+            lstModels.DataSource = AvailableModels.ToList
+
+            lstModels.DisplayMember = "label"
+            lstModels.ValueMember = "id"
+
+            Dim AllModels As List(Of Model) = EndpointConnection.MauroModels.items
+
+            Dim SelectedModels = From p In project.Models
+                                 Join m In AllModels
+                   On p Equals m.id
+                                 Select p, m.label
+
+            Dim MissingModels As Integer = project.Models.Count - SelectedModels.Count
+            'If MissingModels <> 0 Then
+            '    MsgBox(MissingModels.ToString & " models are no longer available on the Mauro server.  Saving this project will remove missing models.", MsgBoxStyle.Exclamation, "Missing models")
+
+            '    For i = project.Models.Count - 1 To 0 Step -1
+            '        Dim id As Guid = project.Models(i)
+            '        If EndpointConnection.MauroModels.items.FindAll(Function(x) x.id = id).Count = 0 Then
+            '            project.Models.RemoveAt(i)
+            '        End If
+            '        i -= 1
+            '    Next
+            'End If
+            lstGUIDs.DataSource = SelectedModels.ToList
+            lstGUIDs.DisplayMember = "Label"
+            lstGUIDs.ValueMember = "p"
+        End If
+
+
+    End Sub
     Private Sub UpdateActionEntryResult(sender As Object, e As TreeNodeMouseClickEventArgs) Handles tvQueue.NodeMouseClick
         Dim n As TreeNode = e.Node
         If n.GetNodeCount(False) > 0 Then
             n.Expand()
         End If
-        Dim g As Guid
         Try
 
             For Each ae As ActionEntry In ActionEntries.Entries
@@ -322,17 +404,17 @@ Public Class frmMain
 
 
                 For Each pr As ActionResponse In ae.ActionResponses
-                            If pr.Response.Result.RequestMessage.RequestUri.ToString = n.Tag Then
+                    If pr.ResponseID.ToString = n.Name Then
 
-                                Dim ResponseText As String = pr.Response.Body
-                                Try
-                                    ResponseText = PrettyJson(ResponseText)
-                                Catch
-                                    ' if there is an error, just show the text
-                                End Try
-                                txtPostBody.Text = ResponseText
-                            End If
-                        Next
+                        Dim ResponseText As String = pr.Response.Body
+                        Try
+                            ResponseText = PrettyJson(ResponseText)
+                        Catch
+                            ' if there is an error, just show the text
+                        End Try
+                        txtPostBody.Text = ResponseText
+                    End If
+                Next
 
 
             Next
@@ -341,6 +423,51 @@ Public Class frmMain
         End Try
 
     End Sub
+
+    Private Sub RefreshActions(sender As Object, e As EventArgs) Handles lstActions.SelectedIndexChanged
+
+        If lstActions.SelectedIndex >= 0 Then
+            With CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction)
+                textName.Text = .Name
+                textDesription.Text = .Description
+
+                TextFilePrefix.Text = .FilePrefix
+                textFileSuffix.Text = .FileSuffix
+
+                txtTemplate.Text = .Template
+                Select Case .ActionType
+                    Case ActionTypes.actionClass
+                        rbClass.Checked = True
+                    Case ActionTypes.actionSingleModel
+                        rbModel.Checked = True
+
+                    Case ActionTypes.actionTerminology
+                        rbTerminology.Checked = True
+                End Select
+            End With
+        End If
+
+    End Sub
+
+
+    Public Sub RedrawActionList()
+        Dim selIndex As Integer = lstActions.SelectedIndex
+
+        lstActions.DataSource = Nothing
+        lstActions.DataSource = project.Actions
+        lstActions.DisplayMember = "Name"
+        lstActions.ValueMember = "id"
+        lstActions.SelectedIndex = selIndex
+
+        If lstActions.Items.Count > 0 Then
+            scActions.Panel2.Enabled = True
+        Else
+            scActions.Panel2.Enabled = False
+
+        End If
+    End Sub
+#End Region
+#Region "Form control value handling"
     ''' <summary>
     ''' Checks the validity of the proposed URL and, if valid,
     ''' Stores the amended URL and sets the flag for unsaved changes.
@@ -382,51 +509,6 @@ Public Class frmMain
         End If
 
     End Sub
-
-    ''' <summary>
-    ''' Flags that the project has unsaved changes
-    ''' </summary>
-    Public Sub SetDirty()
-        ProjectDirty = True
-        SavedState.Text = "Unsaved changes"
-    End Sub
-    ''' <summary>
-    ''' Check whether a string is a valid URL
-    ''' </summary>
-    ''' <param name="URL">String to check</param>
-    ''' <returns>True if the string matches the Regex for a URL, otherwise false.</returns>
-    Public Function IsURLValid(URL As String) As Boolean
-        Dim pattern As String
-        pattern = "http(s)?://([\w+?\.\w+])+([a-zA-Z0-9\~\!\@\#\$\%\^\&\*\(\)_\-\=\+\\\/\?\.\:\;\'\,]*)?"
-        Return Regex.IsMatch(URL, pattern)
-    End Function
-
-    ''' <summary>
-    ''' Exit the program
-    ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
-        If EndpointConnection.LoginStatus Then
-            EndpointConnection.Logout()
-        End If
-        Application.Exit()
-    End Sub
-
-    Private Sub cmdAddAction_Click(sender As Object, e As EventArgs) Handles cmdAddAction.Click
-        Dim act As New FreemarkerProject.FreemarkerAction With {
-            .ActionType = ActionTypes.actionSingleModel,
-            .FilePrefix = "Model_",
-            .FileSuffix = ".txt",
-            .Template = "",
-            .Name = "(New template)",
-            .Description = "No description",
-            .id = Guid.NewGuid
-        }
-        project.Actions.Add(act)
-        RedrawActionList()
-    End Sub
-
     Private Sub PrefixChanged(sender As Object, e As EventArgs) Handles TextFilePrefix.TextChanged
         CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).FilePrefix = TextFilePrefix.Text
         SetDirty()
@@ -443,30 +525,6 @@ Public Class frmMain
         SetDirty()
     End Sub
 
-    Private Sub RefreshActions(sender As Object, e As EventArgs) Handles lstActions.SelectedIndexChanged
-
-        If lstActions.SelectedIndex >= 0 Then
-            With CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction)
-                textName.Text = .Name
-                textDesription.Text = .Description
-
-                TextFilePrefix.Text = .FilePrefix
-                textFileSuffix.Text = .FileSuffix
-
-                txtTemplate.Text = .Template
-                Select Case .ActionType
-                    Case ActionTypes.actionClass
-                        rbClass.Checked = True
-                    Case ActionTypes.actionSingleModel
-                        rbModel.Checked = True
-
-                    Case ActionTypes.actionTerminology
-                        rbTerminology.Checked = True
-                End Select
-            End With
-        End If
-
-    End Sub
     ''' <summary>
     ''' Update the actionType to reflect the radiobutton
     ''' </summary>
@@ -501,23 +559,25 @@ Public Class frmMain
         CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).Description = textDesription.Text
         SetDirty()
     End Sub
+#End Region
 
-    Public Sub RedrawActionList()
-        Dim selIndex As Integer = lstActions.SelectedIndex
-
-        lstActions.DataSource = Nothing
-        lstActions.DataSource = project.Actions
-        lstActions.DisplayMember = "Name"
-        lstActions.ValueMember = "id"
-        lstActions.SelectedIndex = selIndex
-
-        If lstActions.Items.Count > 0 Then
-            scActions.Panel2.Enabled = True
-        Else
-            scActions.Panel2.Enabled = False
-
-        End If
+#Region "Handle mouse clicks"
+    Private Sub cmdAddAction_Click(sender As Object, e As EventArgs) Handles cmdAddAction.Click
+        Dim act As New FreemarkerProject.FreemarkerAction With {
+            .ActionType = ActionTypes.actionSingleModel,
+            .FilePrefix = "Model_",
+            .FileSuffix = ".txt",
+            .Template = "",
+            .Name = "(New template)",
+            .Description = "No description",
+            .id = Guid.NewGuid
+        }
+        project.Actions.Add(act)
+        RedrawActionList()
     End Sub
+
+
+
 
     Private Sub cmdAdd_Click(sender As Object, e As EventArgs) Handles cmdAdd.Click
         For Each itm As Model In lstModels.SelectedItems
@@ -587,6 +647,19 @@ Public Class frmMain
         RefreshStatus()
     End Sub
 
+
+
+    Private Sub PreferencesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PreferencesToolStripMenuItem.Click
+        Dim f As New frmPreferences
+        f.ShowDialog()
+    End Sub
+
+    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
+        AboutBox1.ShowDialog()
+    End Sub
+#End Region
+
+#Region "Supporting functions"
     Private Sub TimerElapsed(sender As Object, e As EventArgs) Handles Timer1.Tick
         TimerReset()
     End Sub
@@ -615,42 +688,25 @@ Public Class frmMain
             StartActionEntryQueueAsync()
         End If
     End Sub
-
-    Private Sub mnuNew_Click(sender As Object, e As EventArgs) Handles mnuNew.Click
-
-        Dim DefaultURI As Uri
-        Dim EndpointURL As String = AppSettings.GetAppSetting("EndpointConnection", "https://localhost")
-        Dim Username As String = AppSettings.GetAppSetting("DefaultUsername")
-        Dim Password As String = AppSettings.GetAppSetting("DefaultPassword")
-
-        Try
-            DefaultURI = New Uri(EndpointURL)
-        Catch ex As Exception
-            DefaultURI = New Uri("https://localhost")
-        End Try
-        project = New Project(DefaultURI, Username, Password)
-        EndpointConnection.Login()
-        EndpointConnection.GetModels()
-
-        txtEndpointURL.Text = project.Endpoint.EndpointURL.ToString
-        txtUsername.Text = project.Endpoint.Username
-        txtPassword.Text = ""
-        ProjectLoaded = True
-        RefreshStatus()
+    ''' <summary>
+    ''' Flags that the project has unsaved changes
+    ''' </summary>
+    Public Sub SetDirty()
+        ProjectDirty = True
+        SavedState.Text = "Unsaved changes"
     End Sub
+    ''' <summary>
+    ''' Check whether a string is a valid URL
+    ''' </summary>
+    ''' <param name="URL">String to check</param>
+    ''' <returns>True if the string matches the Regex for a URL, otherwise false.</returns>
+    Public Function IsURLValid(URL As String) As Boolean
+        Dim pattern As String
+        pattern = "http(s)?://([\w+?\.\w+])+([a-zA-Z0-9\~\!\@\#\$\%\^\&\*\(\)_\-\=\+\\\/\?\.\:\;\'\,]*)?"
+        Return Regex.IsMatch(URL, pattern)
+    End Function
 
-    Private Sub PreferencesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PreferencesToolStripMenuItem.Click
-        Dim f As New frmPreferences
-        f.ShowDialog()
-    End Sub
-
-    Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
-        AboutBox1.ShowDialog()
-    End Sub
-
-
-
-
+#End Region
     Private Sub InitSyntaxColoring()
 
         ' Configure the default style
@@ -717,6 +773,5 @@ Public Class frmMain
         nums.Mask = 0
         ' txtTemplate.MarginClick += TextArea_MarginClick
     End Sub
-
 
 End Class

@@ -15,6 +15,12 @@ Namespace MauroAPI
     Public Class dataTypeDomainTypeEnum : Inherits enumerationValueType
 
     End Class
+
+    Public Class MauroResponse
+        Property url As Uri
+        Property Body As String
+        Property Response As HttpResponseMessage
+    End Class
     Public Class EndpointConnection
         Private Shared ReadOnly client As HttpClient = New HttpClient()
         Public Shared Property Username As String
@@ -28,6 +34,7 @@ Namespace MauroAPI
                 client.Timeout = Timeout
             End Set
         End Property
+        Public Shared Property Responses As List(Of MauroResponse) = New List(Of MauroResponse)
 
         Public Shared Property LoginStatus As Boolean = False
 
@@ -125,7 +132,10 @@ Namespace MauroAPI
             Return MauroModel
         End Function
         Public Shared Function GetModel(modelID As Guid) As Model
+
             Dim res As Model = GetModelAsync(modelID).Result
+
+
             Return res
         End Function
         Public Shared Async Function GetModelChildClassesAsync(ModelID As Guid) As Task(Of dataClassesType)
@@ -183,7 +193,11 @@ Namespace MauroAPI
             Try
                 PostResult = Await client.PostAsync(API, Body).ConfigureAwait(False)
                 If Not PostResult.IsSuccessStatusCode Then
-                    Console.WriteLine(PostResult.ReasonPhrase)
+                    Dim mr As New MauroResponse With {
+                        .url = New Uri(API),
+                        .Body = BodyText,
+                        .Response = PostResult}
+                    EndpointConnection.Responses.Add(mr)
                 End If
             Catch ex As Exception
                 Throw ex

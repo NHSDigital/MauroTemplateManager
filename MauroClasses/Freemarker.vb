@@ -91,19 +91,17 @@ Namespace MauroAPI
         ''' <param name="MauroModel">Model metadata to execute against</param>
         ''' <param name="Action">Action to execute</param>
         ''' <param name="OutputDirectory">Filepath as a string for the output directory</param>
-        Public Function ProcessActionForModel(MauroModel As Model, Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String) As List(Of ActionResponse)
+        Public Sub ProcessActionForModel(MauroModel As Model, Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String, ByRef ActionResponses As List(Of ActionResponse))
             Debug.WriteLine("ProcessActionForModel with {0}, {1}", MauroModel.label, Action.Name)
 
             Dim SuccessCount As Integer = 0
             Dim FailCount As Integer = 0
-            Dim res As New List(Of ActionResponse)
-
-            Dim ActResp As ActionResponse = Nothing
+            ' Dim res As New List(Of ActionResponse)
 
             Select Case Action.ActionType ' Apply to the model
 
                 Case ActionTypes.actionSingleModel
-                    res.Add(ProcessModelOnly(MauroModel, Action, OutputDirectory))
+                    ActionResponses.Add(ProcessModelOnly(MauroModel, Action, OutputDirectory))
 
                 Case ActionTypes.actionAllModels
                     Throw New NotImplementedException("ProcessActionForModel: actionAllModels not supported ")
@@ -111,13 +109,14 @@ Namespace MauroAPI
                 Case ActionTypes.actionClass ' Apply to a class within the model
                     MauroModel.childDataClasses = EndpointConnection.GetModelClasses(MauroModel.id)
                     For Each dataClass In MauroModel.descendantDataClasses.dataClass
-                        res.AddRange(ProcessModelClass(MauroModel, dataClass, Action, OutputDirectory))
+                        ActionResponses.AddRange(ProcessModelClass(MauroModel, dataClass, Action, OutputDirectory))
 
                     Next
                 Case ActionTypes.actionTerminology ' Apply to a teminology within a model
                     Throw New NotImplementedException
             End Select
-            For Each ActResp In res
+
+            For Each ActResp As ActionResponse In ActionResponses
                 If IsNothing(ActResp) Then
                     FailCount += 1
                 ElseIf ActResp.Response.Result.IsSuccessStatusCode Then
@@ -126,34 +125,32 @@ Namespace MauroAPI
                     FailCount += 1
                 End If
             Next
-            Return res
-        End Function
 
-        Public Sub ProcessActionEntry(ActionEntry As ActionEntry)
-            Dim res As New List(Of ActionResponse)
+        End Sub
+
+        Public Sub ProcessActionEntry(ByRef ActionEntry As ActionEntry)
+            ' Dim res As New List(Of ActionResponse)
             Try
                 If ActionEntry.Action.ActionType = ActionTypes.actionAllModels Then
-                    res = ProcessAllModels(ActionEntry.ModelIDs, ActionEntry.Action, ActionEntry.OutputDirectory)
+                    ActionEntry.ActionResponses = ProcessAllModels(ActionEntry.ModelIDs, ActionEntry.Action, ActionEntry.OutputDirectory)
                 Else
                     For Each m As Guid In ActionEntry.ModelIDs
+
                         Dim MauroModel As Model = EndpointConnection.GetModel(m)
                         ActionEntry.Status = ActionOutcomeStatus.InProgress
 
-                        res.AddRange(ProcessActionForModel(MauroModel, ActionEntry.Action, ActionEntry.OutputDirectory))
+                        ProcessActionForModel(MauroModel, ActionEntry.Action, ActionEntry.OutputDirectory, ActionEntry.ActionResponses)
                     Next
                 End If
 
             Catch ex As Exception
             End Try
 
-
-
-            ActionEntry.ActionResponses = res
             ActionEntry.Status = ActionOutcomeStatus.Success
-            If res.Count = 0 Then
+            If ActionEntry.ActionResponses.Count = 0 Then
                 ActionEntry.Status = ActionOutcomeStatus.Failed
             Else
-                For Each ActResp As ActionResponse In res
+                For Each ActResp As ActionResponse In ActionEntry.ActionResponses
                     If Not ActResp.Response.Result.IsSuccessStatusCode Then
                         ActionEntry.Status = ActionOutcomeStatus.Failed
                     End If
@@ -165,8 +162,16 @@ Namespace MauroAPI
             Dim options = New JsonSerializerOptions() With {
         .WriteIndented = True
     }
+
             Dim jsonElement = JsonSerializer.Deserialize(Of JsonElement)(unPrettyJson)
-            Return JsonSerializer.Serialize(jsonElement, options)
+
+
+            Dim s As String = JsonSerializer.Serialize(jsonElement, options)
+            s = Replace(s, vbCrLf, "</br>")
+            s = Replace(s, "\u0022", """")
+            s = Replace(s, "\t", vbTab)
+            s = Replace(s, "\n", vbCrLf)
+            Return s
         End Function
 
         Private Function ProcessModelClass(MauroModel As Model, MauroClass As dataClassType, Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String) As List(Of ActionResponse)
@@ -229,9 +234,7 @@ Namespace MauroAPI
             Dim s As String = Response.Body
             Try
                 s = PrettyJson(s)
-                s = Replace(s, vbCrLf, "</br>")
-                s = Replace(s, "\u0022", """")
-                s = Replace(s, "\t", "    ")
+                s = Replace(s, "\t", " ")
                 s = Replace(s, "\n", "</br>")
                 s = Replace(s, " ", "&nbsp;")
             Catch ex As Exception
