@@ -1,6 +1,6 @@
 ﻿Imports System.IO
 Imports System.Text.Json
-
+Imports System.Security.Cryptography
 ''' <summary>
 ''' Manipulate a JSON list of settings for an application, storing the file in the users ApplicationData folder
 ''' </summary>
@@ -90,6 +90,16 @@ Public Class ApplicationSettings
         End If
         Save()
     End Sub
+
+    Public Sub SetPasswordAppSetting(Password As String)
+        SetAppSetting("DefaultPassword", ProtectPassword(Password))
+    End Sub
+
+    Public Function GetPasswordAppSetting() As String
+        Dim p As String = GetAppSetting("DefaultPassword")
+        Dim u As String = UnprotectPassword(p)
+        Return u
+    End Function
     ''' <summary>
     ''' Add a new setting at the end of the list
     ''' </summary>
@@ -97,7 +107,8 @@ Public Class ApplicationSettings
     ''' <param name="Value">Value to set</param>
     Public Sub AddSettingEnd(Name As String, Value As String)
         Dim current As List(Of AppSetting) = GetAppSettingAll(Name)
-        Dim i As Integer = 0
+        Dim i As Integer
+
         For i = 0 To current.Count - 1
             current(i).Sequence = i
         Next
@@ -158,6 +169,72 @@ Public Class ApplicationSettings
         Writer.Close()
     End Sub
 
+    Public Function ProtectPassword(Password As String) As String
+        Dim OA() As Byte = UnicodeStringToBytes("")
+
+        Dim bytes() As Byte = System.Text.ASCIIEncoding.ASCII.GetBytes("Password:" & Password)
+        Dim bytes2() As Byte = Protect(bytes)
+        Return Convert.ToBase64String(bytes2)
+    End Function
+
+    Public Function UnprotectPassword(ProtectedPassword As String) As String
+        Dim bytes() As Byte = Convert.FromBase64String(ProtectedPassword)
+        Try
+
+            Dim bytes2() As Byte = Unprotect(bytes)
+            Dim ClearPassword As String = System.Text.ASCIIEncoding.ASCII.GetString(bytes2)
+            If Left(ClearPassword, 9) = "Password:" Then
+                Return Mid(ClearPassword, 10)
+            Else
+                Return ProtectedPassword
+            End If
+        Catch ex As Exception
+            Return Nothing
+        End Try
+
+    End Function
+    Shared s_additionalEntropy As Byte() = {9, 8, 7, 6, 5}
+
+    'Public Shared Sub Main()
+    '    Dim secret As Byte() = {0, 1, 2, 3, 4, 1, 2, 3, 4}
+    '    Dim encryptedSecret As Byte() = Protect(secret)
+    '    Console.WriteLine("The encrypted byte array is:")
+    '    PrintValues(encryptedSecret)
+    '    Dim originalData As Byte() = Unprotect(encryptedSecret)
+    '    Console.WriteLine("{0}The original data is:", Environment.NewLine)
+    '    PrintValues(originalData)
+    'End Sub
+
+    Public Shared Function Protect(ByVal data As Byte()) As Byte()
+        Try
+            Return ProtectedData.Protect(data, s_additionalEntropy, DataProtectionScope.LocalMachine)
+        Catch e As CryptographicException
+            Console.WriteLine("Data was not encrypted. An error occurred.")
+            Console.WriteLine(e.ToString())
+            Return Nothing
+        End Try
+    End Function
+
+    Public Shared Function Unprotect(ByVal data As Byte()) As Byte()
+        Try
+            Return ProtectedData.Unprotect(data, s_additionalEntropy, DataProtectionScope.LocalMachine)
+        Catch e As CryptographicException
+            Console.WriteLine("Data was not decrypted. An error occurred.")
+            Console.WriteLine(e.ToString())
+            Return Nothing
+        End Try
+    End Function
+
+    Public Shared Sub PrintValues(ByVal myArr As Byte())
+        For Each i As Byte In myArr
+            Console.Write(vbTab & "{0}", i)
+        Next
+
+        Console.WriteLine()
+    End Sub
+    Private Function UnicodeStringToBytes(ByVal str As String) As Byte()
+        Return System.Text.Encoding.Unicode.GetBytes(str)
+    End Function
     ''' <summary>
     ''' All the settings.  This list is not directly exposed to protect setting management
     ''' </summary>

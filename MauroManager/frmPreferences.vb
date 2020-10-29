@@ -5,7 +5,8 @@
         txtUsername.Text = settings.GetAppSetting("DefaultUsername")
         txtRecentFileCount.Text = settings.GetAppSetting("RecentFileCount", "12")
         txtOutputDirectory.Text = settings.GetAppSetting("DefaultOutputDirectory", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
-        txtPassword.Text = settings.GetAppSetting("DefaultPassword", "")
+        Dim p As String = settings.GetPasswordAppSetting()
+        txtPassword.Text = p
         Select Case settings.GetAppSetting("SavePassword")
             Case "True"
                 cbSavePassword.Checked = True
@@ -19,7 +20,7 @@
         settings.SetAppSetting("EndpointConnection", txtConnection.Text)
         settings.SetAppSetting("DefaultUsername", txtUsername.Text)
         settings.SetAppSetting("RecentFileCount", txtRecentFileCount.Text)
-        settings.SetAppSetting("DefaultPassword", txtPassword.Text)
+        settings.SetPasswordAppSetting(txtPassword.Text)
         settings.SetAppSetting("SavePassword", cbSavePassword.Checked.ToString)
         Me.Close()
     End Sub

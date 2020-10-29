@@ -32,7 +32,7 @@ Public Class frmMain
         Dim DefaultURI As Uri
         Dim EndpointURL As String = AppSettings.GetAppSetting("EndpointConnection", "https://localhost")
         Dim Username As String = AppSettings.GetAppSetting("DefaultUsername")
-        Dim Password As String = AppSettings.GetAppSetting("DefaultPassword")
+        Dim Password As String = AppSettings.GetPasswordAppSetting()
 
         Try
             DefaultURI = New Uri(EndpointURL)
@@ -88,13 +88,13 @@ Public Class frmMain
             If project.Endpoint.Username = "" Then
                 If AppSettings.GetAppSetting("DefaultUsername", "") <> "" Then
                     EndpointConnection.Username = AppSettings.GetAppSetting("DefaultUsername")
-                    EndpointConnection.Password = AppSettings.GetAppSetting("DefaultPassword")
+                    EndpointConnection.Password = AppSettings.GetPasswordAppSetting()
                 End If
             Else
                 If AppSettings.GetAppSetting("SavePassword") = "True" Then
                     If AppSettings.GetAppSetting("DefaultUsername", "") = "" Then
                         AppSettings.SetAppSetting("DefaultUsername", EndpointConnection.Username)
-                        AppSettings.SetAppSetting("DefaultPassword", EndpointConnection.Password)
+                        AppSettings.SetPasswordAppSetting(EndpointConnection.Password)
                     End If
                 End If
             End If
