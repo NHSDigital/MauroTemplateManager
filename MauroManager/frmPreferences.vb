@@ -1,4 +1,6 @@
-﻿Public Class frmPreferences
+﻿Imports MauroDataModeller.Settings
+
+Public Class frmPreferences
     Dim settings As New ApplicationSettings("Mauro")
     Private Sub frmPreferences_Load(sender As Object, e As EventArgs) Handles Me.Load
         txtConnection.Text = settings.GetAppSetting("EndpointConnection", "https://modelcatalogue.cs.ox.ac.uk/")

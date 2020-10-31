@@ -1,0 +1,1 @@
+search_result['69']=["frlrfMauroDataModellerMauroModeldataClassTypeClasslastUpdatedTopic.html","dataClassType.lastUpdated Property","### TODO: Add a description"];

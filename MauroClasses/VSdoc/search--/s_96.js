@@ -1,0 +1,1 @@
+search_result['96']=["frlrfMauroDataModellerMauroModeldataElementTypeClassminMultiplicityTopic.html","dataElementType.minMultiplicity Property","If not provided then will default to 1 (required)"];

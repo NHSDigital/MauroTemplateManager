@@ -1,10 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>MauroClasses</RootNamespace>
+    <RootNamespace>MauroDataModeller</RootNamespace>
     <TargetFrameworks>netcoreapp3.1;net48</TargetFrameworks>
     <Authors>Nicholas Oughtibridge</Authors>
     <Company>Oughtibridge</Company>
+    <Product>Mauro Classes</Product>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageLicenseFile>license.txt</PackageLicenseFile>
+    <PackageIcon>Fra_Mauro_World_Mapjpg.jpg</PackageIcon>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net48'">
     <Reference Include="System.Net.Http">
@@ -13,5 +19,15 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="4.7.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\license.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\MauroManager\Fra_Mauro_World_Mapjpg.jpg">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 </Project>

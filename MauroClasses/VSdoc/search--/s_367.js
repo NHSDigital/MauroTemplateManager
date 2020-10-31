@@ -1,0 +1,1 @@
+search_result['367']=["frlrfMauroDataModellerMauroTemplatesMauroEndpointClassTopic.html","MauroEndpoint Class","Connection details to a Mauro endpoint"];

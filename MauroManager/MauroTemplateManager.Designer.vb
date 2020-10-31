@@ -43,7 +43,7 @@ Namespace My.Resources
         Friend Shared ReadOnly Property ResourceManager() As Global.System.Resources.ResourceManager
             Get
                 If Object.ReferenceEquals(resourceMan, Nothing) Then
-                    Dim temp As Global.System.Resources.ResourceManager = New Global.System.Resources.ResourceManager("MauroManager.MauroTemplateManager", GetType(MauroTemplateManager).Assembly)
+                    Dim temp As Global.System.Resources.ResourceManager = New Global.System.Resources.ResourceManager("MauroDataModeller.MauroTemplateManager", GetType(MauroTemplateManager).Assembly)
                     resourceMan = temp
                 End If
                 Return resourceMan

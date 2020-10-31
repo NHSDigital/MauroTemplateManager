@@ -1,0 +1,1 @@
+search_result['126']=["frlrfMauroDataModellerMauroModeldataTypeTypeClassunitsTopic.html","dataTypeType.units Property","Optional if domainType is \"PrimitiveType\". Ignored otherwise"];

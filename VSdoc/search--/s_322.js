@@ -1,0 +1,1 @@
+search_result['322']=["topic_00000000000000BA.html","dataTypeType.referenceClass Property","Mandatory if domainType is \"ReferenceType\". Ignored otherwise"];

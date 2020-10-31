@@ -1,0 +1,1 @@
+search_result['21']=["topic_000000000000000D.html","MauroEndpoint Class","Connection details to a Mauro endpoint"];

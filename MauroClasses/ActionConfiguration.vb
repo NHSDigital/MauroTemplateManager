@@ -1,8 +1,8 @@
 ﻿Imports System.IO
-
+Imports MauroDataModeller.MauroModel
 Imports System.Text.Json
 
-Namespace MauroAPI.FreemarkerProject
+Namespace MauroTemplates
     ''' <summary>
     ''' Holds the main project, handles file open and save, and connects to a Mauro endpoint
     ''' </summary>
@@ -16,7 +16,7 @@ Namespace MauroAPI.FreemarkerProject
         ''' <summary>
         ''' Read a project as a JSON file
         ''' </summary>
-        ''' <param name="Filename"></param>
+        ''' <param name="Filename">Filename of the project to read</param>
         Public Sub LoadProject(Filename As String)
             Dim JSONFile As New FileStream(Filename, FileMode.Open, FileAccess.Read)
             Dim Reader As New StreamReader(JSONFile)
@@ -52,6 +52,8 @@ Namespace MauroAPI.FreemarkerProject
             UpdateEndpointConnection(Endpoint)
             Reader.Close()
         End Sub
+
+
 
         Public Sub UpdateEndpointConnection(Endpoint As MauroEndpoint)
             EndpointConnection.Username = Endpoint.Username

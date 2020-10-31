@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"MauroManager Reference","topic_000000000000002D.html"],['36',"MauroDataModeller.Settings Namespace","topic_0000000000000002.html"]];

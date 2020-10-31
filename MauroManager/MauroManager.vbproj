@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{6C5A16E4-C857-4EC2-9A47-D7A121920D78}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <StartupObject>MauroManager.My.MyApplication</StartupObject>
-    <RootNamespace>MauroManager</RootNamespace>
+    <StartupObject>MauroDataModeller.My.MyApplication</StartupObject>
+    <RootNamespace>MauroDataModeller</RootNamespace>
     <AssemblyName>MauroManager</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>WindowsForms</MyType>
@@ -25,7 +25,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>12</ApplicationRevision>
+    <ApplicationRevision>13</ApplicationRevision>
     <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -74,6 +74,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Document-settings-SVG-Yellow.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -277,6 +280,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Fra_Mauro_World_Mapjpg.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Document-settings-SVG-Yellow.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

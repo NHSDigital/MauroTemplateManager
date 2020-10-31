@@ -10,7 +10,7 @@ Imports uuid = System.Guid
 Imports mandatoryString = System.String
 Imports multiplicity = System.Int32
 
-Namespace MauroAPI
+Namespace MauroModel
 
     Public Class dataTypeDomainTypeEnum : Inherits enumerationValueType
 

@@ -1,9 +1,9 @@
 ﻿Imports System.Text.RegularExpressions
 Imports System.Text.Json
-Imports MauroClasses
-Imports MauroClasses.MauroAPI
-Imports MauroClasses.MauroAPI.FreemarkerProject
 Imports ScintillaNET
+Imports MauroDataModeller.MauroTemplates
+Imports MauroDataModeller.MauroModel
+Imports MauroDataModeller.Settings
 
 Public Class frmMain
 
@@ -13,7 +13,7 @@ Public Class frmMain
     Dim ProjectDirty As Boolean = False
     Dim AppSettings As New ApplicationSettings("Mauro")
     Dim RecentFiles As List(Of ApplicationSettings.AppSetting)
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub MauroDataManager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         RefreshStatus()
         RefreshRecentFileList()
         InitColors()
@@ -23,11 +23,11 @@ Public Class frmMain
 
 #Region "File open, save, close"
     ''' <summary>
-    ''' Creates a new project
+    ''' Creates a new Mauro Template Manager project
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub mnuNew_Click(sender As Object, e As EventArgs) Handles mnuNew.Click
+    Private Sub mnuNew_Click(sender As Object, e As EventArgs) Handles mnuNew.Click, tsFile.Click
 
         Dim DefaultURI As Uri
         Dim EndpointURL As String = AppSettings.GetAppSetting("EndpointConnection", "https://localhost")
@@ -51,11 +51,11 @@ Public Class frmMain
     End Sub
 
     ''' <summary>
-    ''' Opens a file and loads the project if valid, updating the form as appropriate
+    ''' Opens a file selected using the open file dialogue and loads the project if it is valid, updating the form as appropriate
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub mnuOpen_Click(sender As Object, e As EventArgs) Handles OpenToolStripMenuItem.Click
+    Private Sub mnuOpen_Click(sender As Object, e As EventArgs) Handles OpenToolStripMenuItem.Click, tsOpenProject.Click
         StatusEndpoint.Text = "Opening ..."
         OpenDialogue.Filter = "Mauro Project JSON|*.json"
         OpenDialogue.Title = "Mauro Project"
@@ -63,23 +63,32 @@ Public Class frmMain
         Dim DiagRes As DialogResult = OpenDialogue.ShowDialog()
 
         If Not (DiagRes = DialogResult.Cancel) Then
-            OpenFile(OpenDialogue.FileName)
+            OpenMauroTemplateManagerProject(OpenDialogue.FileName)
         End If
 
         Tabs.SelectedIndex = 1
     End Sub
-    Private Sub mnuOpenRecent_Click(sender As Object, e As EventArgs) Handles mnuOpenRecent.Click
+    ''' <summary>
+    ''' Open the last Mauro Template Manager project file used
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub mnuOpenRecent_Click(sender As Object, e As EventArgs) Handles tsOpenLast.Click
         Dim s As List(Of ApplicationSettings.AppSetting) = AppSettings.GetAppSettingAll("RecentFileList")
         If s.Count > 0 Then
             Dim Filename As String = s(0).Value
-            OpenFile(Filename)
+            OpenMauroTemplateManagerProject(Filename)
         Else
             MsgBox("There have not been any recent files", vbCritical)
         End If
 
         Tabs.SelectedIndex = 2
     End Sub
-    Public Sub OpenFile(Filename As String)
+    ''' <summary>
+    ''' Opens a project and attempts to log into the Mauro endpoint specified in the project 
+    ''' </summary>
+    ''' <param name="Filename">The filename containing the Mauro Template Manager Project</param>
+    Public Sub OpenMauroTemplateManagerProject(Filename As String)
         project = Nothing
         Try
             project = New Project(Filename)
@@ -119,22 +128,21 @@ Public Class frmMain
         RefreshRecentFileList()
     End Sub
     ''' <summary>
-    ''' Saves the project to JSON to the existing filename
+    ''' Saves the active Mauro Template Manager project to JSON using the existing filename
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub mnuSave_Click(sender As Object, e As EventArgs) Handles mnuSave.Click
+    Private Sub mnuSave_Click(sender As Object, e As EventArgs) Handles mnuSave.Click, tsSave.Click
         DoSave() ' Saves without changing the filename
-
         RefreshStatus()
     End Sub
 
     ''' <summary>
-    ''' Saves the project as JSON to a new filename
+    ''' Saves the project as JSON to a new filename specified in the Save File Dialogue
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub mnuSaveAs_Click(sender As Object, e As EventArgs) Handles mnuSaveAs.Click
+    Private Sub mnuSaveAs_Click(sender As Object, e As EventArgs) Handles mnuSaveAs.Click, tsSaveAs.Click
         StatusEndpoint.Text = "Opening ..."
         SaveDialogue.Filter = "Mauro Project JSON|*.json"
         SaveDialogue.Title = "Save Mauro Project as"
@@ -149,40 +157,49 @@ Public Class frmMain
         RefreshStatus()
     End Sub
 
+    ''' <summary>
+    ''' Actions the saving of a Mauro Template Manager file to disk
+    ''' </summary>
+    ''' <param name="Filename">File to save the project to</param>
     Public Sub DoSave(Optional Filename As String = "")
-        Dim SavePass As MsgBoxResult = MsgBox("Do you want to save your password in this file?", vbYesNo Or MsgBoxStyle.DefaultButton2 Or vbQuestion, "Save project " & project.Filename)
+        Dim pwdSave As Boolean = False
+        If AppSettings.GetAppSetting("SavePassword") = "true" Then
+            Dim MBRSavePass As MsgBoxResult = MsgBox("Do you want to save your password in this file?", vbYesNo Or MsgBoxStyle.DefaultButton2 Or vbQuestion, "Save project " & project.Filename)
+            If MBRSavePass = MsgBoxResult.Yes Then
+                pwdSave = True
+            End If
+        End If
         Dim s As String
-        Select Case SavePass
-            Case MsgBoxResult.Yes
-                project.SaveProject(False, Filename)
-                s = AppSettings.GetAppSetting("ConnectionEndpoint", "")
-                If s = "" Then
-                    AppSettings.SetAppSetting("EndpointConnection", project.Endpoint.EndpointURL.ToString)
-                End If
-                s = AppSettings.GetAppSetting("DefaultUsername", "")
-                If s = "" Then
-                    AppSettings.SetAppSetting("DefaultUsername", project.Endpoint.Username)
-                End If
-                project.Filename = Filename
-                ProjectDirty = False
-            Case MsgBoxResult.No
-                project.SaveProject(True, Filename)
-                s = AppSettings.GetAppSetting("ConnectionEndpoint", "")
-                If s = "" Then
-                    AppSettings.SetAppSetting("EndpointConnection", project.Endpoint.EndpointURL.ToString)
-                End If
-                s = AppSettings.GetAppSetting("DefaultUsername", "")
-                If s = "" Then
-                    AppSettings.SetAppSetting("DefaultUsername", project.Endpoint.Username)
-                End If
-                project.Filename = Filename
-                ProjectDirty = False
-            Case Else
-
-        End Select
+        If pwdSave Then
+            project.SaveProject(False, Filename)
+            s = AppSettings.GetAppSetting("ConnectionEndpoint", "")
+            If s = "" Then
+                AppSettings.SetAppSetting("EndpointConnection", project.Endpoint.EndpointURL.ToString)
+            End If
+            s = AppSettings.GetAppSetting("DefaultUsername", "")
+            If s = "" Then
+                AppSettings.SetAppSetting("DefaultUsername", project.Endpoint.Username)
+            End If
+            project.Filename = Filename
+            ProjectDirty = False
+        Else
+            project.SaveProject(True, Filename)
+            s = AppSettings.GetAppSetting("ConnectionEndpoint", "")
+            If s = "" Then
+                AppSettings.SetAppSetting("EndpointConnection", project.Endpoint.EndpointURL.ToString)
+            End If
+            s = AppSettings.GetAppSetting("DefaultUsername", "")
+            If s = "" Then
+                AppSettings.SetAppSetting("DefaultUsername", project.Endpoint.Username)
+            End If
+            project.Filename = Filename
+            ProjectDirty = False
+        End If
     End Sub
 
-
+    ''' <summary>
+    ''' Update the display list of the most recently accessed files.
+    ''' </summary>
     Public Sub RefreshRecentFileList()
         RecentFiles = AppSettings.GetAppSettingAll("RecentFileList")
         mnuOpenRecent.DropDownItems.Clear()
@@ -193,15 +210,19 @@ Public Class frmMain
             m.Name = "Recent" & setting.Sequence.ToString
 
             AddHandler m.Click, AddressOf OpenRecentFileHandler
-                mnuOpenRecent.DropDownItems.Add(m)
+            mnuOpenRecent.DropDownItems.Add(m)
 
         Next
     End Sub
-
+    ''' <summary>
+    ''' Event handler for each of the most recently accessed file menu items
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Public Sub OpenRecentFileHandler(ByVal sender As Object, ByVal e As EventArgs)
         If CType(sender, ToolStripMenuItem).Name.StartsWith("Recent") Then
             Dim Filename As String = CType(sender, ToolStripMenuItem).Text
-            OpenFile(Filename)
+            OpenMauroTemplateManagerProject(Filename)
         End If
 
     End Sub
@@ -278,16 +299,7 @@ Public Class frmMain
             RefreshQueue()
             RefreshModelList()
             RedrawActionList()
-            ' Populate the actions
-            lstActions.DataSource = project.Actions
-            lstActions.DisplayMember = "Name"
-            lstActions.ValueMember = "id"
 
-            If lstActions.Items.Count > 0 Then
-                If lstActions.SelectedIndex = -1 Then
-                    lstActions.SelectedIndex = 0
-                End If
-            End If
             'tvQueue.ExpandAll()
         Else
             StatusEndpoint.Text = "Not connected"
@@ -300,7 +312,9 @@ Public Class frmMain
 
         Application.DoEvents()
     End Sub
-
+    ''' <summary>
+    ''' Refresh the display of the queue metrics
+    ''' </summary>
     Private Sub RefreshQueue()
 
         ' Update the queue
@@ -393,6 +407,9 @@ Public Class frmMain
             Next
         End If
     End Sub
+    ''' <summary>
+    ''' Refresh the list of models available to select in the project and the models that have been selected
+    ''' </summary>
     Private Sub RefreshModelList()
 
         ' Update the model list boxes
@@ -408,30 +425,26 @@ Public Class frmMain
 
             Dim AllModels As List(Of Model) = EndpointConnection.MauroModels.items
 
-            Dim SelectedModels = From p In project.Models
+            Dim SelectedModels = From ModelGUID In project.Models
                                  Join m In AllModels
-                   On p Equals m.id
-                                 Select p, m.label
+                   On ModelGUID Equals m.id
+                                 Select ModelGUID, m.label
 
             Dim MissingModels As Integer = project.Models.Count - SelectedModels.Count
-            'If MissingModels <> 0 Then
-            '    MsgBox(MissingModels.ToString & " models are no longer available on the Mauro server.  Saving this project will remove missing models.", MsgBoxStyle.Exclamation, "Missing models")
 
-            '    For i = project.Models.Count - 1 To 0 Step -1
-            '        Dim id As Guid = project.Models(i)
-            '        If EndpointConnection.MauroModels.items.FindAll(Function(x) x.id = id).Count = 0 Then
-            '            project.Models.RemoveAt(i)
-            '        End If
-            '        i -= 1
-            '    Next
-            'End If
             lstGUIDs.DataSource = SelectedModels.ToList
             lstGUIDs.DisplayMember = "Label"
-            lstGUIDs.ValueMember = "p"
+            lstGUIDs.ValueMember = "ModelGUID"
         End If
 
 
     End Sub
+    ''' <summary>
+    ''' Update the output display when the selected action changes
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+
     Private Sub UpdateActionEntryResult(sender As Object, e As TreeNodeMouseClickEventArgs) Handles tvQueue.NodeMouseClick
         Dim n As TreeNode = e.Node
         If n.GetNodeCount(False) > 0 Then
@@ -464,10 +477,15 @@ Public Class frmMain
 
     End Sub
 
+    ''' <summary>
+    ''' Update the edit controls for the selected action
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub RefreshActions(sender As Object, e As EventArgs) Handles lstActions.SelectedIndexChanged
 
         If lstActions.SelectedIndex >= 0 Then
-            With CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction)
+            With CType(lstActions.SelectedItem, FreemarkerAction)
                 textName.Text = .Name
                 textDesription.Text = .Description
 
@@ -489,7 +507,9 @@ Public Class frmMain
 
     End Sub
 
-
+    ''' <summary>
+    ''' Redraw the list of available actions
+    ''' </summary>
     Public Sub RedrawActionList()
         Dim selIndex As Integer = lstActions.SelectedIndex
 
@@ -501,9 +521,11 @@ Public Class frmMain
 
         If lstActions.Items.Count > 0 Then
             scActions.Panel2.Enabled = True
+            If lstActions.SelectedIndex = -1 Then
+                lstActions.SelectedIndex = 0
+            End If
         Else
             scActions.Panel2.Enabled = False
-
         End If
     End Sub
 #End Region
@@ -550,20 +572,20 @@ Public Class frmMain
 
     End Sub
     Private Sub PrefixChanged(sender As Object, e As EventArgs) Handles TextFilePrefix.TextChanged
-        CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).FilePrefix = TextFilePrefix.Text
+        CType(lstActions.SelectedItem, FreemarkerAction).FilePrefix = TextFilePrefix.Text
         SetDirty()
     End Sub
 
     Private Sub TemplateChanged(sender As Object, e As EventArgs) Handles txtTemplate.TextChanged
         If lstActions.SelectedIndex >= 0 Then
-            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).Template = txtTemplate.Text
+            CType(lstActions.SelectedItem, FreemarkerAction).Template = txtTemplate.Text
         End If
         SetDirty()
 
     End Sub
 
     Private Sub SuffixChanged(sender As Object, e As EventArgs) Handles textFileSuffix.TextChanged
-        CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).FileSuffix = textFileSuffix.Text
+        CType(lstActions.SelectedItem, FreemarkerAction).FileSuffix = textFileSuffix.Text
         SetDirty()
     End Sub
 
@@ -574,14 +596,14 @@ Public Class frmMain
     ''' <param name="e"></param>
     Private Sub ActionTypeChanged(sender As Object, e As EventArgs) Handles rbModel.CheckedChanged, rbClass.CheckedChanged, rbTerminology.CheckedChanged
         If rbModel.Checked Then
-            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = ActionTypes.actionSingleModel
+            CType(lstActions.SelectedItem, FreemarkerAction).ActionType = ActionTypes.actionSingleModel
         ElseIf rbClass.Checked Then
-            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = ActionTypes.actionClass
+            CType(lstActions.SelectedItem, FreemarkerAction).ActionType = ActionTypes.actionClass
         ElseIf rbAllModels.Checked Then
-            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = ActionTypes.actionAllModels
+            CType(lstActions.SelectedItem, FreemarkerAction).ActionType = ActionTypes.actionAllModels
 
         Else
-            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).ActionType = ActionTypes.actionTerminology
+            CType(lstActions.SelectedItem, FreemarkerAction).ActionType = ActionTypes.actionTerminology
         End If
 
         SetDirty()
@@ -589,7 +611,7 @@ Public Class frmMain
 
     Private Sub ActionNameChanged(sender As Object, e As EventArgs) Handles textName.Leave
         Try
-            CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).Name = textName.Text
+            CType(lstActions.SelectedItem, FreemarkerAction).Name = textName.Text
             RedrawActionList()
         Catch ex As Exception
         End Try
@@ -598,14 +620,14 @@ Public Class frmMain
     End Sub
 
     Private Sub ActionDesciptionChanged(sender As Object, e As EventArgs) Handles textDesription.TextChanged
-        CType(lstActions.SelectedItem, FreemarkerProject.FreemarkerAction).Description = textDesription.Text
+        CType(lstActions.SelectedItem, FreemarkerAction).Description = textDesription.Text
         SetDirty()
     End Sub
 #End Region
 
 #Region "Handle mouse clicks"
     Private Sub cmdAddAction_Click(sender As Object, e As EventArgs) Handles cmdAddAction.Click
-        Dim act As New FreemarkerProject.FreemarkerAction With {
+        Dim act As New FreemarkerAction With {
             .ActionType = ActionTypes.actionSingleModel,
             .FilePrefix = "Model_",
             .FileSuffix = ".txt",
@@ -618,12 +640,28 @@ Public Class frmMain
         RedrawActionList()
     End Sub
 
-
-
-
     Private Sub cmdAdd_Click(sender As Object, e As EventArgs) Handles cmdAdd.Click
         For Each itm As Model In lstModels.SelectedItems
             project.Models.Add(itm.id)
+        Next
+        RefreshStatus()
+    End Sub
+
+    Private Sub cmdAddGUID_Click(sender As Object, e As EventArgs) Handles cmdAddGUID.Click
+        Dim id As Guid
+        Try
+            id = New Guid(txtModelGUID.Text)
+            project.Models.Add(id)
+        Catch ex As Exception
+            MsgBox("The guid was Not valid", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkOnly, "Invalid GUID")
+        End Try
+        RefreshStatus()
+    End Sub
+
+
+    Private Sub cmdRemoveModel_Click(sender As Object, e As EventArgs) Handles cmdRemoveModel.Click
+        For Each ModelListEntry As Object In lstGUIDs.SelectedItems
+            project.Models.Remove(project.Models.Find(Function(x) x.ToString = ModelListEntry.modelguid.ToString))
         Next
         RefreshStatus()
     End Sub
@@ -638,7 +676,7 @@ Public Class frmMain
     End Sub
 
     Private Sub cmdSingleAction_Click(sender As Object, e As EventArgs) Handles cmdSingleAction.Click
-        Dim act As FreemarkerProject.FreemarkerAction = lstActions.SelectedItem
+        Dim act As FreemarkerAction = lstActions.SelectedItem
         Dim OutputDirectory As String = "C:\git\TemplateOutput"
 
         If project.Models.Count = 0 Then ' Process all the models
@@ -669,9 +707,9 @@ Public Class frmMain
         End If
         Tabs.SelectedIndex = 3
         Application.DoEvents()
-        RunActionEntryQueue()
-        'StartActionEntryQueueAsync()
-        ' TimerReset()
+        ' RunActionEntryQueue()
+        StartActionEntryQueueAsync(20)
+        TimerReset()
     End Sub
 
     Private Sub cmdDoAll_Click(sender As Object, e As EventArgs) Handles cmdDoAll.Click
@@ -710,6 +748,11 @@ Public Class frmMain
 #End Region
 
 #Region "Supporting functions"
+    ''' <summary>
+    ''' Event handler to handle the action queue timer refresh
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
     Private Sub TimerElapsed(sender As Object, e As EventArgs) Handles Timer1.Tick
         TimerReset()
     End Sub
@@ -726,16 +769,16 @@ Public Class frmMain
         QueueProgress.Maximum = Total
         QueueProgress.Value = s + f
         If q = 0 And i = 0 Then
-            RefreshStatus()
+            RefreshQueue()
         Else
             Timer1.Enabled = True
             Timer1.Start()
-            RefreshStatus()
+            RefreshQueue()
         End If
         Application.DoEvents()
-        If q > 0 And i = 0 Then
+        If q > 0 And i < 20 Then
             ' Restart the queue
-            StartActionEntryQueueAsync()
+            StartActionEntryQueueAsync(20)
         End If
     End Sub
     ''' <summary>
@@ -830,5 +873,7 @@ Public Class frmMain
         ActionEntries.Clear()
         RefreshQueue()
     End Sub
+
+
 #End Region
 End Class

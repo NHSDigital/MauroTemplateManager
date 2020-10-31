@@ -1,0 +1,1 @@
+search_result['38']=["frlrfMauroDataModellerMauroModelclassifiersTypeClassTopic_attached_props--.html","classifiersType Attached Properties",""];

@@ -1,9 +1,0 @@
-﻿POST api/dataModels/${id}/template​
-
-POST api/terminologies/${id}/template​
-
-POST api/dataModels/${id1}/diff/${id2}/template​
-
-POST api/dataModels/${dataModelId}/dataClasses/${parentDataClassId}/dataElements/${dataElementId}/template
-
-dataModel.dataTypes to get all datatypes in the model, or you can do dataElement.dataType to get the datatype for a particular element.  You'd want to filter on dataType.domainType == "EnumerationType" to pick out those that are enumerations... from there enumerationType.enumerationValues will get you the list of possible values; each has a key and a value​

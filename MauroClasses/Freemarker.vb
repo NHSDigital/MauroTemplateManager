@@ -2,10 +2,8 @@
 Imports System.Text.Json
 Imports System.Text.RegularExpressions
 Imports System.Threading
-Imports System.Web
-Imports MauroClasses.MauroAPI.FreemarkerProject
-
-Namespace MauroAPI
+Imports MauroDataModeller.MauroModel
+Namespace MauroTemplates
     Public Module Freemarker
 
         Const ModelTemplateAPI = "/api/dataModels/$MODEL$/template"
@@ -14,7 +12,7 @@ Namespace MauroAPI
         ''' </summary>
         ''' <param name="Project">Project containing the models and actions</param>
         ''' <param name="OutputDirectory">Filepath as a string for the output directory.  If not specified the application current directory is used.</param>
-        Public Sub QueueProjectActionEntries(Project As FreemarkerProject.Project, Optional OutputDirectory As String = "")
+        Public Sub QueueProjectActionEntries(Project As Project, Optional OutputDirectory As String = "")
 
             ' If the current directory isn't specified, use the applicaiton's current directory 
             If OutputDirectory = "" Then OutputDirectory = Environment.CurrentDirectory
@@ -59,14 +57,13 @@ Namespace MauroAPI
                         'ProcessActionForModel(m, act, OutputDirectory)
                     Next
                 End If
-
-
-                'End If
-
             Next
         End Sub
-
-        Public Sub StartActionEntryQueueAsync(Optional limit As Integer = 20)
+        ''' <summary>
+        ''' Checks the queue of pending action entries and if there are less than the limit in progress, initiates separate threads for pending entries up to the limit.
+        ''' </summary>
+        ''' <param name="limit">MAximum number of threads to be running at once</param>
+        Public Sub StartActionEntryQueueAsync(limit As Integer)
             Dim i As Integer = 0
             For Each ae As ActionEntry In ActionEntries.Entries.Where(Function(x) x.Status = ActionOutcomeStatus.NotStarted)
                 ' newEntry.Start()
@@ -78,12 +75,16 @@ Namespace MauroAPI
             Next
         End Sub
 
-        Public Sub RunActionEntryQueue()
+        ''' <summary>
+        ''' Run all the pending action entries in the queue synchronously.
+        ''' </summary>
+        ''' <remarks>
+        ''' It is recommended StartActionEntryQueueAsync
+        ''' </remarks>
+        Public Sub RunActionEntryQueueSync()
             For Each ae As ActionEntry In ActionEntries.Entries.Where(Function(x) x.Status = ActionOutcomeStatus.NotStarted)
                 ProcessActionEntry(ae)
-
             Next
-
         End Sub
         ''' <summary>
         ''' Execute a single action for a single model
@@ -91,7 +92,7 @@ Namespace MauroAPI
         ''' <param name="MauroModel">Model metadata to execute against</param>
         ''' <param name="Action">Action to execute</param>
         ''' <param name="OutputDirectory">Filepath as a string for the output directory</param>
-        Public Sub ProcessActionForModel(MauroModel As Model, Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String, ByRef ActionResponses As List(Of ActionResponse))
+        Public Sub ProcessActionForModel(MauroModel As Model, Action As FreemarkerAction, OutputDirectory As String, ByRef ActionResponses As List(Of ActionResponse))
             Debug.WriteLine("ProcessActionForModel with {0}, {1}", MauroModel.label, Action.Name)
 
             Dim SuccessCount As Integer = 0
@@ -128,6 +129,10 @@ Namespace MauroAPI
 
         End Sub
 
+        ''' <summary>
+        ''' Executes an ActionEntrt definition against the current endpoint
+        ''' </summary>
+        ''' <param name="ActionEntry">Action template and list of models to apply</param>
         Public Sub ProcessActionEntry(ByRef ActionEntry As ActionEntry)
             ' Dim res As New List(Of ActionResponse)
             Try
@@ -158,12 +163,22 @@ Namespace MauroAPI
             End If
 
         End Sub
-        Public Function PrettyJson(ByVal unPrettyJson As String) As String
+        ''' <summary>
+        ''' Show a JSON file indented
+        ''' </summary>
+        ''' <remarks>
+        ''' Applies JSON serialisation with writeIndented = true
+        ''' </remarks>
+        ''' <param name="uglyJSON">JSON text in minifieed or inconsistent form</param>
+        ''' <returns>
+        ''' JSON text in pretty form
+        ''' </returns>
+        Public Function PrettyJson(ByVal uglyJSON As String) As String
             Dim options = New JsonSerializerOptions() With {
         .WriteIndented = True
     }
 
-            Dim jsonElement = JsonSerializer.Deserialize(Of JsonElement)(unPrettyJson)
+            Dim jsonElement = JsonSerializer.Deserialize(Of JsonElement)(uglyJSON)
 
 
             Dim s As String = JsonSerializer.Serialize(jsonElement, options)
@@ -173,8 +188,15 @@ Namespace MauroAPI
             s = Replace(s, "\n", vbCrLf)
             Return s
         End Function
-
-        Private Function ProcessModelClass(MauroModel As Model, MauroClass As dataClassType, Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String) As List(Of ActionResponse)
+        ''' <param name="MauroModel">The Mauro model to apply the template to</param>
+        ''' <param name="MauroClass">The class within the model to apply the template
+        ''' to</param>
+        ''' <param name="Action">The action / template to apply</param>
+        ''' <param name="OutputDirectory">The directory to store the output file in</param>
+        ''' <returns>
+        ''' A list of actionresponses
+        ''' </returns>
+        Private Function ProcessModelClass(MauroModel As Model, MauroClass As dataClassType, Action As FreemarkerAction, OutputDirectory As String) As List(Of ActionResponse)
             Dim fname As String = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & RemoveIllegalFileNameChars(MauroModel.label & " - " & MauroClass.label) & Action.FileSuffix
             Console.Write(fname)
 
@@ -222,6 +244,12 @@ Namespace MauroAPI
             Return ResList
         End Function
 
+        ''' <summary>
+        ''' Create a sparse error file in HTML showing the error and the template
+        ''' </summary>
+        ''' <param name="FileStream">Destination filestream</param>
+        ''' <param name="Action">Freemarker action causing the error</param>
+        ''' <param name="Response">The http response from the API</param>
         Public Sub WriteErrorFile(FileStream As StreamWriter, Action As FreemarkerAction, Response As PostResponse)
             ' Write out the error
 
@@ -259,7 +287,13 @@ Namespace MauroAPI
             FileStream.WriteLine("</body>")
             FileStream.WriteLine("</html>")
         End Sub
-        Private Function ProcessModelOnly(MauroModel As Model, Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String) As ActionResponse
+        ''' <summary>
+        ''' Execute a template against a model
+        ''' </summary>
+        ''' <param name="MauroModel">Model to excecute the template against</param>
+        ''' <param name="Action">The action (including template) to execute</param>
+        ''' <param name="OutputDirectory"></param>
+        Private Function ProcessModelOnly(MauroModel As Model, Action As FreemarkerAction, OutputDirectory As String) As ActionResponse
             Dim fname As String = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & RemoveIllegalFileNameChars(MauroModel.label) & Action.FileSuffix
             Console.Write(fname)
 
@@ -309,7 +343,7 @@ Namespace MauroAPI
             End Try
             Return ActResp
         End Function
-        Private Function ProcessAllModels(Models As List(Of Guid), Action As FreemarkerProject.FreemarkerAction, OutputDirectory As String) As List(Of ActionResponse)
+        Private Function ProcessAllModels(Models As List(Of Guid), Action As FreemarkerAction, OutputDirectory As String) As List(Of ActionResponse)
             Dim fname As String = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & Action.FileSuffix
             Console.Write(fname)
 

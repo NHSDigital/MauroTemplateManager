@@ -1,0 +1,1 @@
+search_result['329']=["topic_00000000000000C1.html","dataTypeType.units Property","Optional if domainType is \"PrimitiveType\". Ignored otherwise"];
