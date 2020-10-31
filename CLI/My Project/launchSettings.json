@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "MauroTemplate": {
+      "commandName": "Project",
+      "commandLineArgs": "-o C:\\GIT\\TemplateOutput -u nicholas.oughtibridge@nhs.net \"c:\\users\\nicholas\\project - class - simple.json\""
+    }
+  }
+}

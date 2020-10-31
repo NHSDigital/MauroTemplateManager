@@ -53,7 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="MauroClasses\MauroClasses.vbproj" />
+    <ProjectReference Include="..\MauroClasses\MauroClasses.vbproj" />
   </ItemGroup>
 
 </Project>
