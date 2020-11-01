@@ -10,15 +10,37 @@ Public Class frmMain
     Public project As Project
 
     Dim ProjectLoaded As Boolean = False
-    Dim ProjectDirty As Boolean = False
+    Private locDirty As Boolean = False
+    Private Property ProjectDirty As Boolean
+        Get
+            Return locDirty
+        End Get
+        Set(value As Boolean)
+            If value Then
+                SavedState.Text = "Unsaved changes"
+            Else
+                SavedState.Text = "No changess"
+            End If
+            locDirty = value
+        End Set
+    End Property
+
     Dim AppSettings As New ApplicationSettings("Mauro")
     Dim RecentFiles As List(Of ApplicationSettings.AppSetting)
+
     Private Sub MauroDataManager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         RefreshStatus()
         RefreshRecentFileList()
-        InitColors()
-        InitSyntaxColoring()
-        InitNumberMargin()
+        RefreshQueue()
+
+        InitColors(txtTemplate)
+        InitColors(txtPostBody)
+        InitSyntaxColoring(txtTemplate)
+        InitSyntaxColoring(txtPostBody)
+
+        InitNumberMargin(txtTemplate)
+        InitNumberMargin(txtPostBody)
+
     End Sub
 
 #Region "File open, save, close"
@@ -27,7 +49,7 @@ Public Class frmMain
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub mnuNew_Click(sender As Object, e As EventArgs) Handles mnuNew.Click, tsFile.Click
+    Private Sub mnuNew_Click(sender As Object, e As EventArgs) Handles mnuNew.Click, tsNewProject.Click
 
         Dim DefaultURI As Uri
         Dim EndpointURL As String = AppSettings.GetAppSetting("EndpointConnection", "https://localhost")
@@ -40,7 +62,10 @@ Public Class frmMain
             DefaultURI = New Uri("https://localhost")
         End Try
         project = New Project(DefaultURI, Username, Password)
-        EndpointConnection.Login()
+        If Not EndpointConnection.LoginStatus Then
+            EndpointConnection.Login()
+        End If
+
         EndpointConnection.GetModels()
 
         txtEndpointURL.Text = project.Endpoint.EndpointURL.ToString
@@ -67,6 +92,7 @@ Public Class frmMain
         End If
 
         Tabs.SelectedIndex = 1
+
     End Sub
     ''' <summary>
     ''' Open the last Mauro Template Manager project file used
@@ -81,7 +107,6 @@ Public Class frmMain
         Else
             MsgBox("There have not been any recent files", vbCritical)
         End If
-
         Tabs.SelectedIndex = 2
     End Sub
     ''' <summary>
@@ -90,6 +115,7 @@ Public Class frmMain
     ''' <param name="Filename">The filename containing the Mauro Template Manager Project</param>
     Public Sub OpenMauroTemplateManagerProject(Filename As String)
         project = Nothing
+        Dim dirty As Boolean = ProjectDirty
         Try
             project = New Project(Filename)
 
@@ -109,10 +135,15 @@ Public Class frmMain
             End If
 
             EndpointConnection.Login()
+            If EndpointConnection.LoginStatus Then
+                project.Endpoint.EndpointURL = EndpointConnection.Endpoint
+                project.Endpoint.Username = EndpointConnection.Username
+                project.Endpoint.Password = EndpointConnection.Password
+            End If
             EndpointConnection.GetModels()
 
             ProjectLoaded = True
-            ProjectDirty = False
+            dirty = False
             AppSettings.AddOrMoveToStart("RecentFileList", project.Filename)
         Catch ex As Exception
             If IsNothing(project) Then
@@ -120,12 +151,17 @@ Public Class frmMain
                 MsgBox(ex.Message,, "Unable to open file")
             Else
                 ProjectLoaded = True
-                MsgBox(ex.Message,, "Unable to connect to " & EndpointConnection.Endpoint)
+                MsgBox(ex.Message,, "Unable to connect to " & EndpointConnection.Endpoint.ToString)
             End If
 
         End Try
+
         RefreshStatus()
+        RefreshModelList()
+        RedrawActionList()
         RefreshRecentFileList()
+        RefreshQueue()
+        ProjectDirty = dirty
     End Sub
     ''' <summary>
     ''' Saves the active Mauro Template Manager project to JSON using the existing filename
@@ -133,8 +169,7 @@ Public Class frmMain
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub mnuSave_Click(sender As Object, e As EventArgs) Handles mnuSave.Click, tsSave.Click
-        DoSave() ' Saves without changing the filename
-        RefreshStatus()
+        DoSave(project.Filename) ' Saves without changing the filename
     End Sub
 
     ''' <summary>
@@ -154,7 +189,6 @@ Public Class frmMain
             AppSettings.AddOrMoveToStart("RecentFileList", project.Filename)
             RefreshRecentFileList()
         End If
-        RefreshStatus()
     End Sub
 
     ''' <summary>
@@ -195,6 +229,7 @@ Public Class frmMain
             project.Filename = Filename
             ProjectDirty = False
         End If
+        RefreshStatus()
     End Sub
 
     ''' <summary>
@@ -202,17 +237,24 @@ Public Class frmMain
     ''' </summary>
     Public Sub RefreshRecentFileList()
         RecentFiles = AppSettings.GetAppSettingAll("RecentFileList")
+
         mnuOpenRecent.DropDownItems.Clear()
+        If RecentFiles.Count = 0 Then
+            tsOpenLast.Enabled = False
+            mnuOpenRecent.Enabled = False
+        Else
+            tsOpenLast.Enabled = True
+            mnuOpenRecent.Enabled = True
+            For Each setting As ApplicationSettings.AppSetting In RecentFiles
+                Dim m As New ToolStripMenuItem
+                m.Text = setting.Value
+                m.Name = "Recent" & setting.Sequence.ToString
 
-        For Each setting As ApplicationSettings.AppSetting In RecentFiles
-            Dim m As New ToolStripMenuItem
-            m.Text = setting.Value
-            m.Name = "Recent" & setting.Sequence.ToString
+                AddHandler m.Click, AddressOf OpenRecentFileHandler
+                mnuOpenRecent.DropDownItems.Add(m)
+            Next
+        End If
 
-            AddHandler m.Click, AddressOf OpenRecentFileHandler
-            mnuOpenRecent.DropDownItems.Add(m)
-
-        Next
     End Sub
     ''' <summary>
     ''' Event handler for each of the most recently accessed file menu items
@@ -247,9 +289,10 @@ Public Class frmMain
     Public Sub RefreshStatus()
         mnuSave.Enabled = ProjectLoaded
         mnuSaveAs.Enabled = ProjectLoaded
-
+        tsSave.Enabled = ProjectLoaded
+        tsSaveAs.Enabled = ProjectLoaded
         If ProjectLoaded Then
-
+            Dim dirty As Boolean = ProjectDirty
             ' Set up the tabbed dialogue 
             Tabs.Visible = True
             Me.BackgroundImageLayout = ImageLayout.None
@@ -268,14 +311,8 @@ Public Class frmMain
 
             ' Set up the status bar
             StatusFilename.Text = project.Filename
-            StatusEndpoint.Text = project.Endpoint.EndpointURL.ToString
+            StatusEndpoint.Text = EndpointConnection.Endpoint.ToString
 
-            'LoginStatus.Text = EndpointConnection.LoginDetails.userRole
-            If ProjectDirty Then
-                SavedState.Text = "Unsaved changes"
-            Else
-                SavedState.Text = "No changes"
-            End If
 
             If EndpointConnection.LoginStatus And (EndpointConnection.Username <> "") Then
                 cmdLogInOut.Text = "Log out"
@@ -300,6 +337,8 @@ Public Class frmMain
             RefreshModelList()
             RedrawActionList()
 
+            ProjectDirty = dirty
+            'LoginStatus.Text = EndpointConnection.LoginDetails.userRole
             'tvQueue.ExpandAll()
         Else
             StatusEndpoint.Text = "Not connected"
@@ -319,16 +358,20 @@ Public Class frmMain
 
         ' Update the queue
         If ActionEntries.Entries.Count = 0 Then
+            tvQueue.Nodes.Clear()
             Counters.Text = "No actions taken"
-            Queue.Visible = False
-
+            tvQueue.Visible = False
+            pnlTVQueueButtons.Visible = False
+            pbProgressHidden.Visible = True
         Else
+            tvQueue.Visible = True
+            pnlTVQueueButtons.Visible = True
+            pbProgressHidden.Visible = False
             Counters.Text = "Waiting: " & ActionEntries.NotStarted.ToString
             Counters.Text &= " Executing: " & ActionEntries.InProgress.ToString
             Counters.Text &= " Success: " & ActionEntries.Success.ToString
             Counters.Text &= " Fail: " & ActionEntries.Failed.ToString
 
-            Queue.Visible = True
             tvQueue.Nodes.Clear()
             Dim RootNode, ModelNode As TreeNode
             RootNode = New TreeNode With {
@@ -365,6 +408,8 @@ Public Class frmMain
                         Else
                             NewLabel = "Unknown model"
                         End If
+
+                        ' Add the model node
                         ModelNode = New TreeNode With {
                                     .Text = NewLabel,
                                     .Tag = e.ActionEntryID.ToString,
@@ -383,10 +428,13 @@ Public Class frmMain
                                 Dim n As New TreeNode With {
                                 .Text = r.ResponseDescription,
                                 .Name = r.ResponseID.ToString,
-                                .Tag = r.Response.Result.RequestMessage.RequestUri.ToString,
-                                .ImageIndex = e.Status
+                                                                .ImageIndex = e.Status
                                 }
-
+                                If Not IsNothing(r.Response) Then
+                                    n.Tag = r.Response.Result.RequestMessage.RequestUri.ToString
+                                Else
+                                    n.Tag = r.ResponseID.ToString
+                                End If
                                 ModelNode.Nodes.Add(n)
                             Next
                             ActionNode.Nodes.Add(ModelNode)
@@ -453,23 +501,36 @@ Public Class frmMain
         Try
 
             For Each ae As ActionEntry In ActionEntries.Entries
-
-
-
                 For Each pr As ActionResponse In ae.ActionResponses
                     If pr.ResponseID.ToString = n.Name Then
+                        If Not IsNothing(pr.Response) Then
+                            Dim ResponseText As String = pr.Response.Body
+                            Try
+                                ResponseText = PrettyJson(ResponseText)
+                                txtPostBody.Lexer = Lexer.Json
+                            Catch
+                                Select Case ae.Action.FileSuffix.ToLower
+                                    Case ".xml", ".dita", ".ditamap", ".bookmap"
+                                        txtPostBody.Lexer = Lexer.Xml
+                                    Case ".htm", ".html"
+                                        txtPostBody.Lexer = Lexer.Html
+                                    Case ".bat"
+                                        txtPostBody.Lexer = Lexer.Batch
+                                    Case Else
+                                        txtPostBody.Lexer = Lexer.Null
+                                End Select
+                                ' if there is an error, just show the text
+                            End Try
 
-                        Dim ResponseText As String = pr.Response.Body
-                        Try
-                            ResponseText = PrettyJson(ResponseText)
-                        Catch
-                            ' if there is an error, just show the text
-                        End Try
-                        txtPostBody.Text = ResponseText
+                            txtPostBody.ReadOnly = False
+                            txtPostBody.Text = ResponseText
+                            txtPostBody.ReadOnly = True
+                        Else
+                            txtPostBody.Lexer = Lexer.Null
+                            txtPostBody.Text = pr.ResponseDescription
+                        End If
                     End If
                 Next
-
-
             Next
         Catch ex As Exception
 
@@ -483,6 +544,7 @@ Public Class frmMain
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub RefreshActions(sender As Object, e As EventArgs) Handles lstActions.SelectedIndexChanged
+        Dim dirty As Boolean = ProjectDirty
 
         If lstActions.SelectedIndex >= 0 Then
             With CType(lstActions.SelectedItem, FreemarkerAction)
@@ -504,7 +566,7 @@ Public Class frmMain
                 End Select
             End With
         End If
-
+        ProjectDirty = dirty
     End Sub
 
     ''' <summary>
@@ -512,21 +574,23 @@ Public Class frmMain
     ''' </summary>
     Public Sub RedrawActionList()
         Dim selIndex As Integer = lstActions.SelectedIndex
+        If project.Actions.Count > 0 Then
+            lstActions.DataSource = Nothing
+            lstActions.DataSource = project.Actions
+            lstActions.DisplayMember = "Name"
+            lstActions.ValueMember = "id"
+            lstActions.SelectedIndex = selIndex
 
-        lstActions.DataSource = Nothing
-        lstActions.DataSource = project.Actions
-        lstActions.DisplayMember = "Name"
-        lstActions.ValueMember = "id"
-        lstActions.SelectedIndex = selIndex
-
-        If lstActions.Items.Count > 0 Then
-            scActions.Panel2.Enabled = True
-            If lstActions.SelectedIndex = -1 Then
-                lstActions.SelectedIndex = 0
+            If lstActions.Items.Count > 0 Then
+                scActions.Panel2.Enabled = True
+                If lstActions.SelectedIndex = -1 Then
+                    lstActions.SelectedIndex = 0
+                End If
+            Else
+                scActions.Panel2.Enabled = False
             End If
-        Else
-            scActions.Panel2.Enabled = False
         End If
+
     End Sub
 #End Region
 #Region "Form control value handling"
@@ -677,39 +741,31 @@ Public Class frmMain
 
     Private Sub cmdSingleAction_Click(sender As Object, e As EventArgs) Handles cmdSingleAction.Click
         Dim act As FreemarkerAction = lstActions.SelectedItem
-        Dim OutputDirectory As String = "C:\git\TemplateOutput"
+        Dim OutputDirectory As String = AppSettings.GetAppSetting("DefaultOutputDirectory", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
 
         If project.Models.Count = 0 Then ' Process all the models
-            'For Each m As Model In EndpointConnection.GetModels.items
-            '    Dim mdlList As New List(Of Guid)
-            '    mdlList.Add(m.id)
-            '    Dim newEntry As New ActionEntry With {
-            '        .Status = ActionOutcomeStatus.NotStarted,
-            '        .Action = act,
-            '        .OutputDirectory = OutputDirectory,
-            '        .Model = mdlList}
-            '    ActionEntries.Entries.Add(newEntry)
-
-            'Next
             Throw New DataException("No models selected")
         Else
             Dim mdlList As New List(Of Guid)
             For Each id As Guid In project.Models
                 mdlList.Add(id)
             Next
+
             Dim newEntry As New ActionEntry With {
                     .Status = ActionOutcomeStatus.NotStarted,
                     .Action = act,
                       .OutputDirectory = OutputDirectory,
                     .ModelIDs = mdlList}
+
             ActionEntries.Entries.Add(newEntry)
 
         End If
+        StartActionEntryQueueAsync(1)
+        TimerReset()
         Tabs.SelectedIndex = 3
         Application.DoEvents()
-        ' RunActionEntryQueue()
-        StartActionEntryQueueAsync(20)
-        TimerReset()
+
+
     End Sub
 
     Private Sub cmdDoAll_Click(sender As Object, e As EventArgs) Handles cmdDoAll.Click
@@ -786,7 +842,6 @@ Public Class frmMain
     ''' </summary>
     Public Sub SetDirty()
         ProjectDirty = True
-        SavedState.Text = "Unsaved changes"
     End Sub
     ''' <summary>
     ''' Check whether a string is a valid URL
@@ -802,7 +857,7 @@ Public Class frmMain
 #End Region
 
 #Region "Scintilla"
-    Private Sub InitSyntaxColoring()
+    Private Sub InitSyntaxColoring(txtTemplate As Scintilla)
 
         ' Configure the default style
         txtTemplate.StyleResetDefault()
@@ -841,14 +896,14 @@ Public Class frmMain
         txtTemplate.SetKeywords(1, "#assign #return #default #break #noparse #compress #escape #noescape #global #local #setting #macro #nested #flush #stop #ftl #t #lt #rt #nt #visit #recurse #fallback #if #else #elseif #list #switch #case #attempt #recover")
 
     End Sub
-    Private Sub InitColors()
+    Private Sub InitColors(txtTemplate As Scintilla)
         txtTemplate.SetSelectionBackColor(True, IntToColor(&H114D9C))
     End Sub
-    Public Shared Function IntToColor(ByVal rgb As Integer) As Color
+    Public Function IntToColor(ByVal rgb As Integer) As Color
         'Return Color.FromArgb(255, CByte(rgb >> 16), CByte(rgb >> 8), CByte(rgb))
         Return Color.FromArgb(255, Color.FromArgb(rgb))
     End Function
-    Private Sub InitNumberMargin()
+    Private Sub InitNumberMargin(txtTemplate As Scintilla)
         Const BACK_COLOR As Integer = &H2A211C
         Const FORE_COLOR As Integer = &HB7B7B7
         Const NUMBER_MARGIN As Integer = 1

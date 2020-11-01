@@ -25,7 +25,7 @@ Namespace MauroModel
         Private Shared ReadOnly client As HttpClient = New HttpClient()
         Public Shared Property Username As String
         Public Shared Property Password As String
-        Public Shared Property Endpoint As String
+        Public Shared Property Endpoint As Uri
         Public Shared Property Timeout As TimeSpan
             Get
                 Return client.Timeout
@@ -52,7 +52,7 @@ Namespace MauroModel
         Public Shared Function ApplyModelTemplateAsync(ID As Guid, Template As String) As Task(Of PostResponse)
             Dim API As String = Replace(ModelTemplateAPI, "$MODEL$", ID.ToString)
             Try
-                Return PostMauroJSON(Endpoint & API, Template)
+                Return PostMauroJSON(Endpoint.ToString & API, Template)
             Catch ex As Exception
                 Throw ex
             End Try
@@ -72,7 +72,7 @@ Namespace MauroModel
             Dim API As String = Replace(ModelClassTemplateAPI, "$MODEL$", ModelID.ToString)
             API = Replace(API, "$CLASS$", ClassID.ToString)
             Try
-                Return PostMauroJSON(Endpoint & API, Template)
+                Return PostMauroJSON(Endpoint.ToString & API, Template)
             Catch ex As Exception
                 Throw ex
             End Try
@@ -92,7 +92,7 @@ Namespace MauroModel
             Dim MauroLogin As New LoginRequest With {.username = Username, .password = Password}
             Dim strBody = JsonSerializer.Serialize(MauroLogin)
 
-            Dim PostResult = Await PostMauroJSON(Endpoint & LoginAPI, strBody).ConfigureAwait(False)
+            Dim PostResult = Await PostMauroJSON(Endpoint.ToString & LoginAPI, strBody).ConfigureAwait(False)
             Dim JSONResult = PostResult.Body
 
             LoginDetails = JsonSerializer.Deserialize(Of LoginResponse)(JSONResult)
@@ -100,7 +100,12 @@ Namespace MauroModel
             Return LoginDetails
         End Function
         Public Shared Function Login() As LoginResponse
-            Return LoginAsync.Result
+            If LoginStatus = True Then
+                Throw New Exception("User is already logged into a Mauro endpoint")
+            End If
+            Dim response As LoginResponse = LoginAsync.Result
+            EndpointConnection.LoginDetails = response
+            Return response
         End Function
 
         Sub New()
@@ -172,7 +177,7 @@ Namespace MauroModel
             ' Async retrieval of Mauro API JSON
 
             ' Retrieve the JSON from the Mauro endpoint
-            Dim GetResult = Await client.GetAsync(Endpoint & API).ConfigureAwait(False)
+            Dim GetResult = Await client.GetAsync(Endpoint.ToString & API).ConfigureAwait(False)
             If Not GetResult.IsSuccessStatusCode Then
                 Dim ex As New Exception("Error " & GetResult.ReasonPhrase)
                 Throw ex
@@ -212,7 +217,7 @@ Namespace MauroModel
 
         Public Shared Async Function LogoutAsync() As Task(Of String)
 
-            Dim PostResult = Await client.GetAsync(Endpoint & LogoutAPI).ConfigureAwait(False)
+            Dim PostResult = Await client.GetAsync(Endpoint.ToString & LogoutAPI).ConfigureAwait(False)
 
             Dim ResultContent = Await PostResult.Content.ReadAsStringAsync
             Return (ResultContent)

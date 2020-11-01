@@ -77,12 +77,12 @@ Partial Class frmMain
         Me.ModelsTab = New System.Windows.Forms.TabPage()
         Me.ModelsContainer = New System.Windows.Forms.SplitContainer()
         Me.lstModels = New System.Windows.Forms.ListBox()
-        Me.Panel5 = New System.Windows.Forms.Panel()
+        Me.pnlModelButtons = New System.Windows.Forms.Panel()
         Me.cmdAddGUID = New System.Windows.Forms.Button()
         Me.cmdAdd = New System.Windows.Forms.Button()
         Me.txtModelGUID = New System.Windows.Forms.TextBox()
         Me.Label10 = New System.Windows.Forms.Label()
-        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.pnlRemoveModelButtons = New System.Windows.Forms.Panel()
         Me.cmdRemoveModel = New System.Windows.Forms.Button()
         Me.lstGUIDs = New System.Windows.Forms.ListBox()
         Me.ProjectTab = New System.Windows.Forms.TabPage()
@@ -100,12 +100,13 @@ Partial Class frmMain
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Tabs = New System.Windows.Forms.TabControl()
         Me.Queue = New System.Windows.Forms.TabPage()
+        Me.pbProgressHidden = New System.Windows.Forms.PictureBox()
         Me.scModels = New System.Windows.Forms.SplitContainer()
         Me.pnlTVQueueButtons = New System.Windows.Forms.Panel()
         Me.cmdClear = New System.Windows.Forms.Button()
         Me.tvQueue = New System.Windows.Forms.TreeView()
         Me.ilStatus = New System.Windows.Forms.ImageList(Me.components)
-        Me.txtPostBody = New System.Windows.Forms.TextBox()
+        Me.txtPostBody = New ScintillaNET.Scintilla()
         Me.ilTabs = New System.Windows.Forms.ImageList(Me.components)
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.BGPicture = New System.Windows.Forms.PictureBox()
@@ -132,13 +133,14 @@ Partial Class frmMain
         Me.ModelsContainer.Panel1.SuspendLayout()
         Me.ModelsContainer.Panel2.SuspendLayout()
         Me.ModelsContainer.SuspendLayout()
-        Me.Panel5.SuspendLayout()
-        Me.Panel1.SuspendLayout()
+        Me.pnlModelButtons.SuspendLayout()
+        Me.pnlRemoveModelButtons.SuspendLayout()
         Me.ProjectTab.SuspendLayout()
         Me.PnlProjectSettingsRight.SuspendLayout()
         Me.pnlProjectSettings.SuspendLayout()
         Me.Tabs.SuspendLayout()
         Me.Queue.SuspendLayout()
+        CType(Me.pbProgressHidden, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.scModels, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.scModels.Panel1.SuspendLayout()
         Me.scModels.Panel2.SuspendLayout()
@@ -326,7 +328,7 @@ Partial Class frmMain
         Me.ActionsTab.Location = New System.Drawing.Point(4, 29)
         Me.ActionsTab.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.ActionsTab.Name = "ActionsTab"
-        Me.ActionsTab.Size = New System.Drawing.Size(1701, 1022)
+        Me.ActionsTab.Size = New System.Drawing.Size(1701, 974)
         Me.ActionsTab.TabIndex = 2
         Me.ActionsTab.Text = "Templates"
         Me.ActionsTab.UseVisualStyleBackColor = True
@@ -353,20 +355,21 @@ Partial Class frmMain
         Me.scActions.Panel2.Controls.Add(Me.txtTemplate)
         Me.scActions.Panel2.Controls.Add(Me.pnlActionProperties)
         Me.scActions.Panel2MinSize = 270
-        Me.scActions.Size = New System.Drawing.Size(1701, 1022)
-        Me.scActions.SplitterDistance = 428
+        Me.scActions.Size = New System.Drawing.Size(1701, 974)
+        Me.scActions.SplitterDistance = 425
         Me.scActions.SplitterWidth = 6
         Me.scActions.TabIndex = 1
         '
         'lstActions
         '
+        Me.lstActions.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.lstActions.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lstActions.FormattingEnabled = True
         Me.lstActions.ItemHeight = 20
         Me.lstActions.Location = New System.Drawing.Point(0, 20)
         Me.lstActions.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lstActions.Name = "lstActions"
-        Me.lstActions.Size = New System.Drawing.Size(424, 938)
+        Me.lstActions.Size = New System.Drawing.Size(421, 875)
         Me.lstActions.TabIndex = 4
         '
         'pnlActionsTabButtons
@@ -375,10 +378,11 @@ Partial Class frmMain
         Me.pnlActionsTabButtons.Controls.Add(Me.cmdSingleAction)
         Me.pnlActionsTabButtons.Controls.Add(Me.cmdAddAction)
         Me.pnlActionsTabButtons.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.pnlActionsTabButtons.Location = New System.Drawing.Point(0, 958)
+        Me.pnlActionsTabButtons.Location = New System.Drawing.Point(0, 895)
         Me.pnlActionsTabButtons.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
+        Me.pnlActionsTabButtons.MinimumSize = New System.Drawing.Size(0, 75)
         Me.pnlActionsTabButtons.Name = "pnlActionsTabButtons"
-        Me.pnlActionsTabButtons.Size = New System.Drawing.Size(424, 60)
+        Me.pnlActionsTabButtons.Size = New System.Drawing.Size(421, 75)
         Me.pnlActionsTabButtons.TabIndex = 1
         '
         'cmdDoAll
@@ -436,9 +440,10 @@ Partial Class frmMain
         'txtTemplate
         '
         Me.txtTemplate.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.txtTemplate.Lexer = ScintillaNET.Lexer.Xml
         Me.txtTemplate.Location = New System.Drawing.Point(0, 305)
         Me.txtTemplate.Name = "txtTemplate"
-        Me.txtTemplate.Size = New System.Drawing.Size(1263, 713)
+        Me.txtTemplate.Size = New System.Drawing.Size(1266, 665)
         Me.txtTemplate.TabIndex = 1
         '
         'pnlActionProperties
@@ -450,7 +455,7 @@ Partial Class frmMain
         Me.pnlActionProperties.Location = New System.Drawing.Point(0, 0)
         Me.pnlActionProperties.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.pnlActionProperties.Name = "pnlActionProperties"
-        Me.pnlActionProperties.Size = New System.Drawing.Size(1263, 305)
+        Me.pnlActionProperties.Size = New System.Drawing.Size(1266, 305)
         Me.pnlActionProperties.TabIndex = 0
         '
         'PnlActionsTabActionProperties
@@ -467,7 +472,7 @@ Partial Class frmMain
         Me.PnlActionsTabActionProperties.Location = New System.Drawing.Point(0, 0)
         Me.PnlActionsTabActionProperties.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.PnlActionsTabActionProperties.Name = "PnlActionsTabActionProperties"
-        Me.PnlActionsTabActionProperties.Size = New System.Drawing.Size(961, 282)
+        Me.PnlActionsTabActionProperties.Size = New System.Drawing.Size(964, 282)
         Me.PnlActionsTabActionProperties.TabIndex = 1
         '
         'textFileSuffix
@@ -476,7 +481,7 @@ Partial Class frmMain
         Me.textFileSuffix.Location = New System.Drawing.Point(0, 135)
         Me.textFileSuffix.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.textFileSuffix.Name = "textFileSuffix"
-        Me.textFileSuffix.Size = New System.Drawing.Size(961, 26)
+        Me.textFileSuffix.Size = New System.Drawing.Size(964, 26)
         Me.textFileSuffix.TabIndex = 3
         '
         'Label6
@@ -496,7 +501,7 @@ Partial Class frmMain
         Me.TextFilePrefix.Location = New System.Drawing.Point(0, 89)
         Me.TextFilePrefix.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.TextFilePrefix.Name = "TextFilePrefix"
-        Me.TextFilePrefix.Size = New System.Drawing.Size(961, 26)
+        Me.TextFilePrefix.Size = New System.Drawing.Size(964, 26)
         Me.TextFilePrefix.TabIndex = 2
         '
         'Label5
@@ -517,7 +522,7 @@ Partial Class frmMain
         Me.textDesription.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.textDesription.Multiline = True
         Me.textDesription.Name = "textDesription"
-        Me.textDesription.Size = New System.Drawing.Size(961, 3)
+        Me.textDesription.Size = New System.Drawing.Size(964, 3)
         Me.textDesription.TabIndex = 8
         '
         'Label9
@@ -537,7 +542,7 @@ Partial Class frmMain
         Me.textName.Location = New System.Drawing.Point(0, 20)
         Me.textName.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.textName.Name = "textName"
-        Me.textName.Size = New System.Drawing.Size(961, 26)
+        Me.textName.Size = New System.Drawing.Size(964, 26)
         Me.textName.TabIndex = 6
         '
         'Label8
@@ -558,7 +563,7 @@ Partial Class frmMain
         Me.grpActionType.Controls.Add(Me.rbClass)
         Me.grpActionType.Controls.Add(Me.rbModel)
         Me.grpActionType.Dock = System.Windows.Forms.DockStyle.Right
-        Me.grpActionType.Location = New System.Drawing.Point(961, 0)
+        Me.grpActionType.Location = New System.Drawing.Point(964, 0)
         Me.grpActionType.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.grpActionType.Name = "grpActionType"
         Me.grpActionType.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
@@ -619,7 +624,7 @@ Partial Class frmMain
         Me.ModelsTab.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.ModelsTab.Name = "ModelsTab"
         Me.ModelsTab.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.ModelsTab.Size = New System.Drawing.Size(1701, 1022)
+        Me.ModelsTab.Size = New System.Drawing.Size(1701, 974)
         Me.ModelsTab.TabIndex = 1
         Me.ModelsTab.Text = "Models"
         Me.ModelsTab.UseVisualStyleBackColor = True
@@ -634,14 +639,14 @@ Partial Class frmMain
         'ModelsContainer.Panel1
         '
         Me.ModelsContainer.Panel1.Controls.Add(Me.lstModels)
-        Me.ModelsContainer.Panel1.Controls.Add(Me.Panel5)
+        Me.ModelsContainer.Panel1.Controls.Add(Me.pnlModelButtons)
         '
         'ModelsContainer.Panel2
         '
-        Me.ModelsContainer.Panel2.Controls.Add(Me.Panel1)
+        Me.ModelsContainer.Panel2.Controls.Add(Me.pnlRemoveModelButtons)
         Me.ModelsContainer.Panel2.Controls.Add(Me.lstGUIDs)
-        Me.ModelsContainer.Size = New System.Drawing.Size(1693, 1012)
-        Me.ModelsContainer.SplitterDistance = 556
+        Me.ModelsContainer.Size = New System.Drawing.Size(1693, 964)
+        Me.ModelsContainer.SplitterDistance = 425
         Me.ModelsContainer.SplitterWidth = 3
         Me.ModelsContainer.TabIndex = 0
         '
@@ -654,21 +659,21 @@ Partial Class frmMain
         Me.lstModels.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lstModels.Name = "lstModels"
         Me.lstModels.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended
-        Me.lstModels.Size = New System.Drawing.Size(556, 894)
+        Me.lstModels.Size = New System.Drawing.Size(425, 846)
         Me.lstModels.TabIndex = 2
         '
-        'Panel5
+        'pnlModelButtons
         '
-        Me.Panel5.Controls.Add(Me.cmdAddGUID)
-        Me.Panel5.Controls.Add(Me.cmdAdd)
-        Me.Panel5.Controls.Add(Me.txtModelGUID)
-        Me.Panel5.Controls.Add(Me.Label10)
-        Me.Panel5.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel5.Location = New System.Drawing.Point(0, 894)
-        Me.Panel5.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.Panel5.Name = "Panel5"
-        Me.Panel5.Size = New System.Drawing.Size(556, 118)
-        Me.Panel5.TabIndex = 1
+        Me.pnlModelButtons.Controls.Add(Me.cmdAddGUID)
+        Me.pnlModelButtons.Controls.Add(Me.cmdAdd)
+        Me.pnlModelButtons.Controls.Add(Me.txtModelGUID)
+        Me.pnlModelButtons.Controls.Add(Me.Label10)
+        Me.pnlModelButtons.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.pnlModelButtons.Location = New System.Drawing.Point(0, 846)
+        Me.pnlModelButtons.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.pnlModelButtons.Name = "pnlModelButtons"
+        Me.pnlModelButtons.Size = New System.Drawing.Size(425, 118)
+        Me.pnlModelButtons.TabIndex = 1
         '
         'cmdAddGUID
         '
@@ -698,28 +703,30 @@ Partial Class frmMain
         Me.txtModelGUID.Location = New System.Drawing.Point(0, 20)
         Me.txtModelGUID.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.txtModelGUID.Name = "txtModelGUID"
-        Me.txtModelGUID.Size = New System.Drawing.Size(556, 26)
+        Me.txtModelGUID.Size = New System.Drawing.Size(425, 26)
         Me.txtModelGUID.TabIndex = 1
         '
         'Label10
         '
         Me.Label10.AutoSize = True
         Me.Label10.Dock = System.Windows.Forms.DockStyle.Top
+        Me.Label10.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label10.Location = New System.Drawing.Point(0, 0)
         Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(98, 20)
+        Me.Label10.Size = New System.Drawing.Size(108, 20)
         Me.Label10.TabIndex = 0
         Me.Label10.Text = "Model GUID"
         '
-        'Panel1
+        'pnlRemoveModelButtons
         '
-        Me.Panel1.Controls.Add(Me.cmdRemoveModel)
-        Me.Panel1.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel1.Location = New System.Drawing.Point(0, 940)
-        Me.Panel1.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(1134, 72)
-        Me.Panel1.TabIndex = 4
+        Me.pnlRemoveModelButtons.Controls.Add(Me.cmdRemoveModel)
+        Me.pnlRemoveModelButtons.Dock = System.Windows.Forms.DockStyle.Bottom
+        Me.pnlRemoveModelButtons.Location = New System.Drawing.Point(0, 889)
+        Me.pnlRemoveModelButtons.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
+        Me.pnlRemoveModelButtons.MinimumSize = New System.Drawing.Size(0, 75)
+        Me.pnlRemoveModelButtons.Name = "pnlRemoveModelButtons"
+        Me.pnlRemoveModelButtons.Size = New System.Drawing.Size(1265, 75)
+        Me.pnlRemoveModelButtons.TabIndex = 4
         '
         'cmdRemoveModel
         '
@@ -727,7 +734,7 @@ Partial Class frmMain
         Me.cmdRemoveModel.Location = New System.Drawing.Point(0, 0)
         Me.cmdRemoveModel.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.cmdRemoveModel.Name = "cmdRemoveModel"
-        Me.cmdRemoveModel.Size = New System.Drawing.Size(136, 72)
+        Me.cmdRemoveModel.Size = New System.Drawing.Size(136, 75)
         Me.cmdRemoveModel.TabIndex = 2
         Me.cmdRemoveModel.Text = "Remove selected models"
         Me.cmdRemoveModel.UseVisualStyleBackColor = True
@@ -740,7 +747,7 @@ Partial Class frmMain
         Me.lstGUIDs.Location = New System.Drawing.Point(0, 0)
         Me.lstGUIDs.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.lstGUIDs.Name = "lstGUIDs"
-        Me.lstGUIDs.Size = New System.Drawing.Size(1134, 1012)
+        Me.lstGUIDs.Size = New System.Drawing.Size(1265, 964)
         Me.lstGUIDs.TabIndex = 3
         '
         'ProjectTab
@@ -752,7 +759,7 @@ Partial Class frmMain
         Me.ProjectTab.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.ProjectTab.Name = "ProjectTab"
         Me.ProjectTab.Padding = New System.Windows.Forms.Padding(4, 5, 4, 5)
-        Me.ProjectTab.Size = New System.Drawing.Size(1701, 1022)
+        Me.ProjectTab.Size = New System.Drawing.Size(1701, 974)
         Me.ProjectTab.TabIndex = 0
         Me.ProjectTab.Text = "Connection"
         Me.ProjectTab.UseVisualStyleBackColor = True
@@ -769,7 +776,7 @@ Partial Class frmMain
         Me.PnlProjectSettingsRight.Location = New System.Drawing.Point(304, 5)
         Me.PnlProjectSettingsRight.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.PnlProjectSettingsRight.Name = "PnlProjectSettingsRight"
-        Me.PnlProjectSettingsRight.Size = New System.Drawing.Size(1393, 1012)
+        Me.PnlProjectSettingsRight.Size = New System.Drawing.Size(1393, 964)
         Me.PnlProjectSettingsRight.TabIndex = 1
         '
         'cmdLogInOut
@@ -849,7 +856,7 @@ Partial Class frmMain
         Me.pnlProjectSettings.Location = New System.Drawing.Point(4, 5)
         Me.pnlProjectSettings.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.pnlProjectSettings.Name = "pnlProjectSettings"
-        Me.pnlProjectSettings.Size = New System.Drawing.Size(300, 1012)
+        Me.pnlProjectSettings.Size = New System.Drawing.Size(300, 964)
         Me.pnlProjectSettings.TabIndex = 0
         '
         'Label4
@@ -908,24 +915,37 @@ Partial Class frmMain
         Me.Tabs.Controls.Add(Me.Queue)
         Me.Tabs.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Tabs.ImageList = Me.ilTabs
-        Me.Tabs.Location = New System.Drawing.Point(0, 33)
+        Me.Tabs.Location = New System.Drawing.Point(0, 81)
         Me.Tabs.Margin = New System.Windows.Forms.Padding(4, 5, 4, 5)
         Me.Tabs.Name = "Tabs"
         Me.Tabs.SelectedIndex = 0
-        Me.Tabs.Size = New System.Drawing.Size(1709, 1055)
+        Me.Tabs.Size = New System.Drawing.Size(1709, 1007)
         Me.Tabs.TabIndex = 2
         '
         'Queue
         '
+        Me.Queue.Controls.Add(Me.pbProgressHidden)
         Me.Queue.Controls.Add(Me.scModels)
         Me.Queue.ImageIndex = 3
         Me.Queue.Location = New System.Drawing.Point(4, 29)
         Me.Queue.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
         Me.Queue.Name = "Queue"
-        Me.Queue.Size = New System.Drawing.Size(1701, 1022)
+        Me.Queue.Size = New System.Drawing.Size(1701, 974)
         Me.Queue.TabIndex = 3
         Me.Queue.Text = "Process Queue"
         Me.Queue.UseVisualStyleBackColor = True
+        '
+        'pbProgressHidden
+        '
+        Me.pbProgressHidden.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None
+        Me.pbProgressHidden.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pbProgressHidden.Image = Global.MauroDataModeller.My.Resources.MauroTemplateManager.Fra_Mauro_World_Mapjpg
+        Me.pbProgressHidden.Location = New System.Drawing.Point(0, 0)
+        Me.pbProgressHidden.Name = "pbProgressHidden"
+        Me.pbProgressHidden.Size = New System.Drawing.Size(1701, 974)
+        Me.pbProgressHidden.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage
+        Me.pbProgressHidden.TabIndex = 2
+        Me.pbProgressHidden.TabStop = False
         '
         'scModels
         '
@@ -942,25 +962,27 @@ Partial Class frmMain
         'scModels.Panel2
         '
         Me.scModels.Panel2.Controls.Add(Me.txtPostBody)
-        Me.scModels.Size = New System.Drawing.Size(1701, 1022)
-        Me.scModels.SplitterDistance = 556
+        Me.scModels.Size = New System.Drawing.Size(1701, 974)
+        Me.scModels.SplitterDistance = 425
         Me.scModels.SplitterWidth = 3
         Me.scModels.TabIndex = 1
         '
         'pnlTVQueueButtons
         '
+        Me.pnlTVQueueButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.pnlTVQueueButtons.Controls.Add(Me.cmdClear)
         Me.pnlTVQueueButtons.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.pnlTVQueueButtons.Location = New System.Drawing.Point(0, 939)
+        Me.pnlTVQueueButtons.Location = New System.Drawing.Point(0, 891)
+        Me.pnlTVQueueButtons.MinimumSize = New System.Drawing.Size(0, 75)
         Me.pnlTVQueueButtons.Name = "pnlTVQueueButtons"
-        Me.pnlTVQueueButtons.Size = New System.Drawing.Size(556, 83)
+        Me.pnlTVQueueButtons.Size = New System.Drawing.Size(425, 83)
         Me.pnlTVQueueButtons.TabIndex = 2
         '
         'cmdClear
         '
-        Me.cmdClear.Location = New System.Drawing.Point(8, 32)
+        Me.cmdClear.Location = New System.Drawing.Point(8, 15)
         Me.cmdClear.Name = "cmdClear"
-        Me.cmdClear.Size = New System.Drawing.Size(113, 35)
+        Me.cmdClear.Size = New System.Drawing.Size(113, 50)
         Me.cmdClear.TabIndex = 0
         Me.cmdClear.Text = "Clear results"
         Me.cmdClear.UseVisualStyleBackColor = True
@@ -978,7 +1000,7 @@ Partial Class frmMain
         Me.tvQueue.Nodes.AddRange(New System.Windows.Forms.TreeNode() {TreeNode1})
         Me.tvQueue.SelectedImageIndex = 0
         Me.tvQueue.ShowNodeToolTips = True
-        Me.tvQueue.Size = New System.Drawing.Size(556, 1022)
+        Me.tvQueue.Size = New System.Drawing.Size(425, 974)
         Me.tvQueue.TabIndex = 1
         '
         'ilStatus
@@ -994,13 +1016,9 @@ Partial Class frmMain
         'txtPostBody
         '
         Me.txtPostBody.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.txtPostBody.Font = New System.Drawing.Font("Consolas", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtPostBody.Location = New System.Drawing.Point(0, 0)
-        Me.txtPostBody.Margin = New System.Windows.Forms.Padding(3, 2, 3, 2)
-        Me.txtPostBody.Multiline = True
         Me.txtPostBody.Name = "txtPostBody"
-        Me.txtPostBody.ScrollBars = System.Windows.Forms.ScrollBars.Both
-        Me.txtPostBody.Size = New System.Drawing.Size(1142, 1022)
+        Me.txtPostBody.Size = New System.Drawing.Size(1273, 974)
         Me.txtPostBody.TabIndex = 0
         '
         'ilTabs
@@ -1106,8 +1124,8 @@ Partial Class frmMain
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center
         Me.ClientSize = New System.Drawing.Size(1709, 1120)
-        Me.Controls.Add(Me.MainTSContainer)
         Me.Controls.Add(Me.Tabs)
+        Me.Controls.Add(Me.MainTSContainer)
         Me.Controls.Add(Me.BGPicture)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.MenuStrip1)
@@ -1137,9 +1155,9 @@ Partial Class frmMain
         Me.ModelsContainer.Panel2.ResumeLayout(False)
         CType(Me.ModelsContainer, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ModelsContainer.ResumeLayout(False)
-        Me.Panel5.ResumeLayout(False)
-        Me.Panel5.PerformLayout()
-        Me.Panel1.ResumeLayout(False)
+        Me.pnlModelButtons.ResumeLayout(False)
+        Me.pnlModelButtons.PerformLayout()
+        Me.pnlRemoveModelButtons.ResumeLayout(False)
         Me.ProjectTab.ResumeLayout(False)
         Me.PnlProjectSettingsRight.ResumeLayout(False)
         Me.PnlProjectSettingsRight.PerformLayout()
@@ -1147,9 +1165,9 @@ Partial Class frmMain
         Me.pnlProjectSettings.PerformLayout()
         Me.Tabs.ResumeLayout(False)
         Me.Queue.ResumeLayout(False)
+        CType(Me.pbProgressHidden, System.ComponentModel.ISupportInitialize).EndInit()
         Me.scModels.Panel1.ResumeLayout(False)
         Me.scModels.Panel2.ResumeLayout(False)
-        Me.scModels.Panel2.PerformLayout()
         CType(Me.scModels, System.ComponentModel.ISupportInitialize).EndInit()
         Me.scModels.ResumeLayout(False)
         Me.pnlTVQueueButtons.ResumeLayout(False)
@@ -1215,7 +1233,7 @@ Partial Class frmMain
     Friend WithEvents textName As TextBox
     Friend WithEvents Label8 As Label
     Friend WithEvents ModelsContainer As SplitContainer
-    Friend WithEvents Panel5 As Panel
+    Friend WithEvents pnlModelButtons As Panel
     Friend WithEvents txtModelGUID As TextBox
     Friend WithEvents Label10 As Label
     Friend WithEvents cmdAdd As Button
@@ -1235,7 +1253,6 @@ Partial Class frmMain
     Friend WithEvents Timer1 As Timer
     Friend WithEvents lstActions As ListBox
     Friend WithEvents mnuNew As ToolStripMenuItem
-    Friend WithEvents txtPostBody As TextBox
     Friend WithEvents rbAllModels As RadioButton
     Friend WithEvents mnuOpenRecent As ToolStripMenuItem
     Friend WithEvents PreferencesToolStripMenuItem As ToolStripMenuItem
@@ -1247,7 +1264,7 @@ Partial Class frmMain
     Friend WithEvents pnlTVQueueButtons As Panel
     Friend WithEvents cmdClear As Button
     Friend WithEvents cmdAddGUID As Button
-    Friend WithEvents Panel1 As Panel
+    Friend WithEvents pnlRemoveModelButtons As Panel
     Friend WithEvents cmdRemoveModel As Button
     Friend WithEvents MainTSContainer As ToolStripContainer
     Friend WithEvents tsFile As ToolStrip
@@ -1256,4 +1273,6 @@ Partial Class frmMain
     Friend WithEvents tsOpenLast As ToolStripButton
     Friend WithEvents tsSave As ToolStripButton
     Friend WithEvents tsSaveAs As ToolStripButton
+    Friend WithEvents txtPostBody As ScintillaNET.Scintilla
+    Friend WithEvents pbProgressHidden As PictureBox
 End Class

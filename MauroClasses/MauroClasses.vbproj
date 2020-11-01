@@ -11,6 +11,7 @@
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <PackageIcon>Fra_Mauro_World_Mapjpg.jpg</PackageIcon>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net48'">
     <Reference Include="System.Net.Http">

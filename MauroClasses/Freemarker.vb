@@ -5,8 +5,6 @@ Imports System.Threading
 Imports MauroDataModeller.MauroModel
 Namespace MauroTemplates
     Public Module Freemarker
-
-        Const ModelTemplateAPI = "/api/dataModels/$MODEL$/template"
         ''' <summary>
         ''' Executes all the template actions in a project against all the models in that project
         ''' </summary>
@@ -102,7 +100,7 @@ Namespace MauroTemplates
             Select Case Action.ActionType ' Apply to the model
 
                 Case ActionTypes.actionSingleModel
-                    ActionResponses.Add(ProcessModelOnly(MauroModel, Action, OutputDirectory))
+                    ActionResponses.Add(ProcessOneModel(MauroModel, Action, OutputDirectory))
 
                 Case ActionTypes.actionAllModels
                     Throw New NotImplementedException("ProcessActionForModel: actionAllModels not supported ")
@@ -118,7 +116,10 @@ Namespace MauroTemplates
             End Select
 
             For Each ActResp As ActionResponse In ActionResponses
+
                 If IsNothing(ActResp) Then
+                    FailCount += 1
+                ElseIf ActResp.responseOutcome = ActionOutcomeStatus.Failed Then
                     FailCount += 1
                 ElseIf ActResp.Response.Result.IsSuccessStatusCode Then
                     SuccessCount += 1
@@ -134,34 +135,49 @@ Namespace MauroTemplates
         ''' </summary>
         ''' <param name="ActionEntry">Action template and list of models to apply</param>
         Public Sub ProcessActionEntry(ByRef ActionEntry As ActionEntry)
+            ActionEntry.Status = ActionOutcomeStatus.InProgress
+
             ' Dim res As New List(Of ActionResponse)
             Try
                 If ActionEntry.Action.ActionType = ActionTypes.actionAllModels Then
-                    ActionEntry.ActionResponses = ProcessAllModels(ActionEntry.ModelIDs, ActionEntry.Action, ActionEntry.OutputDirectory)
+                    Try
+                        ActionEntry.ActionResponses = ProcessAllModels(ActionEntry.ModelIDs, ActionEntry.Action, ActionEntry.OutputDirectory)
+                        ActionEntry.Status = ActionOutcomeStatus.Success
+
+                    Catch ex As Exception
+                        ActionEntry.Status = ActionOutcomeStatus.Retry
+                        ActionEntry.ActionResponses.Add(New ActionResponse With {
+                            .ResponseDescription = ex.Message,
+                                .ResponseID = Guid.NewGuid,
+                        .responseOutcome = ActionOutcomeStatus.Failed
+                            })
+
+                    End Try
                 Else
                     For Each m As Guid In ActionEntry.ModelIDs
 
                         Dim MauroModel As Model = EndpointConnection.GetModel(m)
                         ActionEntry.Status = ActionOutcomeStatus.InProgress
+                        Try
+                            ProcessActionForModel(MauroModel, ActionEntry.Action, ActionEntry.OutputDirectory, ActionEntry.ActionResponses)
+                            ActionEntry.Status = ActionOutcomeStatus.Success
 
-                        ProcessActionForModel(MauroModel, ActionEntry.Action, ActionEntry.OutputDirectory, ActionEntry.ActionResponses)
+                        Catch ex As Exception
+                            ActionEntry.Status = ActionOutcomeStatus.Retry
+                            ActionEntry.ActionResponses.Add(New ActionResponse With {
+                                .ResponseDescription = ex.Message,
+                                .Response = Nothing,
+                                .ResponseID = Guid.NewGuid,
+                            .responseOutcome = ActionOutcomeStatus.Failed
+                                })
+                        End Try
+
                     Next
                 End If
 
             Catch ex As Exception
+                Throw ex
             End Try
-
-            ActionEntry.Status = ActionOutcomeStatus.Success
-            If ActionEntry.ActionResponses.Count = 0 Then
-                ActionEntry.Status = ActionOutcomeStatus.Failed
-            Else
-                For Each ActResp As ActionResponse In ActionEntry.ActionResponses
-                    If Not ActResp.Response.Result.IsSuccessStatusCode Then
-                        ActionEntry.Status = ActionOutcomeStatus.Failed
-                    End If
-                Next
-            End If
-
         End Sub
         ''' <summary>
         ''' Show a JSON file indented
@@ -182,7 +198,7 @@ Namespace MauroTemplates
 
 
             Dim s As String = JsonSerializer.Serialize(jsonElement, options)
-            s = Replace(s, vbCrLf, "</br>")
+            ' s = Replace(s, vbCrLf, "</br>")
             s = Replace(s, "\u0022", """")
             s = Replace(s, "\t", vbTab)
             s = Replace(s, "\n", vbCrLf)
@@ -198,10 +214,7 @@ Namespace MauroTemplates
         ''' </returns>
         Private Function ProcessModelClass(MauroModel As Model, MauroClass As dataClassType, Action As FreemarkerAction, OutputDirectory As String) As List(Of ActionResponse)
             Dim fname As String = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & RemoveIllegalFileNameChars(MauroModel.label & " - " & MauroClass.label) & Action.FileSuffix
-            Console.Write(fname)
 
-            Dim fstream As New FileStream(fname, FileMode.Create)
-            Dim fwriter As New StreamWriter(fstream)
             Dim ResList As New List(Of ActionResponse)
             Dim ActResp As New ActionResponse With {
                 .ResponseDescription = MauroClass.label,
@@ -209,10 +222,13 @@ Namespace MauroTemplates
             }
             Try
                 ' Apply the template
-
                 ActResp.Response = EndpointConnection.ApplyModelClassTemplate(MauroModel.id, MauroClass.id, Action.Template)
+
                 ' Handle the output
                 If ActResp.Response.Result.IsSuccessStatusCode Then
+                    Dim fstream As New FileStream(fname, FileMode.Create)
+                    Dim fwriter As New StreamWriter(fstream)
+
                     ActResp.responseOutcome = ActionOutcomeStatus.Success
                     fwriter.Write(ActResp.Response.Body)
                     Console.WriteLine(" - success")
@@ -220,14 +236,10 @@ Namespace MauroTemplates
                     fstream.Close()
                 Else
                     ActResp.responseOutcome = ActionOutcomeStatus.Success
-                    fwriter.Close()
-                    fstream.Close()
-                    File.Delete(fname)
-
                     fname = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & RemoveIllegalFileNameChars(MauroClass.label) & "_error.html"
 
-                    fstream = New FileStream(fname, FileMode.Create)
-                    fwriter = New StreamWriter(fstream)
+                    Dim fstream As New FileStream(fname, FileMode.Create)
+                    Dim fwriter As New StreamWriter(fstream)
                     WriteErrorFile(fwriter, Action, ActResp.Response)
                     fwriter.Close()
                     fstream.Close()
@@ -236,10 +248,7 @@ Namespace MauroTemplates
                 ResList.Add(ActResp)
             Catch ex As Exception
                 Console.WriteLine()
-                fwriter.Write(ex.Message)
                 Console.WriteLine("Failed to generate " & fname & " - " & ex.Message)
-                fwriter.Close()
-                fstream.Close()
             End Try
             Return ResList
         End Function
@@ -293,12 +302,10 @@ Namespace MauroTemplates
         ''' <param name="MauroModel">Model to excecute the template against</param>
         ''' <param name="Action">The action (including template) to execute</param>
         ''' <param name="OutputDirectory"></param>
-        Private Function ProcessModelOnly(MauroModel As Model, Action As FreemarkerAction, OutputDirectory As String) As ActionResponse
+        Private Function ProcessOneModel(MauroModel As Model, Action As FreemarkerAction, OutputDirectory As String) As ActionResponse
             Dim fname As String = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & RemoveIllegalFileNameChars(MauroModel.label) & Action.FileSuffix
             Console.Write(fname)
 
-            Dim fstream As New FileStream(fname, FileMode.Create)
-            Dim fwriter As New StreamWriter(fstream)
             Dim ActResp As ActionResponse = Nothing
             Try
                 ' Apply the template
@@ -312,6 +319,9 @@ Namespace MauroTemplates
                 ActResp.Response = EndpointConnection.ApplyModelTemplate(MauroModel.id, Action.Template)
                 ' Handle the output
                 If ActResp.Response.Result.IsSuccessStatusCode Then
+                    Dim fstream As New FileStream(fname, FileMode.Create)
+                    Dim fwriter As New StreamWriter(fstream)
+
                     ActResp.responseOutcome = ActionOutcomeStatus.Success
                     fwriter.Write(ActResp.Response.Body)
                     Console.WriteLine(" - success")
@@ -319,15 +329,12 @@ Namespace MauroTemplates
                     fstream.Close()
                 Else
                     ActResp.responseOutcome = ActionOutcomeStatus.Failed
-                    fwriter.Close()
-                    fstream.Close()
-                    File.Delete(fname)
 
                     ' Write out the error
                     fname = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & RemoveIllegalFileNameChars(MauroModel.label) & "_error.html"
                     ActResp.ErrorFileName = fname
-                    fstream = New FileStream(fname, FileMode.Create)
-                    fwriter = New StreamWriter(fstream)
+                    Dim fstream As New FileStream(fname, FileMode.Create)
+                    Dim fwriter As New StreamWriter(fstream)
                     WriteErrorFile(fwriter, Action, ActResp.Response)
                     fwriter.Close()
                     fstream.Close()
@@ -336,19 +343,15 @@ Namespace MauroTemplates
 
             Catch ex As Exception
                 Console.WriteLine()
-                fwriter.Write(ex.Message)
+
                 Console.WriteLine("Failed to generate " & fname & " - " & ex.Message)
-                fwriter.Close()
-                fstream.Close()
+
             End Try
             Return ActResp
         End Function
         Private Function ProcessAllModels(Models As List(Of Guid), Action As FreemarkerAction, OutputDirectory As String) As List(Of ActionResponse)
             Dim fname As String = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & Action.FileSuffix
             Console.Write(fname)
-
-            Dim fstream As New FileStream(fname, FileMode.OpenOrCreate)
-            Dim fwriter As New StreamWriter(fstream)
             Dim Res As New List(Of ActionResponse)
             Try
                 ' Apply the template to each model
@@ -356,31 +359,30 @@ Namespace MauroTemplates
                     Dim PR As PostResponse = EndpointConnection.ApplyModelTemplate(m, Action.Template)
                     ' Handle the output
                     If PR.Result.IsSuccessStatusCode Then
+
+                        Dim fstream As New FileStream(fname, FileMode.OpenOrCreate)
+                        Dim fwriter As New StreamWriter(fstream)
+
                         fwriter.Write(PR.Body)
                         Console.WriteLine(" - success")
-
-                    Else
                         fwriter.Close()
                         fstream.Close()
-                        File.Delete(fname)
-
+                    Else
                         ' Write out the error
                         fname = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & "_error.html"
-                        fstream = New FileStream(fname, FileMode.Create)
-                        fwriter = New StreamWriter(fstream)
+                        Dim fstream As New FileStream(fname, FileMode.Create)
+                        Dim fwriter As New StreamWriter(fstream)
                         fwriter.Write(PR.Result.ReasonPhrase)
                         Console.WriteLine(" - error")
+                        fwriter.Close()
+                        fstream.Close()
                         Exit For
                     End If
                 Next
-                fwriter.Close()
-                fstream.Close()
+
             Catch ex As Exception
                 Console.WriteLine()
-                fwriter.Write(ex.Message)
                 Console.WriteLine("Failed to generate " & fname & " - " & ex.Message)
-                fwriter.Close()
-                fstream.Close()
             End Try
             Return Res
         End Function
@@ -389,6 +391,12 @@ Namespace MauroTemplates
             Dim r = New Regex(String.Format("[{0}]", Regex.Escape(regexSearch)))
             Return r.Replace(input, replacement)
         End Function
+
+        Private Sub DumpQueue()
+            For Each ae As ActionEntry In ActionEntries.Entries
+                Debug.WriteLine(ae.ActionEntryID.ToString & ae.Action.Name & " - " & ae.ActionResponses.Count.ToString & " - " & ae.Status.ToString)
+            Next
+        End Sub
     End Module
     Public Class InvalidFreemarkerProjectException
         Inherits Exception

@@ -58,7 +58,7 @@ Namespace MauroTemplates
         Public Sub UpdateEndpointConnection(Endpoint As MauroEndpoint)
             EndpointConnection.Username = Endpoint.Username
             EndpointConnection.Password = Endpoint.Password
-            EndpointConnection.Endpoint = Endpoint.EndpointURL.ToString
+            EndpointConnection.Endpoint = Endpoint.EndpointURL
         End Sub
 
         ''' <summary>
@@ -250,6 +250,7 @@ Namespace MauroTemplates
         InProgress
         Success
         Failed
+        Retry
     End Enum
     Public Class InvalidMauroFileException
         Inherits Exception
