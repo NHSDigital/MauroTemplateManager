@@ -31,15 +31,11 @@ Public Class frmMain
     Dim RecentFiles As List(Of ApplicationSettings.AppSetting)
 
     Private Sub MauroDataManager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        'MainTSContainer.TopToolStripPanel.Controls.Add(tsProcess)
-        'MainTSContainer.TopToolStripPanel.Controls.Add(tsPrinting)
-        'MainTSContainer.TopToolStripPanel.Controls.Add(tsFile)
+        ' Hard coded the toolbar locations
         tsFile.Location = New Point(0, 0)
         tsProcess.Location = New Point(tsFile.Width, 0)
         tsPrinting.Location = New Point(tsProcess.Location.X + tsProcess.Width, 0)
-        'tsFile.Dock = DockStyle.Left
-        'tsPrinting.Dock = DockStyle.Left
-        'tsProcess.Dock = DockStyle.Left
+
         RefreshStatus()
         RefreshRecentFileList()
         RefreshQueue()
@@ -339,11 +335,8 @@ Public Class frmMain
                 LoginStatus.Text = "Not logged in"
             End If
 
-
-
             ' Update the tabs before repopulating the listboxes
             Application.DoEvents()
-
 
             ' Update the screen
             Application.DoEvents()
