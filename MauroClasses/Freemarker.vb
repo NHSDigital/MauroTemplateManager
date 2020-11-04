@@ -60,7 +60,7 @@ Namespace MauroTemplates
         ''' <summary>
         ''' Checks the queue of pending action entries and if there are less than the limit in progress, initiates separate threads for pending entries up to the limit.
         ''' </summary>
-        ''' <param name="limit">MAximum number of threads to be running at once</param>
+        ''' <param name="limit">Maximum number of threads to be running at once</param>
         Public Sub StartActionEntryQueueAsync(limit As Integer)
             Dim i As Integer = 0
             For Each ae As ActionEntry In ActionEntries.Entries.Where(Function(x) x.Status = ActionOutcomeStatus.NotStarted)
@@ -90,7 +90,7 @@ Namespace MauroTemplates
         ''' <param name="MauroModel">Model metadata to execute against</param>
         ''' <param name="Action">Action to execute</param>
         ''' <param name="OutputDirectory">Filepath as a string for the output directory</param>
-        Public Sub ProcessActionForModel(MauroModel As Model, Action As FreemarkerAction, OutputDirectory As String, ByRef ActionResponses As List(Of ActionResponse))
+        Private Sub ProcessActionForModel(MauroModel As Model, Action As FreemarkerAction, OutputDirectory As String, ByRef ActionResponses As List(Of ActionResponse))
             Debug.WriteLine("ProcessActionForModel with {0}, {1}", MauroModel.label, Action.Name)
 
             Dim SuccessCount As Integer = 0
@@ -134,7 +134,7 @@ Namespace MauroTemplates
         ''' Executes an ActionEntrt definition against the current endpoint
         ''' </summary>
         ''' <param name="ActionEntry">Action template and list of models to apply</param>
-        Public Sub ProcessActionEntry(ByRef ActionEntry As ActionEntry)
+        Private Sub ProcessActionEntry(ByRef ActionEntry As ActionEntry)
             ActionEntry.Status = ActionOutcomeStatus.InProgress
 
             ' Dim res As New List(Of ActionResponse)
@@ -180,7 +180,7 @@ Namespace MauroTemplates
             End Try
         End Sub
         ''' <summary>
-        ''' Show a JSON file indented
+        ''' Concert a JSON string to be indented
         ''' </summary>
         ''' <remarks>
         ''' Applies JSON serialisation with writeIndented = true
@@ -195,13 +195,24 @@ Namespace MauroTemplates
     }
 
             Dim jsonElement = JsonSerializer.Deserialize(Of JsonElement)(uglyJSON)
-
-
             Dim s As String = JsonSerializer.Serialize(jsonElement, options)
             ' s = Replace(s, vbCrLf, "</br>")
             s = Replace(s, "\u0022", """")
             s = Replace(s, "\t", vbTab)
             s = Replace(s, "\n", vbCrLf)
+            Return s
+        End Function
+        ''' <summary>
+        ''' Show a JSON 
+        ''' </summary>
+        ''' <param name="uglyJSON"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function PrettyJSONhtml(uglyJSON As String) As String
+            Dim s As String = PrettyJson(uglyJSON)
+            s = Replace(s, vbTab, "    ")
+            s = Replace(s, vbCrLf, "</br>")
+            s = Replace(s, " ", "&nbsp;")
             Return s
         End Function
         ''' <param name="MauroModel">The Mauro model to apply the template to</param>
@@ -259,7 +270,7 @@ Namespace MauroTemplates
         ''' <param name="FileStream">Destination filestream</param>
         ''' <param name="Action">Freemarker action causing the error</param>
         ''' <param name="Response">The http response from the API</param>
-        Public Sub WriteErrorFile(FileStream As StreamWriter, Action As FreemarkerAction, Response As PostResponse)
+        Private Sub WriteErrorFile(FileStream As StreamWriter, Action As FreemarkerAction, Response As PostResponse)
             ' Write out the error
 
             FileStream.WriteLine("<html><head><title>Error</title></head>")
@@ -270,10 +281,8 @@ Namespace MauroTemplates
             FileStream.WriteLine("<p>")
             Dim s As String = Response.Body
             Try
-                s = PrettyJson(s)
-                s = Replace(s, "\t", " ")
-                s = Replace(s, "\n", "</br>")
-                s = Replace(s, " ", "&nbsp;")
+                s = PrettyJSONhtml(s)
+
             Catch ex As Exception
                 ' leave alone if not pretty
             End Try

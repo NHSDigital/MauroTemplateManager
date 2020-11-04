@@ -1,9 +1,11 @@
 ﻿Imports System.Text.RegularExpressions
 Imports System.Text.Json
 Imports ScintillaNET
+Imports ScintillaPrinting
 Imports MauroDataModeller.MauroTemplates
 Imports MauroDataModeller.MauroModel
 Imports MauroDataModeller.Settings
+
 
 Public Class frmMain
 
@@ -29,6 +31,15 @@ Public Class frmMain
     Dim RecentFiles As List(Of ApplicationSettings.AppSetting)
 
     Private Sub MauroDataManager_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        'MainTSContainer.TopToolStripPanel.Controls.Add(tsProcess)
+        'MainTSContainer.TopToolStripPanel.Controls.Add(tsPrinting)
+        'MainTSContainer.TopToolStripPanel.Controls.Add(tsFile)
+        tsFile.Location = New Point(0, 0)
+        tsProcess.Location = New Point(tsFile.Width, 0)
+        tsPrinting.Location = New Point(tsProcess.Location.X + tsProcess.Width, 0)
+        'tsFile.Dock = DockStyle.Left
+        'tsPrinting.Dock = DockStyle.Left
+        'tsProcess.Dock = DockStyle.Left
         RefreshStatus()
         RefreshRecentFileList()
         RefreshQueue()
@@ -91,7 +102,7 @@ Public Class frmMain
             OpenMauroTemplateManagerProject(OpenDialogue.FileName)
         End If
 
-        Tabs.SelectedIndex = 1
+        SetTab(1)
 
     End Sub
     ''' <summary>
@@ -107,7 +118,7 @@ Public Class frmMain
         Else
             MsgBox("There have not been any recent files", vbCritical)
         End If
-        Tabs.SelectedIndex = 2
+        SetTab(2)
     End Sub
     ''' <summary>
     ''' Opens a project and attempts to log into the Mauro endpoint specified in the project 
@@ -168,7 +179,7 @@ Public Class frmMain
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub mnuSave_Click(sender As Object, e As EventArgs) Handles mnuSave.Click, tsSave.Click
+    Private Sub mnuSave_Click(sender As Object, e As EventArgs) Handles mnuSave.Click
         DoSave(project.Filename) ' Saves without changing the filename
     End Sub
 
@@ -177,7 +188,7 @@ Public Class frmMain
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub mnuSaveAs_Click(sender As Object, e As EventArgs) Handles mnuSaveAs.Click, tsSaveAs.Click
+    Private Sub mnuSaveAs_Click(sender As Object, e As EventArgs) Handles mnuSaveAs.Click
         StatusEndpoint.Text = "Opening ..."
         SaveDialogue.Filter = "Mauro Project JSON|*.json"
         SaveDialogue.Title = "Save Mauro Project as"
@@ -292,11 +303,13 @@ Public Class frmMain
         tsSave.Enabled = ProjectLoaded
         tsSaveAs.Enabled = ProjectLoaded
         If ProjectLoaded Then
-            Dim dirty As Boolean = ProjectDirty
-            ' Set up the tabbed dialogue 
-            Tabs.Visible = True
-            Me.BackgroundImageLayout = ImageLayout.None
 
+            Dim dirty As Boolean = ProjectDirty
+            ' Set up the tabbed dialogue / update the UI
+            Me.BackgroundImageLayout = ImageLayout.None
+            tsProcess.Visible = True
+            tsPrinting.Visible = True
+            ' Tabs.Visible = True
 
             ' Populate endpoint details
             lblFilename.Text = project.Filename
@@ -326,6 +339,8 @@ Public Class frmMain
                 LoginStatus.Text = "Not logged in"
             End If
 
+
+
             ' Update the tabs before repopulating the listboxes
             Application.DoEvents()
 
@@ -344,8 +359,10 @@ Public Class frmMain
             StatusEndpoint.Text = "Not connected"
             SavedState.Text = "No project loaded"
             StatusFilename.Text = ""
-
-            Tabs.Visible = False
+            ' Update the UI
+            tsProcess.Visible = False
+            tsPrinting.Visible = False
+            SetTab(-1)
             Me.BackgroundImageLayout = ImageLayout.Center
         End If
 
@@ -368,9 +385,9 @@ Public Class frmMain
             pnlTVQueueButtons.Visible = True
             pbProgressHidden.Visible = False
             Counters.Text = "Waiting: " & ActionEntries.NotStarted.ToString
-            Counters.Text &= " Executing: " & ActionEntries.InProgress.ToString
-            Counters.Text &= " Success: " & ActionEntries.Success.ToString
-            Counters.Text &= " Fail: " & ActionEntries.Failed.ToString
+            Counters.Text &= ";  Executing: " & ActionEntries.InProgress.ToString
+            Counters.Text &= ";  Success: " & ActionEntries.Success.ToString
+            Counters.Text &= "; Failed: " & ActionEntries.Failed.ToString
 
             tvQueue.Nodes.Clear()
             Dim RootNode, ModelNode As TreeNode
@@ -511,7 +528,7 @@ Public Class frmMain
                             Catch
                                 Select Case ae.Action.FileSuffix.ToLower
                                     Case ".xml", ".dita", ".ditamap", ".bookmap"
-                                        txtPostBody.Lexer = Lexer.Xml
+                                        DITA(txtPostBody)
                                     Case ".htm", ".html"
                                         txtPostBody.Lexer = Lexer.Html
                                     Case ".bat"
@@ -555,6 +572,19 @@ Public Class frmMain
                 textFileSuffix.Text = .FileSuffix
 
                 txtTemplate.Text = .Template
+
+                ' Set the layout colours
+                Select Case .FileSuffix.ToLower
+                    Case ".xml", ".dita", ".ditamap", ".bookmap"
+                        DITA(txtTemplate)
+                    Case ".htm", ".html"
+                        txtTemplate.Lexer = Lexer.Html
+                    Case ".bat"
+                        txtTemplate.Lexer = Lexer.Batch
+                    Case Else
+                        txtTemplate.Lexer = Lexer.Xml
+                End Select
+
                 Select Case .ActionType
                     Case ActionTypes.actionClass
                         rbClass.Checked = True
@@ -592,6 +622,20 @@ Public Class frmMain
         End If
 
     End Sub
+
+    Private Sub SetTab(Tab As Integer)
+        If Tab = -1 Then
+            Tabs.Visible = False
+        Else
+            Tabs.Visible = True
+            Tabs.SelectedIndex = Tab
+            If Tab = 2 Or Tab = 3 Then
+                tsPrinting.Visible = True
+            Else
+                tsPrinting.Visible = False
+            End If
+        End If
+    End Sub
 #End Region
 #Region "Form control value handling"
     ''' <summary>
@@ -612,11 +656,7 @@ Public Class frmMain
 
         SetDirty()
     End Sub
-    ''' <summary>
-    ''' Stores the amended username and sets the flag for unsaved changes
-    ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
+
     Public Sub UsernameChanged(sender As Object, e As EventArgs) Handles txtUsername.TextChanged
         project.Endpoint.Username = txtUsername.Text
         SetDirty()
@@ -762,22 +802,22 @@ Public Class frmMain
         End If
         StartActionEntryQueueAsync(1)
         TimerReset()
-        Tabs.SelectedIndex = 3
+        SetTab(3)
         Application.DoEvents()
 
 
     End Sub
 
-    Private Sub cmdDoAll_Click(sender As Object, e As EventArgs) Handles cmdDoAll.Click
+    Private Sub cmdDoAll_Click(sender As Object, e As EventArgs) Handles cmdDoAll.Click, tsbRun.Click
         If EndpointConnection.LoginStatus = False Then
             MsgBox("You need to log in to a Mauro endpoint.", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkOnly, "Not logged in")
-            Tabs.SelectedIndex = 0
+            SetTab(0)
         ElseIf EndpointConnection.Username = "" Then
             MsgBox("You have not logged in to a Mauro endpoint", MsgBoxStyle.Exclamation Or MsgBoxStyle.OkOnly, "Not logged in")
-            Tabs.SelectedIndex = 0
+            SetTab(0)
 
         Else
-            Tabs.SelectedIndex = 3
+            SetTab(3)
             Application.DoEvents()
             Dim OutputDirectory As String = AppSettings.GetAppSetting("DefaultOutputDirectory", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
             QueueProjectActionEntries(project, OutputDirectory)
@@ -799,7 +839,41 @@ Public Class frmMain
     End Sub
 
     Private Sub AboutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AboutToolStripMenuItem.Click
-        AboutBox1.ShowDialog()
+        AboutMauroTemplateManager.ShowDialog()
+    End Sub
+
+
+    Private Sub cmdClear_Click(sender As Object, e As EventArgs) Handles cmdClear.Click
+        ActionEntries.Clear()
+        RefreshQueue()
+    End Sub
+
+    Private Sub tsbPrint_Click(sender As Object, e As EventArgs) Handles tsbPrint.Click
+        Select Case Tabs.SelectedIndex
+            Case 2
+                Print(txtTemplate, False, CType(lstActions.SelectedItem, FreemarkerAction).Name)
+            Case 3
+                Print(txtPostBody, False, tvQueue.SelectedNode.Text)
+            Case Else
+                MsgBox("Select the template or process queue before printing.")
+        End Select
+
+    End Sub
+
+    Private Sub tsbPreview_Click(sender As Object, e As EventArgs) Handles tsbPreview.Click
+        Select Case Tabs.SelectedIndex
+            Case 2
+                Print(txtTemplate, True, CType(lstActions.SelectedItem, FreemarkerAction).Name)
+            Case 3
+                If Not IsNothing(tvQueue.SelectedNode) Then
+                    Print(txtPostBody, True, tvQueue.SelectedNode.Text)
+                Else
+                    MsgBox("No output selected", vbOKOnly & MsgBoxStyle.Exclamation)
+                End If
+            Case Else
+                MsgBox("Select the template or process queue before printing.")
+        End Select
+
     End Sub
 #End Region
 
@@ -857,19 +931,54 @@ Public Class frmMain
 #End Region
 
 #Region "Scintilla"
+
+    Private Sub Print(Box As Scintilla, Preview As Boolean, DocName As String)
+        If Box.Text = "" Then
+            MsgBox("There is nothing selected to print", vbInformation Or vbOKOnly)
+        Else
+            Dim printer As Printing = New Printing(Box)
+
+            Dim Settings As New PageSettings() With {
+            .ColorMode = PageSettings.PrintColorMode.ColorOnWhite
+            }
+
+            Settings.Footer = New FooterInformation() With {
+                .Left = InformationType.DocumentName,
+                .Right = InformationType.PageNumber,
+                .Border = PageInformationBorder.Top
+            }
+            Settings.Header = New HeaderInformation() With {
+                .Left = InformationType.DocumentName,
+                .Right = InformationType.PageNumber,
+                .Border = PageInformationBorder.Bottom
+            }
+
+            printer.PageSettings = Settings
+            printer.PrintDocument = New PrintDocument(Box) With {
+                .DocumentName = "Mauro Template Manager - " & DocName}
+
+            If Preview Then
+                printer.PrintPreview()
+            Else
+                printer.Print()
+            End If
+        End If
+
+
+    End Sub
     Private Sub InitSyntaxColoring(txtTemplate As Scintilla)
 
         ' Configure the default style
         txtTemplate.StyleResetDefault()
         txtTemplate.Styles(Style.Default).Font = "Consolas"
         txtTemplate.Styles(Style.Default).Size = 10
-        txtTemplate.Styles(Style.Default).BackColor = Color.Black
-        txtTemplate.Styles(Style.Default).ForeColor = Color.LightGray
-        txtTemplate.CaretForeColor = Color.White
+        txtTemplate.Styles(Style.Default).BackColor = Color.White
+        txtTemplate.Styles(Style.Default).ForeColor = Color.Black
+        txtTemplate.CaretForeColor = Color.Black
         txtTemplate.StyleClearAll() ' Reset all properties to the defaults
 
         txtTemplate.Styles(Style.Xml.Tag).ForeColor = Color.Red
-        txtTemplate.Styles(Style.Xml.TagUnknown).ForeColor = Color.Lime
+        txtTemplate.Styles(Style.Xml.TagUnknown).ForeColor = Color.DarkGreen
         txtTemplate.Styles(Style.Xml.Attribute).ForeColor = Color.Blue
         txtTemplate.Styles(Style.Xml.AttributeUnknown).ForeColor = Color.Yellow
         txtTemplate.Styles(Style.Xml.Number).ForeColor = Color.Fuchsia
@@ -887,13 +996,37 @@ Public Class frmMain
         txtTemplate.Styles(Style.Xml.AspAt).ForeColor = Color.FromArgb(-16777024)
         txtTemplate.Styles(Style.Xml.CData).ForeColor = Color.FromArgb(-4145152)
         txtTemplate.Styles(Style.Xml.Question).ForeColor = Color.FromArgb(-4194112)
-        txtTemplate.Styles(Style.Xml.Value).ForeColor = Color.SaddleBrown
+        txtTemplate.Styles(Style.Xml.Value).ForeColor = Color.DarkSlateBlue
         txtTemplate.Styles(Style.Xml.XcComment).ForeColor = Color.Silver
 
         txtTemplate.Lexer = Lexer.Xml
         txtTemplate.AllowDrop = True
         txtTemplate.SetKeywords(0, "#function #include #import")
         txtTemplate.SetKeywords(1, "#assign #return #default #break #noparse #compress #escape #noescape #global #local #setting #macro #nested #flush #stop #ftl #t #lt #rt #nt #visit #recurse #fallback #if #else #elseif #list #switch #case #attempt #recover")
+
+    End Sub
+
+    Private Sub DITA(Box As Scintilla)
+        Box.Styles(ScintillaNET.Style.Xml.Tag).ForeColor = Color.DarkGreen
+        Box.Styles(ScintillaNET.Style.Xml.TagUnknown).ForeColor = Color.DarkRed
+        Box.Styles(ScintillaNET.Style.Xml.Attribute).ForeColor = Color.Blue
+        Box.Styles(ScintillaNET.Style.Xml.AttributeUnknown).ForeColor = Color.DarkBlue
+        Box.Styles(ScintillaNET.Style.Xml.Number).ForeColor = Color.Fuchsia
+        Box.Styles(ScintillaNET.Style.Xml.DoubleString).ForeColor = Color.DarkMagenta
+        Box.Styles(ScintillaNET.Style.Xml.SingleString).ForeColor = Color.Maroon
+        Box.Styles(ScintillaNET.Style.Xml.Other).ForeColor = Color.Green
+        Box.Styles(ScintillaNET.Style.Xml.Comment).ForeColor = Color.Navy
+        Box.Styles(ScintillaNET.Style.Xml.Entity).ForeColor = Color.Olive
+        Box.Styles(ScintillaNET.Style.Xml.TagEnd).ForeColor = Color.Red
+        Box.Styles(ScintillaNET.Style.Xml.XmlStart).ForeColor = Color.Teal
+        Box.Styles(ScintillaNET.Style.Xml.XmlEnd).ForeColor = Color.Gray
+        Box.Styles(ScintillaNET.Style.Xml.Script).BackColor = Color.DarkBlue
+        Box.Styles(ScintillaNET.Style.Xml.Script).ForeColor = Color.White
+        Box.Styles(ScintillaNET.Style.Xml.Value).ForeColor = Color.Yellow
+        Box.Lexer = ScintillaNET.Lexer.Xml
+        Box.SetKeywords(2, "two #function #include #import")
+        Box.SetKeywords(1, "#assign #return #default #break #noparse #compress #escape #noescape #global #local #setting #macro #nested #flush #stop #ftl #t #lt #rt #nt #visit #recurse #fallback #if #else #elseif #list #switch #case #attempt #recover")
+        Box.SetKeywords(0, "abstract alt anchor anchorid anchorkey anchorref area attributedef audience author b body bodydiv boolean brand category cite colspec component consequence coords copyrholder copyright copyryear created critdates data-about data dd ddhd defaultSubject desc dita ditavalmeta ditavalref div dl dlentry dlhead draft-comment dt dthd dvrKeyscopePrefix dvrKeyscopeSuffix dvrResourcePrefix dvrResourceSuffix elementdef entry enumerationdef example exportanchors featnum fig figgroup fn foreign hasInstance hasKind hasNarrower hasPart hasRelated hazardstatement hazardsymbol howtoavoid i image imagemap index-base index-see-also index-see index-sort-as indexterm indextermref itemgroup keydef keyword keywords li lines line-through link linkinfo linklist linkpool linktext longdescref longquoteref lq map mapref messagepanel metadata navref navtitle no-topic-nesting note object ol othermeta overline p param permissions ph platform pre prodinfo prodname prognum prolog publisher q related-links relatedSubjects relcell relcolspec relheader relrow reltable required-cleanup resourceid revised row schemeref searchtitle section sectiondiv series shape shortdesc simpletable sl sli sort-as source state stentry sthead strow sub subjectCell subjectHead subjectHeadMeta subjectRel subjectRelHeader subjectRelTable subjectRole subjectScheme subjectdef subjectref sup table tbody term text tgroup thead title titlealts tm topic topicCell topicSubjectHeader topicSubjectRow topicSubjectTable topicapply topicgroup topichead topicmeta topicref topicset topicsetref topicsubject tt typeofhazard u ul unknown ux-window vrm vrmlist xref ")
 
     End Sub
     Private Sub InitColors(txtTemplate As Scintilla)
@@ -922,11 +1055,6 @@ Public Class frmMain
         nums.Sensitive = True
         nums.Mask = 0
         ' txtTemplate.MarginClick += TextArea_MarginClick
-    End Sub
-
-    Private Sub cmdClear_Click(sender As Object, e As EventArgs) Handles cmdClear.Click
-        ActionEntries.Clear()
-        RefreshQueue()
     End Sub
 
 
