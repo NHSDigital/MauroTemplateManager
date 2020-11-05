@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <RootNamespace>MauroTemplate</RootNamespace>
+    <RootNamespace>MauroDataModeller</RootNamespace>
     <TargetFrameworks>netcoreapp3.1;net48</TargetFrameworks> 
   <!--  <TargetFramework>net48</TargetFramework> -->
     <StartupObject>MauroTemplate.MauroTemplates.commandline.Program</StartupObject>

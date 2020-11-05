@@ -1,1 +1,0 @@
-search_result['73']=["frlrfMauroDataModellerMauroModeldataClassTypeClassTopic.html","dataClassType Class",""];

@@ -1,1 +1,0 @@
-search_result['94']=["frlrfMauroDataModellerMauroModeldataElementTypeClassmaxMultiplicityTopic.html","dataElementType.maxMultiplicity Property","If not provided then will default to 1 (required)"];

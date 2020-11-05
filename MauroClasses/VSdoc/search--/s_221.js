@@ -1,1 +1,0 @@
-search_result['221']=["frlrfMauroDataModellerMauroModelmetadataCollectionTypeClassTopic_props--.html","metadataCollectionType Properties",""];

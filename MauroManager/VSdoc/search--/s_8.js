@@ -1,1 +1,1 @@
-search_result['8']=["topic_0000000000000001.html","AboutBox1.Dispose Method","Disposes of the resources (other than memory) used by the Form."];
+search_result['8']=["topic_0000000000000002.html","MauroDataModeller.Settings Namespace",""];

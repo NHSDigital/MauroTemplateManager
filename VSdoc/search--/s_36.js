@@ -1,1 +1,1 @@
-search_result['36']=["topic_0000000000000017_props--.html","ActionEntries Properties",""];
+search_result['36']=["topic_000000000000000F.html","MauroEndpoint.Password Property","Gets or sets the password used to authenticate the username against the Mauro\r\nendpoint."];

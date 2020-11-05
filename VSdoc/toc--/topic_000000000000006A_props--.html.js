@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000000111.html"],['32',"MauroDataModeller.MauroModel Namespace","topic_000000000000004A.html"],['112',"PostResponse Class","topic_000000000000006A.html"],['113',"Properties","topic_000000000000006A_props--.html"]];

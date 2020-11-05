@@ -1,1 +1,1 @@
-search_result['68']=["topic_000000000000001E.html","frmMain.RedrawActionList Method","Redraw the list of available actions"];
+search_result['68']=["topic_0000000000000028_overloads--.html","frmPreferences.Dispose Method","Disposes of the resources (other than memory) used by the Form."];

@@ -1,1 +1,1 @@
-search_result['223']=["topic_000000000000008A_props--.html","dataClassesType Properties",""];
+search_result['223']=["topic_000000000000006A.html","PostResponse Class","Class to pass back http post responses"];

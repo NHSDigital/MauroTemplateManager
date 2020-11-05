@@ -1,1 +1,1 @@
-search_result['364']=["topic_00000000000000D0.html","dataElementType.dataType Property","If you\u0027ve already provided the full DataType information in the DataModel list of DataTypes, then you need only provide the label and domainType here to link to the DataType. If you have not provided ..."];
+search_result['364']=["topic_000000000000009D.html","dataClassType.description Property","### TODO: Add a description"];

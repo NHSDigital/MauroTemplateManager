@@ -1,1 +1,1 @@
-search_result['381']=["topic_00000000000000DC.html","Metadata.mauroNamespace Property",""];
+search_result['381']=["topic_00000000000000A4.html","annotationType Class","##TODO Add description comment"];

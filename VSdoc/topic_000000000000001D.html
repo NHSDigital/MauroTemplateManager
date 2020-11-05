@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>ActionEntries.Failed Property</title>
+	<title>ActionEntries.Start Method</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,7 +74,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">ActionEntries.Failed Property</h1>
+		<h1 class="title">ActionEntries.Start Method</h1>
         
 		<div class="metadata">
         Namespace:
@@ -88,6 +88,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		</div>
 
        
+        <summary-info>Checks the queue of pending action entries and if there are less than the limit in progress, initiates separate threads for pending entries up to the limit.</summary-info>
 
 
 
@@ -135,7 +136,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">Public ReadOnly Shared Property Failed() As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.int32">Integer</a></pre>			
+					<pre xml:space="preserve" class="brush: vb">Public Shared Sub Start( _&nbsp;<br />   ByVal <i>limit</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.int32">Integer</a> _&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -174,7 +175,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">public static <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.int32">int</a> Failed {get;}</pre>			
+					<pre xml:space="preserve" class="brush: csharp">public static <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.void">void</a> Start(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.int32">int</a> <i>limit</i>&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -188,11 +189,23 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</div>
 
 
+<h4 class="subHeading">
+	Parameters</h4><dl paramName="limit" class="parameterList">
+	<dt>
+		<span class="parameter">
+			limit
+		</span>
+	</dt>
+	<dd>
+		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.int32">int</a> 
+	</dd>
+</dl>
+<p>
+	Maximum number of threads to be running at once 
+</p>
 
-	<h4 class="subHeading">
-		Property Value</h4>
-	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.int32">int</a> 
-	
+<p />
+
 
 
 
@@ -278,7 +291,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-			<a href="topic_0000000000000017.html">ActionEntries Class</a><br />
+			<a href="topic_0000000000000016.html">ActionEntries Class</a><br />
 
 
 

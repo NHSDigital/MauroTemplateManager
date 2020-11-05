@@ -1,1 +1,1 @@
-search_result['23']=["topic_0000000000000005.html","ApplicationSettings.Filename Property","The name of the file holding the application settings"];
+search_result['23']=["topic_000000000000000C.html","ApplicationSettings.AddSettingStart Method","Add a new setting at the start of the list, incrementing the sequence of existing members"];

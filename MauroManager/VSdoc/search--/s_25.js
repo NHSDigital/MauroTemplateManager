@@ -1,1 +1,1 @@
-search_result['25']=["topic_0000000000000007.html","ApplicationSettings.GetAppSettingAll Method","Get all the values of a setting ordered by the setting sequence"];
+search_result['25']=["topic_000000000000000E.html","ApplicationSettings.ProtectPassword Method",""];

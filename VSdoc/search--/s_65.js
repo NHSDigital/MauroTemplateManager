@@ -1,1 +1,1 @@
-search_result['65']=["topic_0000000000000029.html","ActionEntry.ModelIDs Property",""];
+search_result['65']=["topic_0000000000000020.html","ActionEntry.ModelIDs Property","Gets or sets the list of data model identifier Guids."];

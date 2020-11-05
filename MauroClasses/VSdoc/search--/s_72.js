@@ -1,1 +1,0 @@
-search_result['72']=["frlrfMauroDataModellerMauroModeldataClassTypeClassminMultiplicityTopic.html","dataClassType.minMultiplicity Property","If not provided then will default to 1 (required)"];

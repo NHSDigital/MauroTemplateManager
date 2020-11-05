@@ -1,1 +1,1 @@
-search_result['422']=["topic_00000000000000F6.html","AppSetting Class","A Name, value, sequence class to hold a specific setting"];
+search_result['422']=["topic_00000000000000AF.html","classifierType.id Property","### TODO: Add a description"];

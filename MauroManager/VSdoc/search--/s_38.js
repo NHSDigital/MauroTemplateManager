@@ -1,1 +1,1 @@
-search_result['38']=["topic_0000000000000012_events--.html","AppSetting Events",""];
+search_result['38']=["topic_0000000000000016.html","AppSetting.Sequence Property","The position in the list (sequence) of the setting if there are more than one values for that name"];

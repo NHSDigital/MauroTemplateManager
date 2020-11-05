@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>ApplicationSettings Class</title>
+	<title>ApplicationSettings.Filename Property</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,11 +74,11 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">ApplicationSettings Class</h1>
+		<h1 class="title">ApplicationSettings.Filename Property</h1>
         
 		<div class="metadata">
         Namespace:
-<a href="topic_00000000000000E5.html">MauroDataModeller.Settings</a>
+<a href="topic_00000000000000E3.html">MauroDataModeller.Settings</a>
 
 
 
@@ -88,7 +88,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		</div>
 
        
-        <summary-info>Manipulate a JSON list of settings for an application, storing the file in the users ApplicationData folder</summary-info>
+        <summary-info>The name of the file holding the application settings</summary-info>
 
 
 
@@ -138,7 +138,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">Public Class ApplicationSettings</pre>			
+					<pre xml:space="preserve" class="brush: vb">Public Property Filename() As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a></pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -177,7 +177,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">public class ApplicationSettings</pre>			
+					<pre xml:space="preserve" class="brush: csharp">public <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> Filename {get; set;}</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -217,7 +217,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">public ref class ApplicationSettings </pre>			
+					<pre xml:space="preserve" class="brush: cpp">public: &nbsp;<br />property <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>^ Filename {&nbsp;<br /> <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>^ get( );&nbsp;<br /> void set(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>^ value&nbsp;<br /> );&nbsp;<br />}</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -256,7 +256,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeJScript">
-					<pre xml:space="preserve" class="brush: js">public class ApplicationSettings</pre>			
+					<pre xml:space="preserve" class="brush: js">public function get Filename() : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>;&nbsp;<br />public function set Filename(value : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>);</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -268,6 +268,11 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 
+	<h4 class="subHeading">
+		Property Value</h4>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> 
+	
+
 
 
 
@@ -283,595 +288,6 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	</div>
 </div>
-
-
-
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Constructors</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="ConstructorsSection" class="section">	
-  <table class="memberListTable">
-    <tr>
-      <th></th>
-      <th>
-        Name
-      </th>
-      <th>
-        Description
-      </th>
-    </tr>
-
-
-	
-			<tr class="
-	
-	
-	">
-	  <td>
-    <img alt="Public constructor" title="Public constructor" src="msdn2019/pubmethod.png"></img>
-
-	
-	    
-	  </td>
-	  <td>
-	    <a href="topic_00000000000000E7.html">ApplicationSettings(string)</a>
-
-	  </td>
-	  <td>
-	
-	Load the existing settings from the JSON file
-	
-		</td>
-	</tr>
-	
-
-
-  </table>
-
-  <a href="#mainBody">
-    Top
-  </a>
-
-	</div>					
-</div>
-
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Properties</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="PropertiesSection" class="section">	
-  <table class="memberListTable">
-    <tr>
-      <th></th>
-      <th>
-        Name
-      </th>
-      <th>
-        Description
-      </th>
-    </tr>
-
-
-	
-		<tr class="
-
-
-">
-	<td>
-<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000E8.html">Filename</a>
-
-	</td>
-	<td>
-
-The name of the file holding the application settings
-
-	</td>
-</tr>
-	
-
-
-  </table>
-
-  <a href="#mainBody">
-    Top
-  </a>
-
-	</div>					
-</div>
-
-
-
-
-
-
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Methods</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="MethodsSection" class="section">	
-  <table class="memberListTable">
-    <tr>
-      <th></th>
-      <th>
-        Name
-      </th>
-      <th>
-        Description
-      </th>
-    </tr>
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000F0.html">AddOrMoveToStart(string, string)</a>
-
-	</td>
-	<td>
-
-
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000EE.html">AddSettingEnd(string, string)</a>
-
-	</td>
-	<td>
-
-Add a new setting at the end of the list
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000EF.html">AddSettingStart(string, string)</a>
-
-	</td>
-	<td>
-
-Add a new setting at the start of the list, incrementing the sequence of existing members
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000E9.html">GetAppSetting(string, string)</a>
-
-	</td>
-	<td>
-
-Load the first instance of the settings for settin Name
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000EA.html">GetAppSettingAll(string, string)</a>
-
-	</td>
-	<td>
-
-Get all the values of a setting ordered by the setting sequence
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000ED.html">GetPasswordAppSetting()</a>
-
-	</td>
-	<td>
-
-
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-	  
-	<img alt="Static" title="Static" src="msdn2019/static.png"></img>
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000F5.html">PrintValues(byte[])</a>
-
-	</td>
-	<td>
-
-
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-	  
-	<img alt="Static" title="Static" src="msdn2019/static.png"></img>
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000F3.html">Protect(byte[])</a>
-
-	</td>
-	<td>
-
-
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000F1.html">ProtectPassword(string)</a>
-
-	</td>
-	<td>
-
-
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000EB.html">SetAppSetting(string, string)</a>
-
-	</td>
-	<td>
-
-Sets the value of Setting with index 0, overwriting if exists
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000EC.html">SetPasswordAppSetting(string)</a>
-
-	</td>
-	<td>
-
-
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-	  
-	<img alt="Static" title="Static" src="msdn2019/static.png"></img>
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000F4.html">Unprotect(byte[])</a>
-
-	</td>
-	<td>
-
-
-
-	</td>
-</tr>
-
-
-
-
-
-
-
-
-	<tr class="
-
-
-">
-	<td>
-<img alt="Public method" title="Public method" src="msdn2019/pubmethod.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000F2.html">UnprotectPassword(string)</a>
-
-	</td>
-	<td>
-
-
-
-	</td>
-</tr>
-
-
-
-
-
-
-  </table>
-
-  <a href="#mainBody">
-    Top
-  </a>
-
-	</div>					
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Classes</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="ClassSection" class="section">	
-  <table class="memberListTable">
-    <tr>
-      <th></th>
-      <th>
-        Name
-      </th>
-      <th>
-        Description
-      </th>
-    </tr>
-
-
-<!-- Classes -->
-	<tr class="
-	
-	
-	">
-	  <td>
-    <img alt="Public class" title="Public class" src="msdn2019/pubclass.png"></img>
-    
-
-    
-	  </td>
-	  <td>
-	    <a href="topic_00000000000000F6.html">AppSetting</a>
-	  </td>
-	  <td>
-
-A Name, value, sequence class to hold a specific setting
-
-		</td>
-	</tr>
-
-<!-- Classes End -->
-
-<!-- Standard Modules -->
-
-<!-- Standard Modules End -->
-
-  </table>
-
-  <a href="#mainBody">
-    Top
-  </a>
-
-	</div>					
-</div>
-
-
-
-
 
 
 
@@ -935,7 +351,6 @@ A Name, value, sequence class to hold a specific setting
 	</div>					
 </div>
 
-
 <div class="section_container">
 	<div class="section_heading">
 		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">See Also</a></span>
@@ -944,10 +359,14 @@ A Name, value, sequence class to hold a specific setting
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-	<a href="topic_00000000000000E5.html">MauroDataModeller.Settings Namespace</a><br />
+			<a href="topic_00000000000000E4.html">ApplicationSettings Class</a><br />
 
 
-	
+
+<a href="topic_00000000000000E3.html">MauroDataModeller.Settings Namespace</a><br />
+
+
+			
 
 		</div>
 	</div>					

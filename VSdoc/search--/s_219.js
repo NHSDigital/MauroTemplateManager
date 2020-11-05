@@ -1,1 +1,1 @@
-search_result['219']=["topic_000000000000008A.html","dataClassesType Class","##TODO Add description comment"];
+search_result['219']=["topic_0000000000000066.html","EndpointConnection.GetModelClasses Method",""];

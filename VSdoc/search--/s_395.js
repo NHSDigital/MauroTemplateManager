@@ -1,1 +1,1 @@
-search_result['395']=["topic_00000000000000E3_events--.html","AboutBox1 Events",""];
+search_result['395']=["topic_00000000000000A8.html","annotationType.label Property","Only optional if is a child annotation, the top level annotation must have a label"];

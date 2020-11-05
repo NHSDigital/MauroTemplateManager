@@ -1,1 +1,0 @@
-search_result['114']=["frlrfMauroDataModellerMauroModeldataTypeTypeClassenumerationValuesTopic.html","dataTypeType.enumerationValues Property","Mandatory if domainType is \"EnumerationType\". Ignored otherwise"];

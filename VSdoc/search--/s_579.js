@@ -1,0 +1,1 @@
+search_result['579']=["topic_00000000000000E8.html","ApplicationSettings.GetAppSettingAll Method","Get all the values of a setting ordered by the setting sequence"];

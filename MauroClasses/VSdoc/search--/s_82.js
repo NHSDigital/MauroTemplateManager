@@ -1,1 +1,0 @@
-search_result['82']=["frlrfMauroDataModellerMauroModeldataElementsTypeClassTopic_events--.html","dataElementsType Events",""];

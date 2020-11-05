@@ -1,1 +1,0 @@
-search_result['387']=["frlrfMauroDataModellerMauroTemplatesProjectClassTopic.html","Project Class","Holds the main project, handles file open and save, and connects to a Mauro endpoint"];

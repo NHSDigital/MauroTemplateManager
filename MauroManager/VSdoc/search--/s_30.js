@@ -1,1 +1,1 @@
-search_result['30']=["topic_000000000000000C.html","ApplicationSettings.AddSettingStart Method","Add a new setting at the start of the list, incrementing the sequence of existing members"];
+search_result['30']=["topic_0000000000000013.html","AppSetting Class","A Name, value, sequence class to hold a specific setting"];

@@ -1,1 +1,0 @@
-search_result['81']=["frlrfMauroDataModellerMauroModeldataElementsTypeClassTopic_attached_props--.html","dataElementsType Attached Properties",""];

@@ -1,1 +1,1 @@
-var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000000113.html"],['4',"MauroDataModeller Namespace","topic_0000000000000115.html"],['29',"frmPreferences Class","topic_000000000000010A.html"],['30',"Methods","topic_000000000000010A_methods--.html"]];
+var breadcrumbs=[['-1',"",""],['2',"SOLUTION-WIDE PROPERTIES Reference","topic_0000000000000111.html"],['4',"MauroDataModeller Namespace","topic_0000000000000113.html"],['8',"ImportExportDialogue Class","topic_000000000000010A.html"],['9',"Methods","topic_000000000000010A_methods--.html"]];

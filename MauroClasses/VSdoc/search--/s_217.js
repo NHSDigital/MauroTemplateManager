@@ -1,1 +1,0 @@
-search_result['217']=["frlrfMauroDataModellerMauroModelmetadataCollectionTypeClassTopic.html","metadataCollectionType Class","##TODO Add description comment"];

@@ -1,1 +1,1 @@
-search_result['305']=["topic_00000000000000B3.html","Classifier Class",""];
+search_result['305']=["topic_000000000000008A.html","dataClassesType.dataClass Property",""];

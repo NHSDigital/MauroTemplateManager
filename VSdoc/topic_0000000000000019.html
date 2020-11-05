@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>ActionEntries.FindByID Method</title>
+	<title>ActionEntries.NotStarted Property</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,7 +74,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">ActionEntries.FindByID Method</h1>
+		<h1 class="title">ActionEntries.NotStarted Property</h1>
         
 		<div class="metadata">
         Namespace:
@@ -88,6 +88,8 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		</div>
 
        
+        <summary-info>Gets the number of ActionEntry classes in the list where the ActionEntry has not
+started executing.</summary-info>
 
 
 
@@ -135,7 +137,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">Public Function FindByID( _&nbsp;<br />   ByVal <i>ID</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.guid">Guid</a> _&nbsp;<br />) As <a target="_top" href="topic_0000000000000028.html" onclick="this.target='';return true;">ActionEntry</a></pre>			
+					<pre xml:space="preserve" class="brush: vb">Public ReadOnly Shared Property NotStarted() As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.int32">Integer</a></pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -174,7 +176,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">public <a target="_top" href="topic_0000000000000028.html" onclick="this.target='';return true;">ActionEntry</a> FindByID(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.guid">Guid</a> <i>ID</i>&nbsp;<br />)</pre>			
+					<pre xml:space="preserve" class="brush: csharp">public static <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.int32">int</a> NotStarted {get;}</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -188,26 +190,10 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</div>
 
 
-<h4 class="subHeading">
-	Parameters</h4><dl paramName="ID" class="parameterList">
-	<dt>
-		<span class="parameter">
-			ID
-		</span>
-	</dt>
-	<dd>
-		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.guid">Guid</a> 
-	</dd>
-</dl>
-<p>
-	 
-</p>
-
-<p />
 
 	<h4 class="subHeading">
-		Return Value</h4>
-	<a target="_top" href="topic_0000000000000028.html" onclick="this.target='';return true;">ActionEntry</a> 
+		Property Value</h4>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.int32">int</a> 
 	
 
 
@@ -294,7 +280,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-			<a href="topic_0000000000000017.html">ActionEntries Class</a><br />
+			<a href="topic_0000000000000016.html">ActionEntries Class</a><br />
 
 
 

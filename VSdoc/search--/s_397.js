@@ -1,1 +1,1 @@
-search_result['397']=["topic_00000000000000E3_props--.html","AboutBox1 Properties",""];
+search_result['397']=["topic_00000000000000AA.html","classifiersType Class","##TODO Add description comment"];

@@ -1,1 +1,0 @@
-search_result['45']=["frlrfMauroDataModellerMauroModelclassifierTypeClasslabelTopic.html","classifierType.label Property","### TODO: Add a description"];

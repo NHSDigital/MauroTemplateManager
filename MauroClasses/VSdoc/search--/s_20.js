@@ -1,1 +1,0 @@
-search_result['20']=["frlrfMauroDataModellerMauroModelannotationTypeClasslastUpdatedTopic.html","annotationType.lastUpdated Property","### TODO: Add a description"];

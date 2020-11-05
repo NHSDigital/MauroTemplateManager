@@ -1,1 +1,1 @@
-c['287']=[['288',"ApplicationSettings Class","topic_00000000000000E6.html",1]];
+c['287']=[['288',"Name Property","topic_00000000000000F5.html",0],['289',"Sequence Property","topic_00000000000000F7.html",0],['290',"Value Property","topic_00000000000000F6.html",0]];

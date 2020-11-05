@@ -1,1 +1,1 @@
-search_result['46']=["topic_0000000000000020.html","FreemarkerAction Class",""];
+search_result['46']=["topic_0000000000000017.html","ActionEntries.Entries Property","Gets or sets the list of ActionEntry classes."];

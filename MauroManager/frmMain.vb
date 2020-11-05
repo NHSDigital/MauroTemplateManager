@@ -298,6 +298,9 @@ Public Class frmMain
         mnuSaveAs.Enabled = ProjectLoaded
         tsSave.Enabled = ProjectLoaded
         tsSaveAs.Enabled = ProjectLoaded
+
+        Tabs.Visible = ProjectLoaded
+
         If ProjectLoaded Then
 
             Dim dirty As Boolean = ProjectDirty
@@ -431,7 +434,7 @@ Public Class frmMain
                     ' Need to create a new folder here if there are more than one responses 
                     Select Case e.Status
 
-                        Case ActionOutcomeStatus.Success, e.Status = ActionOutcomeStatus.Failed, ActionOutcomeStatus.InProgress
+                        Case ActionStatus.Success, e.Status = ActionStatus.Failed, ActionStatus.InProgress
 
                             For Each r As ActionResponse In e.ActionResponses
                                 ' Store the post response
@@ -617,16 +620,21 @@ Public Class frmMain
     End Sub
 
     Private Sub SetTab(Tab As Integer)
-        If Tab = -1 Then
+        If Tab < 0 Then
             Tabs.Visible = False
         Else
             Tabs.Visible = True
             Tabs.SelectedIndex = Tab
-            If Tab = 2 Or Tab = 3 Then
-                tsPrinting.Visible = True
-            Else
-                tsPrinting.Visible = False
-            End If
+        End If
+
+    End Sub
+
+    Private Sub TabSelectedChanged(sender As Object, e As EventArgs) Handles Tabs.SelectedIndexChanged
+        Dim tab As Integer = Tabs.SelectedIndex
+        If tab = 2 Or tab = 3 Then
+            tsPrinting.Visible = True
+        Else
+            tsPrinting.Visible = False
         End If
     End Sub
 #End Region
@@ -730,9 +738,8 @@ Public Class frmMain
             .FileSuffix = ".txt",
             .Template = "",
             .Name = "(New template)",
-            .Description = "No description",
-            .id = Guid.NewGuid
-        }
+            .Description = "No description"
+                    }
         project.Actions.Add(act)
         RedrawActionList()
     End Sub
@@ -754,7 +761,6 @@ Public Class frmMain
         End Try
         RefreshStatus()
     End Sub
-
 
     Private Sub cmdRemoveModel_Click(sender As Object, e As EventArgs) Handles cmdRemoveModel.Click
         For Each ModelListEntry As Object In lstGUIDs.SelectedItems
@@ -785,7 +791,7 @@ Public Class frmMain
             Next
 
             Dim newEntry As New ActionEntry With {
-                    .Status = ActionOutcomeStatus.NotStarted,
+                    .Status = ActionStatus.NotStarted,
                     .Action = act,
                       .OutputDirectory = OutputDirectory,
                     .ModelIDs = mdlList}
@@ -793,12 +799,10 @@ Public Class frmMain
             ActionEntries.Entries.Add(newEntry)
 
         End If
-        StartActionEntryQueueAsync(1)
+        'ActionEntries. .StartActionEntryQueueAsync(1)
         TimerReset()
         SetTab(3)
         Application.DoEvents()
-
-
     End Sub
 
     Private Sub cmdDoAll_Click(sender As Object, e As EventArgs) Handles cmdDoAll.Click, tsbRun.Click
@@ -815,16 +819,10 @@ Public Class frmMain
             Dim OutputDirectory As String = AppSettings.GetAppSetting("DefaultOutputDirectory", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
             QueueProjectActionEntries(project, OutputDirectory)
             Application.DoEvents()
-            'StartActionEntryQueueAsync() ' TimerReset kicks off the queue
+            ActionEntries.Start(20) ' TimerReset kicks off the queue
             TimerReset()
         End If
     End Sub
-
-    Private Sub ToolStripDropDownButton1_Click(sender As Object, e As EventArgs)
-        RefreshStatus()
-    End Sub
-
-
 
     Private Sub PreferencesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PreferencesToolStripMenuItem.Click
         Dim f As New frmPreferences
@@ -901,7 +899,7 @@ Public Class frmMain
         Application.DoEvents()
         If q > 0 And i < 20 Then
             ' Restart the queue
-            StartActionEntryQueueAsync(20)
+            ActionEntries.Start(20)
         End If
     End Sub
     ''' <summary>

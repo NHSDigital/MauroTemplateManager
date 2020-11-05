@@ -1,1 +1,1 @@
-c['4']=[['5',"AboutBox1 Class","topic_0000000000000000.html",1],['9',"ImportExportDialogue Class","topic_0000000000000029.html",1],['13',"frmMain Class","topic_0000000000000017.html",1],['32',"frmPreferences Class","topic_0000000000000027.html",1]];
+c['4']=[['5',"AboutMauroTemplateManager Class","topic_0000000000000000.html",1],['9',"ImportExportDialogue Class","topic_0000000000000029.html",1],['13',"frmMain Class","topic_0000000000000017.html",1],['32',"frmPreferences Class","topic_0000000000000027.html",1]];

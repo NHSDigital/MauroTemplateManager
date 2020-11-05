@@ -1,1 +1,0 @@
-c['145']=[['146',"Properties","frlrfMauroDataModellerMauroModeldataTypeTypeClassTopic_props--.html",1]];

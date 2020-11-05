@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>ActionEntries.Entries Property</title>
+	<title>ActionEntries.FindByID Method</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,7 +74,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">ActionEntries.Entries Property</h1>
+		<h1 class="title">ActionEntries.FindByID Method</h1>
         
 		<div class="metadata">
         Namespace:
@@ -88,6 +88,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		</div>
 
        
+        <summary-info>Finds a specific entry by the ID</summary-info>
 
 
 
@@ -135,7 +136,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">Public Shared Property Entries() As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1">List</a>(Of <a target="_top" href="topic_0000000000000028.html" onclick="this.target='';return true;">ActionEntry</a>)</pre>			
+					<pre xml:space="preserve" class="brush: vb">Public Function FindByID( _&nbsp;<br />   ByVal <i>ID</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.guid">Guid</a> _&nbsp;<br />) As <a target="_top" href="topic_000000000000001F.html" onclick="this.target='';return true;">ActionEntry</a></pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -174,7 +175,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">public static <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a target="_top" href="topic_0000000000000028.html" onclick="this.target='';return true;">ActionEntry</a>&gt; Entries {get; set;}</pre>			
+					<pre xml:space="preserve" class="brush: csharp">public <a target="_top" href="topic_000000000000001F.html" onclick="this.target='';return true;">ActionEntry</a> FindByID(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.guid">Guid</a> <i>ID</i>&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -188,10 +189,29 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</div>
 
 
+<h4 class="subHeading">
+	Parameters</h4><dl paramName="ID" class="parameterList">
+	<dt>
+		<span class="parameter">
+			ID
+		</span>
+	</dt>
+	<dd>
+		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.guid">Guid</a> 
+	</dd>
+</dl>
+<p>
+	ID of the ActionEntry to find 
+</p>
+
+<p />
 
 	<h4 class="subHeading">
-		Property Value</h4>
-	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a target="_top" href="topic_0000000000000028.html" onclick="this.target='';return true;">ActionEntry</a>&gt; 
+		Return Value</h4>
+	<a target="_top" href="topic_000000000000001F.html" onclick="this.target='';return true;">ActionEntry</a> 
+		<p>
+		The ActionEntry with the specified ID 
+	</p>
 	
 
 
@@ -212,6 +232,17 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 
+<div class="section_container">
+	<div class="section_heading">
+		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Remarks</a></span>
+		<div>&nbsp;</div>
+	</div>
+
+	<div id="remarksSection" class="section">	
+			If more than one entry exist (a data error) only the first entry will be
+returned
+	</div>					
+</div>
 
 
 
@@ -278,7 +309,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-			<a href="topic_0000000000000017.html">ActionEntries Class</a><br />
+			<a href="topic_0000000000000016.html">ActionEntries Class</a><br />
 
 
 

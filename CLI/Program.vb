@@ -1,8 +1,10 @@
 Imports MauroDataModeller.MauroModel
 Imports MauroDataModeller.MauroTemplates
 
-Namespace MauroTemplates.commandline
+Namespace commandline
+
     Module Program
+
         ''' <remarks>
         ''' <para>Parameters</para>
         ''' <list type="bullet">
@@ -18,11 +20,10 @@ Namespace MauroTemplates.commandline
         '''  </item>
         ''' </list>
         ''' </remarks>
-        ''' <param name="args">Command line arguments</param>
         ''' <example>
         ''' MauroTemplateCLI.exe -o&quot;c:\temp&quot; template.json
         ''' </example>
-
+        ''' <param name="args">Command line arguments</param>
         Sub Main(args As String())
             ' Dim Mauro As New WebAPIClient.EndpointConnection
             Dim strProject As String = ""

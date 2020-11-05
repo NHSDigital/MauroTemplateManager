@@ -38,7 +38,7 @@ Namespace MauroTemplates
                             .Action = act,
                             .ModelIDs = Project.Models,
                             .OutputDirectory = OutputDirectory,
-                            .Status = ActionOutcomeStatus.NotStarted}
+                            .Status = ActionStatus.NotStarted}
                     ActionEntries.Entries.Add(ae)
                 Else
 
@@ -50,26 +50,11 @@ Namespace MauroTemplates
                             .Action = act,
                             .ModelIDs = lstModel,
                             .OutputDirectory = OutputDirectory,
-                            .Status = ActionOutcomeStatus.NotStarted}
+                            .Status = ActionStatus.NotStarted}
                         ActionEntries.Entries.Add(ae)
                         'ProcessActionForModel(m, act, OutputDirectory)
                     Next
                 End If
-            Next
-        End Sub
-        ''' <summary>
-        ''' Checks the queue of pending action entries and if there are less than the limit in progress, initiates separate threads for pending entries up to the limit.
-        ''' </summary>
-        ''' <param name="limit">Maximum number of threads to be running at once</param>
-        Public Sub StartActionEntryQueueAsync(limit As Integer)
-            Dim i As Integer = 0
-            For Each ae As ActionEntry In ActionEntries.Entries.Where(Function(x) x.Status = ActionOutcomeStatus.NotStarted)
-                ' newEntry.Start()
-                Dim Evaluator = New Thread(Sub() ProcessActionEntry(ae))
-                Evaluator.Name = ae.ActionEntryID.ToString
-                Evaluator.Start()
-                i += 1
-                If i > limit Then Exit For
             Next
         End Sub
 
@@ -80,7 +65,7 @@ Namespace MauroTemplates
         ''' It is recommended StartActionEntryQueueAsync
         ''' </remarks>
         Public Sub RunActionEntryQueueSync()
-            For Each ae As ActionEntry In ActionEntries.Entries.Where(Function(x) x.Status = ActionOutcomeStatus.NotStarted)
+            For Each ae As ActionEntry In ActionEntries.Entries.Where(Function(x) x.Status = ActionStatus.NotStarted)
                 ProcessActionEntry(ae)
             Next
         End Sub
@@ -119,7 +104,7 @@ Namespace MauroTemplates
 
                 If IsNothing(ActResp) Then
                     FailCount += 1
-                ElseIf ActResp.responseOutcome = ActionOutcomeStatus.Failed Then
+                ElseIf ActResp.responseOutcome = ActionStatus.Failed Then
                     FailCount += 1
                 ElseIf ActResp.Response.Result.IsSuccessStatusCode Then
                     SuccessCount += 1
@@ -131,25 +116,24 @@ Namespace MauroTemplates
         End Sub
 
         ''' <summary>
-        ''' Executes an ActionEntrt definition against the current endpoint
+        ''' Executes an ActionEntry definition against the current endpoint
         ''' </summary>
         ''' <param name="ActionEntry">Action template and list of models to apply</param>
-        Private Sub ProcessActionEntry(ByRef ActionEntry As ActionEntry)
-            ActionEntry.Status = ActionOutcomeStatus.InProgress
+        Public Sub ProcessActionEntry(ByRef ActionEntry As ActionEntry)
+            ActionEntry.Status = ActionStatus.InProgress
 
             ' Dim res As New List(Of ActionResponse)
             Try
                 If ActionEntry.Action.ActionType = ActionTypes.actionAllModels Then
                     Try
                         ActionEntry.ActionResponses = ProcessAllModels(ActionEntry.ModelIDs, ActionEntry.Action, ActionEntry.OutputDirectory)
-                        ActionEntry.Status = ActionOutcomeStatus.Success
+                        ActionEntry.Status = ActionStatus.Success
 
                     Catch ex As Exception
-                        ActionEntry.Status = ActionOutcomeStatus.Retry
+                        ActionEntry.Status = ActionStatus.Retry
                         ActionEntry.ActionResponses.Add(New ActionResponse With {
                             .ResponseDescription = ex.Message,
-                                .ResponseID = Guid.NewGuid,
-                        .responseOutcome = ActionOutcomeStatus.Failed
+                        .responseOutcome = ActionStatus.Failed
                             })
 
                     End Try
@@ -157,18 +141,17 @@ Namespace MauroTemplates
                     For Each m As Guid In ActionEntry.ModelIDs
 
                         Dim MauroModel As Model = EndpointConnection.GetModel(m)
-                        ActionEntry.Status = ActionOutcomeStatus.InProgress
+                        ActionEntry.Status = ActionStatus.InProgress
                         Try
                             ProcessActionForModel(MauroModel, ActionEntry.Action, ActionEntry.OutputDirectory, ActionEntry.ActionResponses)
-                            ActionEntry.Status = ActionOutcomeStatus.Success
+                            ActionEntry.Status = ActionStatus.Success
 
                         Catch ex As Exception
-                            ActionEntry.Status = ActionOutcomeStatus.Retry
+                            ActionEntry.Status = ActionStatus.Retry
                             ActionEntry.ActionResponses.Add(New ActionResponse With {
                                 .ResponseDescription = ex.Message,
                                 .Response = Nothing,
-                                .ResponseID = Guid.NewGuid,
-                            .responseOutcome = ActionOutcomeStatus.Failed
+                            .responseOutcome = ActionStatus.Failed
                                 })
                         End Try
 
@@ -228,8 +211,7 @@ Namespace MauroTemplates
 
             Dim ResList As New List(Of ActionResponse)
             Dim ActResp As New ActionResponse With {
-                .ResponseDescription = MauroClass.label,
-                .ResponseID = Guid.NewGuid
+                .ResponseDescription = MauroClass.label
             }
             Try
                 ' Apply the template
@@ -240,13 +222,13 @@ Namespace MauroTemplates
                     Dim fstream As New FileStream(fname, FileMode.Create)
                     Dim fwriter As New StreamWriter(fstream)
 
-                    ActResp.responseOutcome = ActionOutcomeStatus.Success
+                    ActResp.responseOutcome = ActionStatus.Success
                     fwriter.Write(ActResp.Response.Body)
                     Console.WriteLine(" - success")
                     fwriter.Close()
                     fstream.Close()
                 Else
-                    ActResp.responseOutcome = ActionOutcomeStatus.Success
+                    ActResp.responseOutcome = ActionStatus.Success
                     fname = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & RemoveIllegalFileNameChars(MauroClass.label) & "_error.html"
 
                     Dim fstream As New FileStream(fname, FileMode.Create)
@@ -319,7 +301,6 @@ Namespace MauroTemplates
             Try
                 ' Apply the template
                 ActResp = New ActionResponse With {
-                 .ResponseID = Guid.NewGuid,
                  .ResponseDescription = MauroModel.label,
                  .OutputFilename = fname,
                  .ErrorFileName = ""
@@ -331,13 +312,13 @@ Namespace MauroTemplates
                     Dim fstream As New FileStream(fname, FileMode.Create)
                     Dim fwriter As New StreamWriter(fstream)
 
-                    ActResp.responseOutcome = ActionOutcomeStatus.Success
+                    ActResp.responseOutcome = ActionStatus.Success
                     fwriter.Write(ActResp.Response.Body)
                     Console.WriteLine(" - success")
                     fwriter.Close()
                     fstream.Close()
                 Else
-                    ActResp.responseOutcome = ActionOutcomeStatus.Failed
+                    ActResp.responseOutcome = ActionStatus.Failed
 
                     ' Write out the error
                     fname = OutputDirectory & System.IO.Path.DirectorySeparatorChar & Action.FilePrefix & RemoveIllegalFileNameChars(MauroModel.label) & "_error.html"

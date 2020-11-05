@@ -1,1 +1,1 @@
-search_result['16']=["topic_0000000000000003.html","ApplicationSettings Class","Manipulate a JSON list of settings for an application, storing the file in the users ApplicationData folder"];
+search_result['16']=["topic_0000000000000005.html","ApplicationSettings.Filename Property","The name of the file holding the application settings"];

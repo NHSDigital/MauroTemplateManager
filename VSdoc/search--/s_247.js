@@ -1,1 +1,1 @@
-search_result['247']=["topic_0000000000000095_events--.html","metadataCollectionType Events",""];
+search_result['247']=["topic_000000000000006E_vars--.html","LoginResponse Fields",""];

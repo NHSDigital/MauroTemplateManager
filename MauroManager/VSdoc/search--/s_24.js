@@ -1,1 +1,1 @@
-search_result['24']=["topic_0000000000000006.html","ApplicationSettings.GetAppSetting Method","Load the first instance of the settings for settin Name"];
+search_result['24']=["topic_000000000000000D.html","ApplicationSettings.AddOrMoveToStart Method",""];

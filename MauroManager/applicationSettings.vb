@@ -37,7 +37,7 @@ Namespace Settings
         ''' <returns></returns>
         Property Filename As String
         ''' <summary>
-        ''' Load the first instance of the settings for settin Name
+        ''' Load the first instance of the settings for setting Name
         ''' </summary>
         ''' <param name="Name">Name of the setting to retrieve</param>
         ''' <param name="Missing">A default value if the setting has not previouslyy been specified</param>

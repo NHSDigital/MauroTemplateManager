@@ -1,1 +1,1 @@
-search_result['266']=["topic_00000000000000A0.html","dataClassType.lastUpdated Property","### TODO: Add a description"];
+search_result['266']=["topic_0000000000000077.html","Model Class","Mauro dataModel datastructure"];

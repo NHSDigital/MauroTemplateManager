@@ -1,1 +1,1 @@
-search_result['361']=["topic_00000000000000CE_props--.html","dataElementType Properties",""];
+search_result['361']=["topic_000000000000009A.html","dataClassType.id Property","### TODO: Add a description"];

@@ -1,1 +1,1 @@
-search_result['350']=["topic_00000000000000CC.html","dataElementsType Class","##TODO Add description comment"];
+search_result['350']=["topic_0000000000000095_props--.html","dataClassType Properties",""];

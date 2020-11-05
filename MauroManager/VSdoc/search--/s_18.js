@@ -1,1 +1,1 @@
-search_result['18']=["topic_0000000000000003_events--.html","ApplicationSettings Events",""];
+search_result['18']=["topic_0000000000000007.html","ApplicationSettings.GetAppSettingAll Method","Get all the values of a setting ordered by the setting sequence"];

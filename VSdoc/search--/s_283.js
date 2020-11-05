@@ -1,1 +1,1 @@
-search_result['283']=["topic_00000000000000A7.html","annotationType.lastUpdated Property","### TODO: Add a description"];
+search_result['283']=["topic_000000000000007E.html","Model.organisation Property",""];

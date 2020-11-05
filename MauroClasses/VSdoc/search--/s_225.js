@@ -1,1 +1,0 @@
-search_result['225']=["frlrfMauroDataModellerMauroModelmetadataTypeClasslastUpdatedTopic.html","metadataType.lastUpdated Property","### TODO: Add a description"];

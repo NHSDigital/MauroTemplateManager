@@ -1,1 +1,1 @@
-search_result['217']=["topic_0000000000000088.html","Model.childDataClasses Property","### TODO: Add a description"];
+search_result['217']=["topic_0000000000000064.html","EndpointConnection.GetModelChildClassesAsync Method",""];

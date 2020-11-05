@@ -1,1 +1,1 @@
-search_result['363']=["topic_00000000000000CF.html","dataElementType.label Property","### TODO: Add a description"];
+search_result['363']=["topic_000000000000009C.html","dataClassType.minMultiplicity Property","If not provided then will default to 1 (required)"];

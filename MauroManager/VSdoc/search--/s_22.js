@@ -1,1 +1,1 @@
-search_result['22']=["topic_0000000000000004.html","ApplicationSettings Constructor","Load the existing settings from the JSON file"];
+search_result['22']=["topic_000000000000000B.html","ApplicationSettings.AddSettingEnd Method","Add a new setting at the end of the list"];

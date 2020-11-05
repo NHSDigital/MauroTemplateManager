@@ -1,1 +1,1 @@
-search_result['222']=["topic_000000000000008A_methods--.html","dataClassesType Methods",""];
+search_result['222']=["topic_0000000000000069.html","EndpointConnection.Logout Method",""];

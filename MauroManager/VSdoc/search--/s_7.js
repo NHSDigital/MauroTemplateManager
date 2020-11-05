@@ -1,1 +1,1 @@
-search_result['7']=["topic_0000000000000000_vars--.html","AboutBox1 Fields",""];
+search_result['7']=["topic_0000000000000001_overloads--.html","AboutMauroTemplateManager.Dispose Method","Disposes of the resources (other than memory) used by the Form."];

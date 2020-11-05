@@ -1,1 +1,1 @@
-search_result['306']=["topic_00000000000000B3_attached_props--.html","Classifier Attached Properties",""];
+search_result['306']=["topic_000000000000008B.html","aliasesType Class","##TODO Add description comment"];

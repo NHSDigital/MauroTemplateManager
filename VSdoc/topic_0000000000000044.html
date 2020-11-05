@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>Freemarker.ProcessActionForModel Method</title>
+	<title>Freemarker.PrettyJson Method</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,7 +74,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">Freemarker.ProcessActionForModel Method</h1>
+		<h1 class="title">Freemarker.PrettyJson Method</h1>
         
 		<div class="metadata">
         Namespace:
@@ -88,7 +88,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		</div>
 
        
-        <summary-info>Execute a single action for a single model</summary-info>
+        <summary-info>Concert a JSON string to be indented</summary-info>
 
 
 
@@ -136,7 +136,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">Public Shared Sub ProcessActionForModel( _&nbsp;<br />   ByVal <i>MauroModel</i> As <a target="_top" href="topic_0000000000000079.html" onclick="this.target='';return true;">Model</a>, _&nbsp;<br />   ByVal <i>Action</i> As <a target="_top" href="topic_0000000000000020.html" onclick="this.target='';return true;">FreemarkerAction</a>, _&nbsp;<br />   ByVal <i>OutputDirectory</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a>, _&nbsp;<br />   ByRef <i>ActionResponses</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1">List</a>(Of <a target="_top" href="topic_0000000000000030.html" onclick="this.target='';return true;">ActionResponse</a>) _&nbsp;<br />)</pre>			
+					<pre xml:space="preserve" class="brush: vb">Public Shared Function PrettyJson( _&nbsp;<br />   ByVal <i>uglyJSON</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a> _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">String</a></pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -175,7 +175,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">public static <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.void">void</a> ProcessActionForModel(&nbsp;<br />   <a target="_top" href="topic_0000000000000079.html" onclick="this.target='';return true;">Model</a> <i>MauroModel</i>,&nbsp;<br />   <a target="_top" href="topic_0000000000000020.html" onclick="this.target='';return true;">FreemarkerAction</a> <i>Action</i>,&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> <i>OutputDirectory</i>,&nbsp;<br />   ref <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a target="_top" href="topic_0000000000000030.html" onclick="this.target='';return true;">ActionResponse</a>&gt; <i>ActionResponses</i>&nbsp;<br />)</pre>			
+					<pre xml:space="preserve" class="brush: csharp">public static <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> PrettyJson(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> <i>uglyJSON</i>&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -190,36 +190,10 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 <h4 class="subHeading">
-	Parameters</h4><dl paramName="MauroModel" class="parameterList">
+	Parameters</h4><dl paramName="uglyJSON" class="parameterList">
 	<dt>
 		<span class="parameter">
-			MauroModel
-		</span>
-	</dt>
-	<dd>
-		<a target="_top" href="topic_0000000000000079.html" onclick="this.target='';return true;">Model</a> 
-	</dd>
-</dl>
-<p>
-	Model metadata to execute against 
-</p>
-<dl paramName="Action" class="parameterList">
-	<dt>
-		<span class="parameter">
-			Action
-		</span>
-	</dt>
-	<dd>
-		<a target="_top" href="topic_0000000000000020.html" onclick="this.target='';return true;">FreemarkerAction</a> 
-	</dd>
-</dl>
-<p>
-	Action to execute 
-</p>
-<dl paramName="OutputDirectory" class="parameterList">
-	<dt>
-		<span class="parameter">
-			OutputDirectory
+			uglyJSON
 		</span>
 	</dt>
 	<dd>
@@ -227,24 +201,18 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</dd>
 </dl>
 <p>
-	Filepath as a string for the output directory 
-</p>
-<dl paramName="ActionResponses" class="parameterList">
-	<dt>
-		<span class="parameter">
-			ActionResponses
-		</span>
-	</dt>
-	<dd>
-		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a target="_top" href="topic_0000000000000030.html" onclick="this.target='';return true;">ActionResponse</a>&gt; 
-	</dd>
-</dl>
-<p>
-	 
+	JSON text in minifieed or inconsistent form 
 </p>
 
 <p />
 
+	<h4 class="subHeading">
+		Return Value</h4>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.string">string</a> 
+		<p>
+		JSON text in pretty form 
+	</p>
+	
 
 
 
@@ -264,6 +232,16 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 
+<div class="section_container">
+	<div class="section_heading">
+		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Remarks</a></span>
+		<div>&nbsp;</div>
+	</div>
+
+	<div id="remarksSection" class="section">	
+			Applies JSON serialisation with writeIndented = true
+	</div>					
+</div>
 
 
 

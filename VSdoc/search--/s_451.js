@@ -1,1 +1,1 @@
-search_result['451']=["topic_0000000000000109.html","frmMain.Dispose Method",""];
+search_result['451']=["topic_00000000000000B8.html","dataTypeType.referenceClass Property","Mandatory if domainType is \"ReferenceType\". Ignored otherwise"];

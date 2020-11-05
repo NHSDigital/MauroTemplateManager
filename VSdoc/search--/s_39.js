@@ -1,1 +1,1 @@
-search_result['39']=["topic_0000000000000019.html","ActionEntries.FindByID Method",""];
+search_result['39']=["topic_0000000000000012.html","ActionTypes Enumeration","The type of entity to work on"];

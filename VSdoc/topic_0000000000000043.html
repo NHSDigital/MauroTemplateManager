@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>Freemarker.RunActionEntryQueueSync Method</title>
+	<title>Freemarker.ProcessActionEntry Method</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,7 +74,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">Freemarker.RunActionEntryQueueSync Method</h1>
+		<h1 class="title">Freemarker.ProcessActionEntry Method</h1>
         
 		<div class="metadata">
         Namespace:
@@ -88,7 +88,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		</div>
 
        
-        <summary-info>Run all the pending action entries in the queue synchronously.</summary-info>
+        <summary-info>Executes an ActionEntry definition against the current endpoint</summary-info>
 
 
 
@@ -136,7 +136,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">Public Shared Sub RunActionEntryQueueSync()</pre>			
+					<pre xml:space="preserve" class="brush: vb">Public Shared Sub ProcessActionEntry( _&nbsp;<br />   ByRef <i>ActionEntry</i> As <a target="_top" href="topic_000000000000001F.html" onclick="this.target='';return true;">ActionEntry</a> _&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -175,7 +175,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">public static <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.void">void</a> RunActionEntryQueueSync()</pre>			
+					<pre xml:space="preserve" class="brush: csharp">public static <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.void">void</a> ProcessActionEntry(&nbsp;<br />   ref <a target="_top" href="topic_000000000000001F.html" onclick="this.target='';return true;">ActionEntry</a> <i>ActionEntry</i>&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -189,6 +189,22 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</div>
 
 
+<h4 class="subHeading">
+	Parameters</h4><dl paramName="ActionEntry" class="parameterList">
+	<dt>
+		<span class="parameter">
+			ActionEntry
+		</span>
+	</dt>
+	<dd>
+		<a target="_top" href="topic_000000000000001F.html" onclick="this.target='';return true;">ActionEntry</a> 
+	</dd>
+</dl>
+<p>
+	Action template and list of models to apply 
+</p>
+
+<p />
 
 
 
@@ -209,16 +225,6 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 
 
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Remarks</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="remarksSection" class="section">	
-			It is recommended StartActionEntryQueueAsync
-	</div>					
-</div>
 
 
 

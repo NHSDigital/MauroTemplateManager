@@ -1,1 +1,1 @@
-search_result['72']=["topic_0000000000000030.html","ActionResponse Class",""];
+search_result['72']=["topic_0000000000000022.html","ActionEntry.ActionResponses Property","Gets or sets the list of responses where an actionentry has been executed."];

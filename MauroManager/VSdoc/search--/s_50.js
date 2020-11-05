@@ -1,1 +1,1 @@
-search_result['50']=["topic_0000000000000016.html","AppSetting.Sequence Property","The position in the list (sequence) of the setting if there are more than one values for that name"];
+search_result['50']=["topic_000000000000001D.html","frmMain.RefreshStatus Method","Updates the display for the main panel and status bar"];
