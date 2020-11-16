@@ -1,1 +1,1 @@
-search_result['606']=["topic_00000000000000F8_attached_props--.html","frmMain Attached Properties",""];
+search_result['606']=["topic_00000000000000C7.html","enumerationValuesType Class","##TODO Add description comment"];

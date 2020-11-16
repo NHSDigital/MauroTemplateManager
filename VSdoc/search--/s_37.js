@@ -1,1 +1,1 @@
-search_result['37']=["topic_0000000000000010.html","MauroEndpoint.Timeout Property","Gets or sets the TimeSpan used by the endpoint connection to connect to a Mauro\r\nAPI."];
+search_result['37']=["topic_000000000000000E_attached_props--.html","MauroEndpoint Attached Properties",""];

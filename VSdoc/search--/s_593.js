@@ -1,1 +1,1 @@
-search_result['593']=["topic_00000000000000F4_events--.html","AppSetting Events",""];
+search_result['593']=["topic_00000000000000C4.html","dataTypeType.units Property","Optional if domainType is \"PrimitiveType\". Ignored otherwise"];

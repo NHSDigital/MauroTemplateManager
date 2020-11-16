@@ -1,1 +1,1 @@
-search_result['106']=["topic_0000000000000030_vars--.html","ActionResponse Fields",""];
+search_result['106']=["topic_0000000000000029.html","FreemarkerAction Class","The template action to execute and the file details for storing the output"];

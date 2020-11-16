@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>ActionEntries.InProgress Property</title>
+	<title>ActionEntries.FindByID Method</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,7 +74,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">ActionEntries.InProgress Property</h1>
+		<h1 class="title">ActionEntries.FindByID Method</h1>
         
 		<div class="metadata">
         Namespace:
@@ -88,8 +88,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		</div>
 
        
-        <summary-info>Gets the number of ActionEntry classes in the list where the ActionEntry is
-currently processing</summary-info>
+        <summary-info>Finds a specific entry by the ID</summary-info>
 
 
 
@@ -137,7 +136,7 @@ currently processing</summary-info>
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">Public ReadOnly Shared Property InProgress() As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.int32">Integer</a></pre>			
+					<pre xml:space="preserve" class="brush: vb">Public Function FindByID( _&nbsp;<br />   ByVal <i>ID</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.guid">Guid</a> _&nbsp;<br />) As <a target="_top" href="topic_0000000000000021.html" onclick="this.target='';return true;">ActionEntry</a></pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -176,7 +175,7 @@ currently processing</summary-info>
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">public static <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.int32">int</a> InProgress {get;}</pre>			
+					<pre xml:space="preserve" class="brush: csharp">public <a target="_top" href="topic_0000000000000021.html" onclick="this.target='';return true;">ActionEntry</a> FindByID(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.guid">Guid</a> <i>ID</i>&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -190,10 +189,29 @@ currently processing</summary-info>
 	</div>
 
 
+<h4 class="subHeading">
+	Parameters</h4><dl paramName="ID" class="parameterList">
+	<dt>
+		<span class="parameter">
+			ID
+		</span>
+	</dt>
+	<dd>
+		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.guid">Guid</a> 
+	</dd>
+</dl>
+<p>
+	ID of the ActionEntry to find 
+</p>
+
+<p />
 
 	<h4 class="subHeading">
-		Property Value</h4>
-	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.int32">int</a> 
+		Return Value</h4>
+	<a target="_top" href="topic_0000000000000021.html" onclick="this.target='';return true;">ActionEntry</a> 
+		<p>
+		The ActionEntry with the specified ID 
+	</p>
 	
 
 
@@ -214,6 +232,17 @@ currently processing</summary-info>
 
 
 
+<div class="section_container">
+	<div class="section_heading">
+		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Remarks</a></span>
+		<div>&nbsp;</div>
+	</div>
+
+	<div id="remarksSection" class="section">	
+			If more than one entry exist (a data error) only the first entry will be
+returned
+	</div>					
+</div>
 
 
 
@@ -280,7 +309,7 @@ currently processing</summary-info>
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-			<a href="topic_0000000000000016.html">ActionEntries Class</a><br />
+			<a href="topic_0000000000000018.html">ActionEntries Class</a><br />
 
 
 

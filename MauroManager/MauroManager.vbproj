@@ -25,7 +25,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>17</ApplicationRevision>
+    <ApplicationRevision>20</ApplicationRevision>
     <ApplicationVersion>1.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -183,12 +183,6 @@
     <Compile Include="frmPreferences.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ImportExportDialogue.Designer.vb">
-      <DependentUpon>ImportExportDialogue.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ImportExportDialogue.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="MauroTemplateManager.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -220,9 +214,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmPreferences.resx">
       <DependentUpon>frmPreferences.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ImportExportDialogue.resx">
-      <DependentUpon>ImportExportDialogue.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MauroTemplateManager.resx">
       <CustomToolNamespace>My.Resources</CustomToolNamespace>

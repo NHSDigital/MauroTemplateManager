@@ -16,11 +16,6 @@ Namespace MauroModel
 
     End Class
 
-    Public Class MauroResponse
-        Property url As Uri
-        Property Body As String
-        Property Response As HttpResponseMessage
-    End Class
     Public Class EndpointConnection
         Private Shared ReadOnly client As HttpClient = New HttpClient()
         Public Shared Property Username As String
@@ -84,7 +79,6 @@ Namespace MauroModel
                 Throw ex
             End Try
         End Function
-
 
         Public Shared Property MauroModels As Models
         Public Shared Async Function LoginAsync() As Task(Of LoginResponse)
@@ -202,7 +196,7 @@ Namespace MauroModel
                         .url = New Uri(API),
                         .Body = BodyText,
                         .Response = PostResult}
-                    EndpointConnection.Responses.Add(mr)
+                    Responses.Add(mr)
                 End If
             Catch ex As Exception
                 Throw ex
@@ -230,6 +224,11 @@ Namespace MauroModel
 
     End Class
 
+    Public Class MauroResponse
+        Property url As Uri
+        Property Body As String
+        Property Response As HttpResponseMessage
+    End Class
 
     ''' <summary>
     ''' Class to pass back http post responses
@@ -240,6 +239,8 @@ Namespace MauroModel
         Property Result As HttpResponseMessage
     End Class
 
+
+#Region "Classes supporting authentication"
     Public Class LoginResponse
 
         <JsonPropertyName("id")>
@@ -257,6 +258,13 @@ Namespace MauroModel
         <JsonPropertyName("disabled")>
         Public Property disabled As Boolean
     End Class
+
+    Public Class LoginRequest
+        Property username As String
+        Property password As String
+    End Class
+#End Region
+#Region "Mauro Model"
     ''' <summary>
     ''' Mauro dataModels data structure
     ''' count of models as integer
@@ -802,10 +810,7 @@ Namespace MauroModel
         Public Property lastUpdated As Date
 
     End Class
+#End Region
 
-    Public Class LoginRequest
-        Property username As String
-        Property password As String
-    End Class
 End Namespace
 

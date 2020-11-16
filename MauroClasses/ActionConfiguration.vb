@@ -4,6 +4,7 @@ Imports System.Text.Json
 Imports System.Threading
 
 Namespace MauroTemplates
+
 #Region "Main class"
     ''' <summary>
     ''' <para>Main Mauro Template Manager project class </para>
@@ -86,7 +87,183 @@ Namespace MauroTemplates
             UpdateEndpointConnection(Endpoint)
             Reader.Close()
         End Sub
+        ''' <summary>
+        ''' Imports the template file specified
+        ''' </summary>
+        ''' <param name="Filename">Full filename of the file to import</param>
+        Public Sub ImportTemplate(Filename As String)
+            Dim fStream As New FileStream(Filename, FileMode.Open, FileAccess.Read)
+            Dim Name As String = Path.GetFileNameWithoutExtension(Filename) ' Store the filename without extension for later use
+            Dim FileSuffix As String = Path.GetExtension(Filename) ' and the extension
 
+            Dim fReader As New StreamReader(fStream)
+            Dim txt As String = fReader.ReadToEnd
+            fReader.Close()
+            fStream.Close()
+
+            ' Now work out what kind of file we have
+            Dim header, remaining As String
+            If txt.StartsWith("<#ftl") Then
+                ' At least we have a template
+                Dim s2() As String = Split(txt, vbCrLf, 2, StringSplitOptions.None)
+                header = s2(0)
+                remaining = s2(1)
+            Else
+                header = ""
+                remaining = txt
+            End If
+
+            Dim s() As String = Split(remaining, "<#-- Mauro Template -->", 3)
+
+            Dim action As New FreemarkerAction With {
+                .FilePrefix = "",
+                .FileSuffix = FileSuffix,
+                .Description = "",
+                .Name = Name
+            }
+            If header = "" Then
+                ' Lets try adding a header based on file extension
+                Select Case Replace(FileSuffix.ToLower, ".", "")
+                    Case "xml", "dita", "ditamap", "bookmap", "ftlx"
+                        header = "<#ftl output_format=""XML"">"
+                    Case "htm", "html", "ftlh"
+                        header = "<#ftl output_format=""HTML"">"
+                    Case "xhtm", "xhtml"
+                        header = "<#ftl output_format=""XHTML"">"
+                    Case "rtf"
+                        header = "<#ftl output_format=""RTF"">"
+                    Case Else
+                        header = "<#ftl>"
+                End Select
+            End If
+
+            Select Case s.Length
+                Case 1
+                    ' The template does not include properties
+                    action.Template = header & vbCrLf & s(0)
+                Case 2
+                    ' The template includes one split tag but is otherwise invalid
+                    Dim ex As New Exception("Unable to parse the template")
+                    Throw ex
+                Case 3
+                    ' The template includes both boundary splits so it should be possible to parse the parameters
+                    action.Template = header & vbCrLf & s(2)
+                    Try
+                        ParseParameters(s(1), action)
+                    Catch ex As Exception
+                        ' If this fails, use the default values assigned before
+                    End Try
+
+                Case Else
+                    Dim ex As New Exception("Unable to parse the template")
+                    Throw ex
+            End Select
+
+            Actions.Add(action)
+        End Sub
+        ''' <summary>
+        ''' Takes a set of colon separated parameter tuples wrapped in Freemarker comments
+        ''' Valid parameters are:
+        ''' FilePrefix - the text to prepend to the generated output filename
+        ''' FileSuffix - the text to append to the generated output filename (including the extension)
+        ''' Name - The name of the template.  Ideally this will be unique however this is not enforced
+        ''' Description - a description of the template
+        ''' ActionType - a textual representation of the valid ActionTypes (see ActionType enum for details)
+        '''     actionAllModels	Action is applied to all the selected data models creating a single output
+        '''     actionClass	Action Is On Each Class In Each Of the selected data models
+        '''     actionSingleModel	Action Is applied independently To Each data model selected In turn
+        '''     actionTerminology	Action Is applied To Each terminology In Each Of the selected data models
+        ''' </summary>
+        ''' <param name="Parameters"></param>
+        ''' <param name="Action"></param>
+        Private Sub ParseParameters(Parameters As String, Action As FreemarkerAction)
+            Dim ParameterStrings() As String = Split(Parameters, vbCrLf)
+            For Each s As String In ParameterStrings
+                s = Trim(s) ' remove any stray spaces
+                If s = "" Then
+                Else
+                    If Not s.StartsWith("<#-- ") And Not s.EndsWith("-->") Then
+                        Dim ex As New Exception("Unable to parse " & s)
+                        Throw ex
+                    Else
+                        s = Replace(s, "<#-- ", "", 1, 1)
+                        s = Replace(s, "-->", "", 1, 1)
+                        Dim tpl() As String = Split(s, ":", 2)
+                        If tpl.Length <> 2 Then
+                            Dim ex As New Exception("Unable to parse " & s)
+                            Throw ex
+                        End If
+
+                        tpl(0) = Trim(tpl(0))
+                        tpl(1) = Trim(tpl(1))
+
+                        Select Case tpl(0).ToLower
+                            Case "fileprefix"
+                                Action.FilePrefix = tpl(1)
+                            Case "filesuffix"
+                                Action.FileSuffix = tpl(1)
+                            Case "description"
+                                Action.Description = tpl(1)
+                            Case "actiontype"
+                                Action.ActionType = DirectCast([Enum].Parse(GetType(ActionTypes), tpl(1)), Integer)
+                            Case "name"
+                                Action.Name = tpl(1)
+                            Case Else
+                                Dim ex As New Exception("Unable to parse " & s)
+                                Throw ex
+                        End Select
+                    End If
+                End If
+            Next
+
+        End Sub
+        ''' <summary>
+        ''' Writes out an action's template to the specified filename
+        ''' </summary>
+        ''' <param name="Filename">Full path of the output filename</param>
+        ''' <param name="Action">FreemarkerAction defining the template</param>
+        Public Sub ExportTemplate(Filename As String, Action As FreemarkerAction)
+            Dim fStream As New FileStream(Filename, FileMode.OpenOrCreate, FileAccess.Write)
+            Dim fWriter As New StreamWriter(fStream)
+            Dim Header, Remaining As String
+            If Action.Template.StartsWith("<#ftl") Then
+                Dim s() As String = Action.Template.Split(vbCrLf, 2, StringSplitOptions.None)
+                Header = s(0)
+                Remaining = s(1)
+            Else
+                Header = "<#ftl>"
+                Remaining = Action.Template
+            End If
+            fWriter.WriteLine(Header)
+            fWriter.Write(EncodeParameters(Action)) ' Writes out the supplementary information as comments
+            fWriter.Write(Remaining)
+            fWriter.Close()
+            fStream.Close()
+        End Sub
+        ''' <summary>
+        ''' Return the FreemarkerAction properties as an encoded string suitable for Freemarker comments
+        ''' </summary>
+        ''' <param name="Action">Freemarker action</param>
+        ''' <returns>A string containing the properties encoded as Freemarker comments</returns>
+        Private Function EncodeParameters(Action As FreemarkerAction) As String
+            Dim res As String = "<#-- Mauro Template -->" & vbCrLf
+            res &= EncodeParameter("Name", Action.Name)
+            res &= EncodeParameter("FilePrefix", Action.FilePrefix)
+            res &= EncodeParameter("FileSuffix", Action.FileSuffix)
+            res &= EncodeParameter("Description", Action.Description)
+            res &= EncodeParameter("ActionType", Action.ActionType.ToString)
+            res &= "<#-- Mauro Template -->" & vbCrLf
+            Return res
+        End Function
+        ''' <summary>
+        ''' Encodes a single parameter
+        ''' </summary>
+        ''' <param name="Name">The parameter name</param>
+        ''' <param name="Value">The value to store against the parameter</param>
+        ''' <returns></returns>
+        Private Function EncodeParameter(Name As String, Value As String) As String
+            Return "<#-- " & Name & ":" & Net.WebUtility.HtmlEncode(Value) & " -->" & vbCrLf
+        End Function
         Private Sub UpdateEndpointConnection(Endpoint As MauroEndpoint)
             EndpointConnection.Username = Endpoint.Username
             EndpointConnection.Password = Endpoint.Password
@@ -107,9 +284,19 @@ Namespace MauroTemplates
             Property Password As String
             Property Timeout As TimeSpan
         End Class
+        ''' <summary>
+        ''' Save the project to disk
+        ''' </summary>
+        ''' <param name="ClobberPassword">True to wipe out the username and password details</param>
+        ''' <param name="SaveAsFilename">An optional filename to use instead of the project default filename</param>
         Public Sub SaveProject(ClobberPassword As Boolean, Optional SaveAsFilename As String = "")
             If SaveAsFilename = "" Then
                 SaveAsFilename = Filename
+            End If
+
+            ' Check we have a filename
+            If SaveAsFilename.Trim.Length = 0 Then
+                Dim ex As New InvalidMauroProjectFileException("Filename not specified saving Mauro Project")
             End If
 
             Dim ser As New ProjectSerialisation With {
@@ -136,6 +323,10 @@ Namespace MauroTemplates
             Writer.Write(jsontext)
             Writer.Close()
         End Sub
+        ''' <summary>
+        ''' Load the specified Mauro Project file
+        ''' </summary>
+        ''' <param name="OpenFilename">Full filepath of the file to open</param>
         Public Sub New(OpenFilename As String)
             Me.Filename = OpenFilename
 
@@ -144,6 +335,12 @@ Namespace MauroTemplates
         Public Sub New()
 
         End Sub
+        ''' <summary>
+        ''' Ctreates a new project with specified endpoint.  This does not connect to the endpoint
+        ''' </summary>
+        ''' <param name="EndpointURL">URL of the endpoint</param>
+        ''' <param name="Username">Username to authenticate to the endpoint</param>
+        ''' <param name="Password">Password to authenticate to the endpoint</param>
         Public Sub New(EndpointURL As Uri, Optional Username As String = "", Optional Password As String = "")
             Filename = ""
             FileType = "MauroProject"

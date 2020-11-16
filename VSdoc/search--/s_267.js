@@ -1,1 +1,1 @@
-search_result['267']=["topic_0000000000000077_attached_props--.html","Model Attached Properties",""];
+search_result['267']=["topic_0000000000000064.html","EndpointConnection.GetModelClasses Method",""];

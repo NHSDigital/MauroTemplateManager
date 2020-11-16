@@ -1,1 +1,1 @@
-search_result['241']=["topic_000000000000006D_vars--.html","LoginResponse Fields",""];
+search_result['241']=["topic_0000000000000050_props--.html","EndpointConnection Properties",""];

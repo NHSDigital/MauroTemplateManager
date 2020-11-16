@@ -1,1 +1,1 @@
-search_result['431']=["topic_00000000000000B2_attached_props--.html","Classifier Attached Properties",""];
+search_result['431']=["topic_0000000000000094_attached_props--.html","metadataCollectionType Attached Properties",""];

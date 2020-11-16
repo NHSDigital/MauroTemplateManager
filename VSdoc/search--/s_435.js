@@ -1,1 +1,1 @@
-search_result['435']=["topic_00000000000000B2_vars--.html","Classifier Fields",""];
+search_result['435']=["topic_0000000000000094_vars--.html","metadataCollectionType Fields",""];

@@ -1,1 +1,1 @@
-search_result['42']=["topic_0000000000000016_events--.html","ActionEntries Events",""];
+search_result['42']=["topic_000000000000000F.html","MauroEndpoint.EndpointURL Property","Gets or sets the http URL to access the Mauro endpoint."];

@@ -1,1 +1,1 @@
-search_result['367']=["topic_00000000000000A0.html","dataClassType.childDataElements Property","### TODO: Add a description"];
+search_result['367']=["topic_0000000000000082.html","Model.author Property",""];

@@ -1,1 +1,1 @@
-search_result['47']=["topic_0000000000000017_attached_props--.html","ActionEntries Attached Properties",""];
+search_result['47']=["topic_0000000000000016.html","ActionEntries Class","A list of ActionEntry instances for use in the queue"];

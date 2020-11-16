@@ -1,1 +1,1 @@
-search_result['290']=["topic_0000000000000085.html","Model.metadata Property",""];
+search_result['290']=["topic_000000000000006C.html","PostResponse Class","Class to pass back http post responses"];

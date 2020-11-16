@@ -1,1 +1,1 @@
-search_result['36']=["topic_000000000000000F.html","MauroEndpoint.Password Property","Gets or sets the password used to authenticate the username against the Mauro\r\nendpoint."];
+search_result['36']=["topic_000000000000000E.html","MauroEndpoint Class","Connection details to a Mauro endpoint but does not handle the connection to\r\nthat endpoint."];

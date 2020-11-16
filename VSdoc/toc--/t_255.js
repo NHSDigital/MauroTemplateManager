@@ -1,1 +1,1 @@
-c['255']=[['256',"MauroEndpoint Class","topic_000000000000000C.html",1],['262',"Project Constructor","topic_0000000000000009_overloads--.html",1],['266',"Properties","topic_0000000000000001_props--.html",1],['272',"Methods","topic_0000000000000001_methods--.html",1]];
+c['255']=[['256',"EndpointURL Property","topic_000000000000000F.html",0],['257',"Password Property","topic_0000000000000011.html",0],['258',"Timeout Property","topic_0000000000000012.html",0],['259',"Username Property","topic_0000000000000010.html",0]];

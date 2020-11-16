@@ -1,1 +1,1 @@
-search_result['269']=["topic_0000000000000077_methods--.html","Model Methods",""];
+search_result['269']=["topic_0000000000000066.html","EndpointConnection.LogoutAsync Method",""];

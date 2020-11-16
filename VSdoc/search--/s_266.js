@@ -1,1 +1,1 @@
-search_result['266']=["topic_0000000000000077.html","Model Class","Mauro dataModel datastructure"];
+search_result['266']=["topic_0000000000000063.html","EndpointConnection.GetModelAllClassesAsync Method",""];

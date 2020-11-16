@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="GENERATOR" content="VSdocman - documentation generator; https://www.helixoft.com" />
 	<link rel="icon" href="favicon.ico">
-	<title>AppSetting Class</title>
+	<title>ApplicationSettings.Unprotect Method</title>
 
 	<link rel="stylesheet" type="text/css" href="msdn2019/toc.css" />
 	<script src="msdn2019/toc.js"></script>
@@ -74,11 +74,11 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
   </div>
 
 <div id="mainBody">
-		<h1 class="title">AppSetting Class</h1>
+		<h1 class="title">ApplicationSettings.Unprotect Method</h1>
         
 		<div class="metadata">
         Namespace:
-<a href="topic_00000000000000E3.html">MauroDataModeller.Settings</a>
+<a href="topic_00000000000000E5.html">MauroDataModeller.Settings</a>
 
 
 
@@ -88,7 +88,6 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 		</div>
 
        
-        <summary-info>A Name, value, sequence class to hold a specific setting</summary-info>
 
 
 
@@ -138,7 +137,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeVB">
-					<pre xml:space="preserve" class="brush: vb">Public Class AppSetting</pre>			
+					<pre xml:space="preserve" class="brush: vb">Public Shared Function Unprotect( _&nbsp;<br />   ByVal <i>data</i> As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.byte">Byte</a>() _&nbsp;<br />) As <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.byte">Byte</a>()</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -177,7 +176,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCsharp">
-					<pre xml:space="preserve" class="brush: csharp">public class AppSetting</pre>			
+					<pre xml:space="preserve" class="brush: csharp">public static <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.byte">byte</a>[] Unprotect(&nbsp;<br />   <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.byte">byte</a>[] <i>data</i>&nbsp;<br />)</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -217,7 +216,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeCpp">
-					<pre xml:space="preserve" class="brush: cpp">public ref class AppSetting </pre>			
+					<pre xml:space="preserve" class="brush: cpp">public: &nbsp;<br />static array&lt; <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.byte">Byte</a> &gt;^ Unprotect(&nbsp;<br />   array&lt; <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.byte">Byte</a> &gt;^ <i>data</i>&nbsp;<br />) </pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -256,7 +255,7 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 				</div>
 				
 				<div class="codeSnippetCode codeJScript">
-					<pre xml:space="preserve" class="brush: js">public class AppSetting</pre>			
+					<pre xml:space="preserve" class="brush: js">public static function Unprotect(&nbsp;<br />    <i>data</i> : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.byte">byte</a>[]&nbsp;<br />) : <a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.byte">byte</a>[];</pre>			
 				</div>
 				<div class="codeSnippetCode codeNA">
 					<pre xml:space="preserve">This language is not supported or no code example is available.</pre>			
@@ -267,6 +266,27 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 	</div>
 
 
+<h4 class="subHeading">
+	Parameters</h4><dl paramName="data" class="parameterList">
+	<dt>
+		<span class="parameter">
+			data
+		</span>
+	</dt>
+	<dd>
+		<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.byte">byte</a>[] 
+	</dd>
+</dl>
+<p>
+	 
+</p>
+
+<p />
+
+	<h4 class="subHeading">
+		Return Value</h4>
+	<a target="_top" href="https://docs.microsoft.com/en-us/dotnet/api/system.byte">byte</a>[] 
+	
 
 
 
@@ -283,129 +303,6 @@ document.write(getCssCustomProperty('--headerTopCustomLineHtml'));
 
 	</div>
 </div>
-
-
-
-
-<div class="section_container">
-	<div class="section_heading">
-		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">Properties</a></span>
-		<div>&nbsp;</div>
-	</div>
-
-	<div id="PropertiesSection" class="section">	
-  <table class="memberListTable">
-    <tr>
-      <th></th>
-      <th>
-        Name
-      </th>
-      <th>
-        Description
-      </th>
-    </tr>
-
-
-	
-		<tr class="
-
-
-">
-	<td>
-<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000F5.html">Name</a>
-
-	</td>
-	<td>
-
-The name of the setting
-
-	</td>
-</tr>
-	
-
-
-	
-		<tr class="
-
-
-">
-	<td>
-<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000F7.html">Sequence</a>
-
-	</td>
-	<td>
-
-The position in the list (sequence) of the setting if there are more than one values for that name
-
-	</td>
-</tr>
-	
-
-
-	
-		<tr class="
-
-
-">
-	<td>
-<img alt="Public property" title="Public property" src="msdn2019/pubproperty.png"></img>
-	  
-
-    
-	</td>
-	<td>
-	<a href="topic_00000000000000F6.html">Value</a>
-
-	</td>
-	<td>
-
-The string value of the setting
-
-	</td>
-</tr>
-	
-
-
-  </table>
-
-  <a href="#mainBody">
-    Top
-  </a>
-
-	</div>					
-</div>
-
-
-
-
-
-
-  
-
-<!-- Classes -->
-
-<!-- Classes End -->
-
-<!-- Standard Modules -->
-
-<!-- Standard Modules End -->
-
-  
-
-
-
 
 
 
@@ -469,7 +366,6 @@ The string value of the setting
 	</div>					
 </div>
 
-
 <div class="section_container">
 	<div class="section_heading">
 		<span><a href="javascript:void(0)" title="Collapse" onclick="toggleSection(this);">See Also</a></span>
@@ -478,10 +374,14 @@ The string value of the setting
 
 	<div id="seeAlsoSection" class="section">	
 		<div>
-	<a href="topic_00000000000000E3.html">MauroDataModeller.Settings Namespace</a><br />
+			<a href="topic_00000000000000E6.html">ApplicationSettings Class</a><br />
 
 
-	
+
+<a href="topic_00000000000000E5.html">MauroDataModeller.Settings Namespace</a><br />
+
+
+			
 
 		</div>
 	</div>					

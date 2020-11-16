@@ -1,1 +1,1 @@
-search_result['356']=["topic_0000000000000096_props--.html","dataClassType Properties",""];
+search_result['356']=["topic_000000000000007C.html","Model Class","Mauro dataModel datastructure"];

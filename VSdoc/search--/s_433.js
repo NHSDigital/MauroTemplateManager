@@ -1,1 +1,1 @@
-search_result['433']=["topic_00000000000000B2_methods--.html","Classifier Methods",""];
+search_result['433']=["topic_0000000000000094_methods--.html","metadataCollectionType Methods",""];

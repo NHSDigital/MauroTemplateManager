@@ -1,1 +1,1 @@
-search_result['112']=["topic_0000000000000036.html","ActionStatus Enumeration","The status of an Action"];
+search_result['112']=["topic_000000000000002A.html","FreemarkerAction.Template Property","Gets or sets the freemarker template to execute."];

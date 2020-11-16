@@ -1,1 +1,1 @@
-search_result['77']=["topic_0000000000000027.html","FreemarkerAction Class","The template action to execute and the file details for storing the output"];
+search_result['77']=["topic_0000000000000020.html","ActionEntries.Clear Method","Clears down the list of ActionEntry classes"];

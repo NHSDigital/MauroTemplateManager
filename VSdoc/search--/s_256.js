@@ -1,1 +1,1 @@
-search_result['256']=["topic_0000000000000074_methods--.html","Models Methods",""];
+search_result['256']=["topic_0000000000000059.html","EndpointConnection.ApplyModelClassTemplate Method",""];

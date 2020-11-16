@@ -1,1 +1,1 @@
-search_result['69']=["topic_0000000000000020_props--.html","FreemarkerAction Properties",""];
+search_result['69']=["topic_000000000000001D.html","ActionEntries.Success Property","Gets the number of ActionEntry classes in the list where the ActionEntry has\r\ncompleted processing successfully"];

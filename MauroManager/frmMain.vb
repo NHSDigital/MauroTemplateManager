@@ -79,6 +79,9 @@ Public Class frmMain
         txtUsername.Text = project.Endpoint.Username
         txtPassword.Text = ""
         ProjectLoaded = True
+
+        RefreshImportExport()
+        SetTab(0)
         RefreshStatus()
     End Sub
 
@@ -175,7 +178,7 @@ Public Class frmMain
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub mnuSave_Click(sender As Object, e As EventArgs) Handles mnuSave.Click
+    Private Sub mnuSave_Click(sender As Object, e As EventArgs) Handles mnuSave.Click, tsSave.Click
         DoSave(project.Filename) ' Saves without changing the filename
     End Sub
 
@@ -184,8 +187,12 @@ Public Class frmMain
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
-    Private Sub mnuSaveAs_Click(sender As Object, e As EventArgs) Handles mnuSaveAs.Click
-        StatusEndpoint.Text = "Opening ..."
+    Private Sub mnuSaveAs_Click(sender As Object, e As EventArgs) Handles mnuSaveAs.Click, tsSaveAs.Click
+        DoSaveAs()
+    End Sub
+
+    Public Function DoSaveAs() As Boolean
+        StatusEndpoint.Text = "Saving ..."
         SaveDialogue.Filter = "Mauro Project JSON|*.json"
         SaveDialogue.Title = "Save Mauro Project as"
         SaveDialogue.DefaultExt = ".json"
@@ -195,8 +202,11 @@ Public Class frmMain
             DoSave(SaveDialogue.FileName)
             AppSettings.AddOrMoveToStart("RecentFileList", project.Filename)
             RefreshRecentFileList()
+            Return True
+        Else
+            Return False
         End If
-    End Sub
+    End Function
 
     ''' <summary>
     ''' Actions the saving of a Mauro Template Manager file to disk
@@ -282,10 +292,97 @@ Public Class frmMain
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
-        If EndpointConnection.LoginStatus Then
-            EndpointConnection.Logout()
-        End If
+        ' Note: checking for unsaved changes is done in the form_closing event
         Application.Exit()
+
+    End Sub
+
+    ''' <summary>
+    ''' Handle form closing event checking for unsaved changes and logging out of an open endpoint
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub frmMain_FormClosing(ByVal sender As System.Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles MyBase.FormClosing
+
+        Dim doExit As Boolean = True
+        If ProjectDirty Then
+
+            Select Case MsgBox("There are unsaved chages.  Do you want to save your project before exiting the program?", MsgBoxStyle.Exclamation Or vbYesNoCancel, "Unsaved changes")
+
+                Case MsgBoxResult.Yes
+                    If project.Filename <> "" Then
+                        DoSave()
+                    Else
+                        doExit = DoSaveAs()
+                    End If
+
+                Case MsgBoxResult.No
+                Case MsgBoxResult.Cancel
+                    doExit = False
+            End Select
+        End If
+        If doExit Then
+            If EndpointConnection.LoginStatus Then
+                EndpointConnection.Logout()
+            End If
+        End If
+        e.Cancel = Not doExit
+
+    End Sub
+    ''' <summary>
+    ''' Import one or more templates
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub ImportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportToolStripMenuItem.Click
+        StatusEndpoint.Text = "Importing ..."
+        OpenDialogue.Filter = "Freemarker template|*.ftl|Freemarker HTML Template|*.ftlh|Freemarker XML Template|*.ftlx|Any other file|*.*"
+        OpenDialogue.Title = "Mauro Project"
+        OpenDialogue.DefaultExt = ".ftl"
+        OpenDialogue.SupportMultiDottedExtensions = True
+        OpenDialogue.Multiselect = True
+        Dim DiagRes As DialogResult = OpenDialogue.ShowDialog()
+
+        If Not (DiagRes = DialogResult.Cancel) Then
+            For Each f As String In OpenDialogue.FileNames
+                StatusEndpoint.Text = "Importing " & f
+                project.ImportTemplate(f)
+            Next
+        End If
+        RefreshStatus()
+        SetTab(2)
+        RefreshImportExport()
+    End Sub
+    ''' <summary>
+    ''' Export the currently selected template
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub ExportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExportToolStripMenuItem.Click
+        If lstActions.SelectedIndex > -1 Then
+            Dim action As FreemarkerAction = CType(lstActions.SelectedItem, FreemarkerAction)
+            StatusEndpoint.Text = "Exporting ..."
+            SaveDialogue.Filter = "Freemarker template (*.ftl; *.ftlx; *.ftlh)|*.ftl;*.ftlx;*.ftlh|Freemarker HTML Template|*.ftlh|Freemarker XML Template|*.ftlx|Any other file|*.*"
+            SaveDialogue.Title = "Export current template as"
+            Select Case action.FileSuffix.ToLower
+                Case ".html", ".htm", ".xhtml"
+                    SaveDialogue.DefaultExt = ".ftlh"
+                Case ".xml", ".dita", ".ditamap", ".bookmap"
+                    SaveDialogue.DefaultExt = ".ftlx"
+                Case Else
+                    SaveDialogue.DefaultExt = ".ftl"
+            End Select
+
+            SaveDialogue.FileName = action.Name & "." & SaveDialogue.DefaultExt
+
+            If SaveDialogue.ShowDialog() = DialogResult.OK Then
+                project.ExportTemplate(SaveDialogue.FileName, action)
+            End If
+        Else
+            MsgBox("No template selected")
+        End If
+
+
     End Sub
 #End Region
 
@@ -300,14 +397,17 @@ Public Class frmMain
         tsSaveAs.Enabled = ProjectLoaded
 
         Tabs.Visible = ProjectLoaded
-
+        ImportExportToolStripSeparator.Visible = ProjectLoaded
         If ProjectLoaded Then
 
             Dim dirty As Boolean = ProjectDirty
             ' Set up the tabbed dialogue / update the UI
             Me.BackgroundImageLayout = ImageLayout.None
             tsProcess.Visible = True
-            tsPrinting.Visible = True
+
+            PrintToolStripSeparator.Visible = True
+
+
             ' Tabs.Visible = True
 
             ' Populate endpoint details
@@ -357,10 +457,24 @@ Public Class frmMain
             StatusFilename.Text = ""
             ' Update the UI
             tsProcess.Visible = False
-            tsPrinting.Visible = False
+
+            PrintToolStripSeparator.Visible = False
+            ImportExportToolStripSeparator.Visible = False
+
             SetTab(-1)
             Me.BackgroundImageLayout = ImageLayout.Center
         End If
+
+        ' Mop up menu visibility
+        ' Import / Export
+        ImportToolStripMenuItem.Visible = ProjectLoaded
+        ExportToolStripMenuItem.Visible = ProjectLoaded
+
+        ' Print
+        PrintToolStripMenuItem.Visible = ProjectLoaded
+        PrintPreviewToolStripMenuItem.Visible = ProjectLoaded
+        PageSetupToolStripMenuItem.Visible = ProjectLoaded
+        tsPrinting.Visible = ProjectLoaded
 
         Application.DoEvents()
     End Sub
@@ -630,11 +744,27 @@ Public Class frmMain
     End Sub
 
     Private Sub TabSelectedChanged(sender As Object, e As EventArgs) Handles Tabs.SelectedIndexChanged
+
         Dim tab As Integer = Tabs.SelectedIndex
+
+        ' Handle printing
         If tab = 2 Or tab = 3 Then
             tsPrinting.Visible = True
         Else
             tsPrinting.Visible = False
+        End If
+
+        RefreshImportExport()
+    End Sub
+
+    Private Sub RefreshImportExport()
+        ' Handle template import / export
+        If Tabs.SelectedIndex = 2 Then
+            ExportToolStripMenuItem.Enabled = (lstActions.SelectedIndex >= 0)
+            ImportToolStripMenuItem.Enabled = True
+        Else
+            ExportToolStripMenuItem.Enabled = False
+            ImportToolStripMenuItem.Enabled = False
         End If
     End Sub
 #End Region
@@ -839,7 +969,7 @@ Public Class frmMain
         RefreshQueue()
     End Sub
 
-    Private Sub tsbPrint_Click(sender As Object, e As EventArgs) Handles tsbPrint.Click
+    Private Sub tsbPrint_Click(sender As Object, e As EventArgs) Handles tsbPrint.Click, PrintToolStripMenuItem.Click
         Select Case Tabs.SelectedIndex
             Case 2
                 Print(txtTemplate, False, CType(lstActions.SelectedItem, FreemarkerAction).Name)
@@ -851,7 +981,7 @@ Public Class frmMain
 
     End Sub
 
-    Private Sub tsbPreview_Click(sender As Object, e As EventArgs) Handles tsbPreview.Click
+    Private Sub tsbPreview_Click(sender As Object, e As EventArgs) Handles tsbPreview.Click, PrintPreviewToolStripMenuItem.Click
         Select Case Tabs.SelectedIndex
             Case 2
                 Print(txtTemplate, True, CType(lstActions.SelectedItem, FreemarkerAction).Name)
@@ -1047,6 +1177,8 @@ Public Class frmMain
         nums.Mask = 0
         ' txtTemplate.MarginClick += TextArea_MarginClick
     End Sub
+
+
 
 
 #End Region

@@ -1,1 +1,1 @@
-search_result['525']=["topic_00000000000000D8_events--.html","Metadata Events",""];
+search_result['525']=["topic_00000000000000AD.html","annotationType.label Property","Only optional if is a child annotation, the top level annotation must have a label"];

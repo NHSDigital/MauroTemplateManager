@@ -1,1 +1,1 @@
-search_result['628']=["topic_0000000000000105.html","frmMain.IsURLValid Method","Check whether a string is a valid URL"];
+search_result['628']=["topic_00000000000000CB_methods--.html","dataElementsType Methods",""];

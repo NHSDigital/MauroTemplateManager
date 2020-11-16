@@ -1,1 +1,1 @@
-search_result['523']=["topic_00000000000000D8.html","Metadata Class",""];
+search_result['523']=["topic_00000000000000AC_props--.html","classifierType Properties",""];

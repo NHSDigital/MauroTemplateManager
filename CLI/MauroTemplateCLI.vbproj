@@ -3,9 +3,9 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <RootNamespace>MauroDataModeller</RootNamespace>
-    <TargetFrameworks>netcoreapp3.1;net48</TargetFrameworks> 
+    <TargetFrameworks>netcoreapp3.1;net48</TargetFrameworks>
   <!--  <TargetFramework>net48</TargetFramework> -->
-    <StartupObject>MauroTemplate.MauroTemplates.commandline.Program</StartupObject>
+    <StartupObject>Sub Main</StartupObject>
     <AssemblyName>Mauro Template CLI</AssemblyName>
     <ApplicationManifest>My Project\app.manifest</ApplicationManifest>
     <OptionStrict>On</OptionStrict>

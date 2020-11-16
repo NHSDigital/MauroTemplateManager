@@ -1,1 +1,1 @@
-search_result['46']=["topic_0000000000000017.html","ActionEntries.Entries Property","Gets or sets the list of ActionEntry classes."];
+search_result['46']=["topic_0000000000000013.html","ActionTypes Enumeration","The type of entity to work on"];

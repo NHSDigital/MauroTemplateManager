@@ -1,1 +1,1 @@
-search_result['59']=["topic_000000000000001F.html","ActionEntry Class","An individual action within the Action Entry queue"];
+search_result['59']=["topic_0000000000000018.html","ActionEntries Class","A list of ActionEntry instances for use in the queue"];

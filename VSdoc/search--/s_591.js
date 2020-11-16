@@ -1,1 +1,1 @@
-search_result['591']=["topic_00000000000000F4.html","AppSetting Class","A Name, value, sequence class to hold a specific setting"];
+search_result['591']=["topic_00000000000000C3_props--.html","enumerationValuesType Properties",""];

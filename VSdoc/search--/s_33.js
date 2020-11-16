@@ -1,1 +1,1 @@
-search_result['33']=["topic_000000000000000D_props--.html","MauroEndpoint Properties",""];
+search_result['33']=["topic_000000000000000D_overloads--.html","Project Constructor","Ctreates a new project with specified endpoint.  This does not connect to the endpoint"];

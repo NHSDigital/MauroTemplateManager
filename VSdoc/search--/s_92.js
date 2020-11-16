@@ -1,1 +1,1 @@
-search_result['92']=["topic_000000000000002C.html","FreemarkerAction.Name Property","Gets or sets a meaningful name fo rthe action."];
+search_result['92']=["topic_0000000000000025.html","ActionEntry.Status Property","Gets or sets the current Action Outcome Status for the action entry."];
