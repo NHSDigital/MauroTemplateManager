@@ -336,9 +336,8 @@ Public Class frmMain
     ''' <param name="e"></param>
     Private Sub ImportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportToolStripMenuItem.Click
         StatusEndpoint.Text = "Importing ..."
-        OpenDialogue.Filter = "Freemarker template|*.ftl|Freemarker HTML Template|*.ftlh|Freemarker XML Template|*.ftlx|Any other file|*.*"
+        OpenDialogue.Filter = "Freemarker templates|*.ft*|Freemarker template|*.ftl|Freemarker HTML Template|*.ftlh|Freemarker XML Template|*.ftlx|Any other file|*.*"
         OpenDialogue.Title = "Mauro Project"
-        OpenDialogue.DefaultExt = ".ftl"
         OpenDialogue.SupportMultiDottedExtensions = True
         OpenDialogue.Multiselect = True
         Dim DiagRes As DialogResult = OpenDialogue.ShowDialog()
@@ -348,10 +347,47 @@ Public Class frmMain
                 StatusEndpoint.Text = "Importing " & f
                 project.ImportTemplate(f)
             Next
+            StatusEndpoint.Text = "Imported " & OpenDialogue.FileNames.Length.ToString & " templates."
+        Else
+            StatusEndpoint.Text = "Import cancelled"
         End If
         RefreshStatus()
         SetTab(2)
         RefreshImportExport()
+    End Sub
+
+    ''' <summary>
+    ''' Export all the templates to a directory
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub ExportAllToolstripMenu_Click(sender As Object, e As EventArgs) Handles ExportAllToolstripMenu.Click
+        StatusEndpoint.Text = "Exporting ..."
+
+        'FolderBrowser.RootFolder = Environment.CurrentDirectory.ToString
+        Using FolderBrowser As New FolderBrowserDialog With {
+            .Description = "Save to directory ...",
+            .ShowNewFolderButton = True
+        }
+            Dim DiagRes As DialogResult = FolderBrowser.ShowDialog()
+            If DiagRes = DialogResult.OK Then
+                For Each itm As FreemarkerAction In lstActions.Items
+                    Dim extn As String
+                    Select Case itm.FileSuffix.ToLower
+                        Case ".html", ".htm", ".xhtml"
+                            extn = ".ftlh"
+                        Case ".xml", ".dita", ".ditamap", ".bookmap"
+                            extn = ".ftlx"
+                        Case Else
+                            extn = ".ftl"
+                    End Select
+                    project.ExportTemplate(FolderBrowser.SelectedPath & "\" & itm.Name & extn, itm)
+                Next
+                StatusEndpoint.Text = "Exported " & lstActions.Items.Count.ToString & " templates."
+            Else
+                StatusEndpoint.Text = "Export cancelled."
+            End If
+        End Using
     End Sub
     ''' <summary>
     ''' Export the currently selected template
@@ -469,7 +505,7 @@ Public Class frmMain
         ' Import / Export
         ImportToolStripMenuItem.Visible = ProjectLoaded
         ExportToolStripMenuItem.Visible = ProjectLoaded
-
+        ExportAllToolstripMenu.Visible = ProjectLoaded
         ' Print
         PrintToolStripMenuItem.Visible = ProjectLoaded
         PrintPreviewToolStripMenuItem.Visible = ProjectLoaded
@@ -762,9 +798,11 @@ Public Class frmMain
         If Tabs.SelectedIndex = 2 Then
             ExportToolStripMenuItem.Enabled = (lstActions.SelectedIndex >= 0)
             ImportToolStripMenuItem.Enabled = True
+            ExportAllToolstripMenu.Enabled = True
         Else
             ExportToolStripMenuItem.Enabled = False
             ImportToolStripMenuItem.Enabled = False
+            ExportAllToolstripMenu.Enabled = False
         End If
     End Sub
 #End Region
@@ -1177,6 +1215,8 @@ Public Class frmMain
         nums.Mask = 0
         ' txtTemplate.MarginClick += TextArea_MarginClick
     End Sub
+
+
 
 
 

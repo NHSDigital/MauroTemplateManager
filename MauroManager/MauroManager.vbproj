@@ -300,6 +300,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Document-settings-SVG-Yellow.ico" />
+    <None Include="Resources\Import_16x.png" />
+    <None Include="Resources\Export_16x.png" />
     <None Include="Resources\ExportFile_16x.png" />
     <None Include="Resources\ImportFile_16x.png" />
     <None Include="Icons\PrintSetup\PrintSetup_16x.png" />
