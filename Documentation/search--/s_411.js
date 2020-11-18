@@ -1,0 +1,1 @@
+search_result['411']=["frlrfMauroDataModellerMauroTemplatesProjectClassctorTopic3.html","Project(Uri, String, String) Constructor","Ctreates a new project with specified endpoint.  This does not connect to the endpoint"];

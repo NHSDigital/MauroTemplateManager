@@ -1,0 +1,1 @@
+c['36']=[['37',"EndpointConnection Constructor","frlrfMauroDataModellerMauroModelEndpointConnectionClassctorTopic.html",0],['38',"Properties","frlrfMauroDataModellerMauroModelEndpointConnectionClassTopic_props--.html",1],['47',"Methods","frlrfMauroDataModellerMauroModelEndpointConnectionClassTopic_methods--.html",1]];

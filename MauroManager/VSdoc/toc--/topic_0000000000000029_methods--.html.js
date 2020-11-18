@@ -1,1 +1,0 @@
-var breadcrumbs=[['-1',"",""],['2',"MauroManager Reference","topic_000000000000002D.html"],['4',"MauroDataModeller Namespace","topic_000000000000002F.html"],['9',"ImportExportDialogue Class","topic_0000000000000029.html"],['10',"Methods","topic_0000000000000029_methods--.html"]];

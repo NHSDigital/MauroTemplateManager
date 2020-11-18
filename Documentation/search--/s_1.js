@@ -1,1 +1,1 @@
-search_result['1']=["frlrfMauroTemplateMauroTemplatescommandline.html","MauroTemplate.MauroTemplates.commandline Namespace",""];
+search_result['1']=["frlrfMauroDataModeller.html","MauroDataModeller Namespace",""];

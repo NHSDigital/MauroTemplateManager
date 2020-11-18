@@ -1,0 +1,1 @@
+c['195']=[['196',"Properties","frlrfMauroDataModellerMauroModelmetadataCollectionTypeClassTopic_props--.html",1]];

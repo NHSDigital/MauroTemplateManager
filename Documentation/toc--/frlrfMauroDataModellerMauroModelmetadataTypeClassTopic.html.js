@@ -1,0 +1,1 @@
+var breadcrumbs=[['-1',"",""],['2',"MauroClasses Reference","frlrfmauroclasses_referenceCustomTopic.html"],['30',"MauroDataModeller.MauroModel Namespace","frlrfMauroDataModellerMauroModel.html"],['198',"metadataType Class","frlrfMauroDataModellerMauroModelmetadataTypeClassTopic.html"]];

@@ -1,0 +1,1 @@
+search_result['61']=["frlrfMauroDataModellerMauroModelannotationTypeClasschildAnnotationsTopic.html","annotationType.childAnnotations Property","### TODO: Add a description"];

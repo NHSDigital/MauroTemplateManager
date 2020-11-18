@@ -1,0 +1,1 @@
+search_result['364']=["frlrfMauroDataModellerMauroTemplatesFreemarkerActionClassNameTopic.html","FreemarkerAction.Name Property","Gets or sets a meaningful name fo rthe action."];

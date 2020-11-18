@@ -1,1 +1,1 @@
-search_result['5']=["frlrfMauroTemplateMauroTemplatescommandlineProgramClassTopic_events--.html","Program Events",""];
+search_result['5']=["frlrfMauroDataModellerAboutMauroTemplateManagerClassTopic_events--.html","AboutMauroTemplateManager Events",""];

@@ -1,1 +1,0 @@
-search_result['0']=["index.html","Default page",""];

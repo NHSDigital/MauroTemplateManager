@@ -1,1 +1,0 @@
-search_result['727']=["topic_00000000000000E6.html","ApplicationSettings Class","Manipulate a JSON list of settings for an application, storing the file in the users ApplicationData folder"];

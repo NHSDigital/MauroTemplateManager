@@ -1,1 +1,0 @@
-search_result['644']=["topic_00000000000000CF.html","dataElementsType Class","##TODO Add description comment"];

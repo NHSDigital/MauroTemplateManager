@@ -1,1 +1,0 @@
-search_result['15']=["topic_0000000000000004.html","ApplicationSettings Constructor","Load the existing settings from the JSON file"];

@@ -1,0 +1,1 @@
+search_result['414']=["frlrfMauroDataModellerMauroTemplatesProjectClassEndpointTopic.html","Project.Endpoint Property","Gets or sets the Mauro endpoint connection details"];

@@ -1,0 +1,1 @@
+search_result['319']=["frlrfMauroDataModellerMauroTemplatesActionEntriesClassEntriesTopic.html","ActionEntries.Entries Property","Gets or sets the list of ActionEntry classes."];

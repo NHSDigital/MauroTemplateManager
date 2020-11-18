@@ -1,1 +1,0 @@
-search_result['3']=["topic_0000000000000001.html","Project Class","Main Mauro Template Manager project class \r\nHandles file open and save, Connects to a Mauro endpoint\r\n"];

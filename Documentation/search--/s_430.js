@@ -1,0 +1,1 @@
+search_result['430']=["frlrfMauroDataModellerMauroTemplatesProjectMauroEndpointClassTimeoutTopic.html","MauroEndpoint.Timeout Property","Gets or sets the TimeSpan used by the endpoint connection to connect to a Mauro\r\nAPI."];

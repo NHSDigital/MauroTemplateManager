@@ -1,0 +1,1 @@
+search_result['359']=["frlrfMauroDataModellerMauroTemplatesFreemarkerActionClassActionTypeTopic.html","FreemarkerAction.ActionType Property","Gets or sets the type of action."];

@@ -1,1 +1,0 @@
-search_result['45']=["topic_0000000000000012.html","MauroEndpoint.Timeout Property","Gets or sets the TimeSpan used by the endpoint connection to connect to a Mauro\r\nAPI."];

@@ -1,0 +1,1 @@
+search_result['22']=["frlrfMauroDataModellerfrmMainClassIsURLValidTopic.html","frmMain.IsURLValid Method","Check whether a string is a valid URL"];

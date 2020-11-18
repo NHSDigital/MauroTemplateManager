@@ -1,0 +1,1 @@
+search_result['439']=["frlrfMauroDataModellerSettingsApplicationSettingsAppSettingClassNameTopic.html","AppSetting.Name Property","The name of the setting"];

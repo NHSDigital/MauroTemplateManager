@@ -1,0 +1,1 @@
+search_result['431']=["frlrfMauroDataModellerMauroTemplatesProjectMauroEndpointClassTopic.html","MauroEndpoint Class","Connection details to a Mauro endpoint but does not handle the connection to\r\nthat endpoint."];

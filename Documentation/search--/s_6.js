@@ -1,1 +1,1 @@
-search_result['6']=["frlrfMauroTemplateMauroTemplatescommandlineProgramClassTopic_methods--.html","Program Methods",""];
+search_result['6']=["frlrfMauroDataModellerAboutMauroTemplateManagerClassTopic_methods--.html","AboutMauroTemplateManager Methods",""];

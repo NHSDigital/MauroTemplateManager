@@ -1,1 +1,0 @@
-search_result['36']=["topic_000000000000000E.html","MauroEndpoint Class","Connection details to a Mauro endpoint but does not handle the connection to\r\nthat endpoint."];

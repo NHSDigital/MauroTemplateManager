@@ -1,0 +1,1 @@
+search_result['115']=["frlrfMauroDataModellerMauroModeldataClassTypeClassmaxMultiplicityTopic.html","dataClassType.maxMultiplicity Property","If not provided then will default to 1 (required)"];

@@ -1,0 +1,1 @@
+search_result['453']=["frlrfMauroDataModellerSettingsApplicationSettingsClassGetAppSettingAllTopic.html","ApplicationSettings.GetAppSettingAll Method","Get all the values of a setting ordered by the setting sequence"];

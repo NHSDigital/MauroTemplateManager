@@ -1,0 +1,1 @@
+search_result['24']=["frlrfMauroDataModellerfrmMainClassOpenRecentFileHandlerTopic.html","frmMain.OpenRecentFileHandler Method","Event handler for each of the most recently accessed file menu items"];

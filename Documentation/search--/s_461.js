@@ -1,0 +1,1 @@
+search_result['461']=["frlrfMauroDataModellerSettingsApplicationSettingsClassTopic.html","ApplicationSettings Class","Manipulate a JSON list of settings for an application, storing the file in the users ApplicationData folder"];

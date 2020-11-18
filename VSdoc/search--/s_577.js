@@ -1,1 +1,0 @@
-search_result['577']=["topic_00000000000000BE.html","dataTypeType.enumerationValues Property","Mandatory if domainType is \"EnumerationType\". Ignored otherwise"];

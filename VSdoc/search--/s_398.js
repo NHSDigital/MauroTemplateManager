@@ -1,1 +1,0 @@
-search_result['398']=["topic_000000000000008D.html","dataClassesType Class","##TODO Add description comment"];

@@ -1,0 +1,1 @@
+search_result['437']=["frlrfMauroDataModellerMauroTemplatesProjectMauroEndpointClassUsernameTopic.html","MauroEndpoint.Username Property","Gets or sets the username used to identify the user seeking to access the Mauro endpoint."];

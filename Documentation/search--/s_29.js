@@ -1,0 +1,1 @@
+search_result['29']=["frlrfMauroDataModellerfrmMainClassRefreshStatusTopic.html","frmMain.RefreshStatus Method","Updates the display for the main panel and status bar"];

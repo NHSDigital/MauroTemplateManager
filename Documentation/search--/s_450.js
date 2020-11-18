@@ -1,0 +1,1 @@
+search_result['450']=["frlrfMauroDataModellerSettingsApplicationSettingsClassAddSettingStartTopic.html","ApplicationSettings.AddSettingStart Method","Add a new setting at the start of the list, incrementing the sequence of existing members"];

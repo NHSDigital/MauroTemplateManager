@@ -1,1 +1,1 @@
-c['6']=[['7',"Main Method","frlrfMauroTemplateMauroTemplatescommandlineProgramClassMainTopic.html",0]];
+c['6']=[['7',"Dispose Method","frlrfMauroDataModellerAboutMauroTemplateManagerClassDisposeTopic.html",0]];

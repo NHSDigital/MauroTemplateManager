@@ -1,1 +1,0 @@
-search_result['115']=["topic_000000000000002D.html","FreemarkerAction.ActionType Property","Gets or sets the type of action."];

@@ -1,0 +1,1 @@
+search_result['110']=["frlrfMauroDataModellerMauroModeldataClassTypeClassclassifiersTopic.html","dataClassType.classifiers Property","### TODO: Add a description"];

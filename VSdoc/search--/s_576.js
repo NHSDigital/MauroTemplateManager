@@ -1,1 +1,0 @@
-search_result['576']=["topic_00000000000000BD.html","dataTypeType.referenceClass Property","Mandatory if domainType is \"ReferenceType\". Ignored otherwise"];

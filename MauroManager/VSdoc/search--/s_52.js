@@ -1,1 +1,0 @@
-search_result['52']=["topic_000000000000001F.html","frmMain.EndpointURLChanged Method","Checks the validity of the proposed URL and, if valid,\r\nStores the amended URL and sets the flag for unsaved changes.\r\nOtherwise shows error text"];

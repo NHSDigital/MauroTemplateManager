@@ -1,0 +1,1 @@
+search_result['262']=["frlrfMauroDataModellerMauroModelmetadataCollectionTypeClassTopic.html","metadataCollectionType Class","##TODO Add description comment"];

@@ -1,1 +1,1 @@
-c['-1']=[['2',"MauroTemplateCLI Reference","frlrfmaurotemplatecli_referenceCustomTopic.html",1]];
+c['-1']=[['2',"MauroClasses Reference","frlrfmauroclasses_referenceCustomTopic.html",1]];

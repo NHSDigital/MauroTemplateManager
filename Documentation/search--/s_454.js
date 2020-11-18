@@ -1,0 +1,1 @@
+search_result['454']=["frlrfMauroDataModellerSettingsApplicationSettingsClassGetAppSettingTopic.html","ApplicationSettings.GetAppSetting Method","Load the first instance of the settings for setting Name"];
